@@ -10,8 +10,8 @@
 | 抽字 | ✅ 6,647 行（SCRP 2340／VERB 1921／LSCR 1859／OBNA 509／ENCD 15／EXCD 1） | ✅ 1,121 行 |
 | round-trip byte-perfect | ✅ 2 檔全過 | ✅ 53 個 LFL 全過 |
 | 翻譯 | ⬜ 未開始（小樣 33 行已驗證） | ⬜ 未開始 |
-| 字型 | 小樣用 12×12（WQY 內嵌點陣）驗通；正式版走倚天 24×24 | 同左 |
-| 引擎修補 | ⬜ 待評估（見下） | ⬜ 待評估 |
+| 字型 | **倚天 16×14 hi-res**（見下） | 待做 |
+| 引擎修補 | ✅ 3 檔 +97 行（`patches/scummvm-tentacle-zhtw.patch`） | ⬜ 待評估 |
 | 中文語音（TTS） | ⬜ 未開始，見〈語音〉 | 無語音 |
 
 其中 1,038 行去掉語音前綴後是空的（純控制碼），不需翻譯。
@@ -34,24 +34,19 @@ corrupt it`），v1 會安靜地把 00.LFL 改壞。
 - ✅ 無字元級亂碼、無截字 —— 碼空間與字型索引都正確
 - ❌ **句子列壓在指令列第一列上，把「使用」蓋掉**
 
-## 眼前的決策點：版面
+## 畫面與字型已定案：倚天 16×14 hi-res
 
-句子列與指令列只差 8 個邏輯像素，而 CJK 模式下 `getFontHeight()` 回
-`MAX(_2byteHeight + 1, _fontHeight)` = 13，直接溢出。這與一代（v2）踩到的是同一類問題，
-一代的解法是把畫布加高、指令區從 56 個邏輯像素擴到 84。
+12×12 零修補對本作不成立——不是碼空間問題，是幾何：句子列到指令第一列只有 7 個邏輯像素，
+而 CJK 行高 13。改走 hi-res 之後，實測倚天 15 點的**第 15 列完全沒有筆劃**，裁掉變成 16×14、
+邏輯高剛好 7，與原版英文幾何一致，**版面一處都不必改**。
 
-**所以「12×12 零修補」對本作不成立**——不是碼空間的問題，是版面幾何。這反而讓
-「既然都要動版面，不如直接上倚天 24×24」變成合理選擇（使用者已選定這條）。
+24×24（邏輯高 12）在本作行不通，那 7 個像素放不下；字型檔仍支援，但不是預設。
 
-hi-res 在 v6 的可行性已初步查證，骨架是現成的：
+實機驗收（`screenshots/verb-zh-16x14.png`）：指令列九格中文齊全、句子列共存、
+底圖無雪花、無截字、無殘影。
 
-- `CharsetRendererClassic::printCharIntern()` 本來就把 `_textSurfaceMultiplier` 算進
-  `_textSurface.getBasePtr()`（upstream 給 FM-Towns／Mac 用的路徑）。
-- 一代補在 `drawStripToScreen()` 的「底圖 2× nearest 放大」是通用碼，外層條件是
-  `_game.version < 7`，v6 進得去；只是內層條件夾了 `GID_MANIAC && version == 2`，要放寬。
-
-待實作與驗證：`loadCJKFont()` 給 `GID_TENTACLE` 設 24×24＋multiplier=2、
-邏輯／字模尺寸換算（Classic 版的 `getCharWidth`／`getFontHeight`）、指令列與句子列的版面。
+排查過程中最花時間的一個雷（`clearTextSurface()` 清整片 vs v6 的 verb 不重畫）
+寫在 [`20-patches.md`](20-patches.md)。
 
 ## 語音（使用者需求，尚未開始）
 

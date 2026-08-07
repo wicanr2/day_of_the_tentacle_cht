@@ -1,0 +1,186 @@
+--- a/engines/scumm/scumm.h
++++ b/engines/scumm/scumm.h
+@@ -1778,6 +1778,13 @@
+ 	bool isScummvmKorTarget();
+ 	bool hasLocalizer();
+ 
++	// 繁中化（瘋狂時代，24x24）：hi-res CJK 文字表面是否生效。
++	// 生效時字模畫在 2 倍的文字表面上，而排版（推進寬、行高、dirty rect）
++	// 一律仍以**邏輯像素**計，也就是字模尺寸 / _textSurfaceMultiplier。
++	bool isChtHiResCJK() const {
++		return _textSurfaceMultiplier == 2 && _useCJKMode && _game.id == GID_TENTACLE;
++	}
++
+ 	// 繁中化（Maniac Mansion V2，24x24）：句子列本來固定 8 條掃描線，中文字有 14 條。
+ 	// 重畫句子列前要清掉的是**上一句實際佔的高度**，用 8 的話下面 6 條會留著上一句的殘影
+ 	// （最明顯的是暫停訊息疊在句子上，見 issue #1）。
+--- a/engines/scumm/charset.cpp
++++ b/engines/scumm/charset.cpp
+@@ -188,6 +188,38 @@
+ 					_textSurfaceMultiplier = 2;
+ 					break;
+ 				}
++				if (_game.id == GID_TENTACLE) {
++					// 繁中化（瘋狂時代）：字模尺寸同樣由字型檔的大小決定，numChar 固定 8178。
++					//   8178 x 24 bytes → 12x12（原版 ZH_CHN 規格）
++					//   8178 x 72 bytes → 24x24（倚天 24 點，畫在 2 倍文字表面上，邏輯 12x12）
++					// 24x24 走 hi-res：原始美術由 drawStripToScreen() 做 2x nearest 放大，
++					// 中文字直接畫進 2 倍的文字表面，所以同一畫面「美術照原樣、中文銳利」。
++					//   8178 x 28 bytes → 16x14（倚天 15 點裁掉全空的最後一列，邏輯 8x7）
++					//   8178 x 30 bytes → 16x15（倚天 15 點原尺寸，邏輯 8x7.5）
++					//
++					// 為什麼預設是 16x14 而不是 16x15：本作的指令區裡，句子列在 y=145、
++					// 指令第一列在 y=152，只差 7 個邏輯像素（三列指令之間反而寬到 16）。
++					// 邏輯高 7.5 會讓句子列的重畫範圍咬到第一列，把「使用」那格擦掉；
++					// 裁掉倚天 15 點那條全空的最後一列之後邏輯高剛好 7，與原版英文的
++					// 幾何一致，版面一處都不必改。
++					const int bytesPerGlyph = (int)(fp.size() / numChar);
++					if (bytesPerGlyph >= 72) {
++						_2byteWidth = _2byteHeight = 24;
++						_textSurfaceMultiplier = 2;
++					} else if (bytesPerGlyph >= 30) {
++						_2byteWidth = 16;
++						_2byteHeight = 15;
++						_textSurfaceMultiplier = 2;
++					} else if (bytesPerGlyph >= 28) {
++						_2byteWidth = 16;
++						_2byteHeight = 14;
++						_textSurfaceMultiplier = 2;
++					} else {
++						_2byteWidth = _2byteHeight = 12;
++					}
++					_newLineCharacter = 0x21;
++					break;
++				}
+ 				_2byteWidth = 12;
+ 				_2byteHeight = 12;
+ 				_newLineCharacter = 0x21;
+@@ -494,6 +526,11 @@
+ 			int h = _vm->_2byteHeight / _vm->_textSurfaceMultiplier;
+ 			return MAX(h >= 12 ? h + 2 : h, _fontHeight);
+ 		}
++		// 繁中化（瘋狂時代 hi-res）：同理回**邏輯**行高。24x24 的字模在 2 倍表面上
++		// 只佔 12 個邏輯像素，行距補 1 成 13，與原版 12x12 的 (_2byteHeight + 1) 同級，
++		// 這樣對白換行與指令列的列距都不必另外調整。
++		if (_vm->isChtHiResCJK())
++			return MAX(_vm->_2byteHeight / _vm->_textSurfaceMultiplier + 1, _fontHeight);
+ 		return MAX(_vm->_2byteHeight + 1, _fontHeight);
+ 	} else {
+ 		return _fontHeight;
+@@ -505,7 +542,9 @@
+ 	int spacing = 0;
+ 
+ 	if (_vm->_useCJKMode && chr >= 0x80)
+-		return _vm->_2byteWidth / 2;
++		// 繁中化（hi-res CJK）：回邏輯寬的一半，與非 hi-res 時的語意一致
++		return _vm->isChtHiResCJK() ? _vm->_2byteWidth / 2 / _vm->_textSurfaceMultiplier
++		                            : _vm->_2byteWidth / 2;
+ 
+ 	int offs = READ_LE_UINT32(_fontPtr + chr * 4 + 4);
+ 	if (offs)
+@@ -603,7 +642,11 @@
+ 						width += _vm->_2byteWidth;
+ 					}
+ 				} else {
+-					width += _vm->_2byteWidth;
++					// 繁中化（hi-res CJK）：這裡累加的是**邏輯**寬。字模畫在 2 倍的文字表面上，
++					// 所以 24x24 的字在版面上只佔 12 個邏輯像素；直接加 _2byteWidth 會讓
++					// 換行與置中都以兩倍寬計算，長句提早折行、短句偏移。
++					width += _vm->isChtHiResCJK() ? _vm->_2byteWidth / _vm->_textSurfaceMultiplier
++					                              : _vm->_2byteWidth;
+ 					// Original keeps glyph width and character dimensions separately
+ 					if (_vm->_language == Common::KO_KOR || _vm->_language == Common::ZH_TWN) {
+ 						width++;
+@@ -1272,6 +1315,14 @@
+ 	if ((_vm->_language == Common::ZH_TWN || _vm->_language == Common::KO_KOR) && is2byte)
+ 		_origWidth++;
+ 
++	// 繁中化（瘋狂時代 hi-res）：畫用字模尺寸，推進與 _str 邊界用**邏輯**尺寸。
++	// prepareDraw() 把 _origWidth/_origHeight 設成字模的 24x24，這裡除回 12x12，
++	// 否則游標推進兩倍寬、一行只放得下半數的字。
++	if (is2byte && _vm->isChtHiResCJK()) {
++		_origWidth /= _vm->_textSurfaceMultiplier;
++		_origHeight /= _vm->_textSurfaceMultiplier;
++	}
++
+ 	_left += _origWidth;
+ 	if (is2byte)
+ 		_left += _cjkSpacing;
+@@ -1359,9 +1410,24 @@
+ 			drawTop = _top - _vm->_screenTop;
+ 		}
+ 
+-		if (is2byte && _vm->_game.platform != Common::kPlatformFMTowns)
+-			drawBits1(dstSurface, (ignoreCharsetMask || !vs->hasTwoBuffers) ? _left + vs->xstart : _left, drawTop, charPtr, drawTop, origWidth, origHeight);
+-		else
++		if (is2byte && _vm->_game.platform != Common::kPlatformFMTowns) {
++			// 繁中化（瘋狂時代 hi-res）：中文字模是 24x24，畫進 1 倍的虛擬螢幕會蓋掉兩倍
++			// 面積的畫面。改成一律畫到 2 倍的文字表面，座標跟著乘 _textSurfaceMultiplier；
++			// 合成由 drawStripToScreen() 負責（它會把底圖也放大 2 倍）。
++			// y 用 (_top - _screenTop) 與同函式上面算 dstPtr 的方式一致。
++			if (_vm->isChtHiResCJK()) {
++				// y 要跟原路徑畫到的**絕對**位置一致：走 vs 分支時原本畫在
++				// vs 的 (drawTop = _top - vs->topline)，換算回整個畫面就是 _top；
++				// 只有走文字表面分支（房間畫面、可能有垂直捲動）才扣 _screenTop。
++				// 一開始一律扣 _screenTop，指令列的中文就整批往上偏了 7 個像素，
++				// 疊到句子列上、又被句子列的重畫擦掉，看起來像「使用」那格消失。
++				const int m = _vm->_textSurfaceMultiplier;
++				const int surfY = (ignoreCharsetMask || !vs->hasTwoBuffers) ? _top : (_top - _vm->_screenTop);
++				drawBits1(_vm->_textSurface, _left * m, surfY * m, charPtr, drawTop, origWidth, origHeight);
++			} else {
++				drawBits1(dstSurface, (ignoreCharsetMask || !vs->hasTwoBuffers) ? _left + vs->xstart : _left, drawTop, charPtr, drawTop, origWidth, origHeight);
++			}
++		} else
+ 			drawBitsN(dstSurface, dstPtr, charPtr, *_fontPtr, drawTop, origWidth, origHeight);
+ 
+ 		if (_blitAlso && vs->hasTwoBuffers) {
+--- a/engines/scumm/gfx.cpp
++++ b/engines/scumm/gfx.cpp
+@@ -718,7 +718,7 @@
+ 		// 因此與 CGA / Hercules 這類需要後處理的 render mode 不相容（預設 EGA/VGA 下
+ 		// 那個函式本來就會立刻 return，所以沒有差別）。
+ 		if (m == 2 && _useCJKMode && _outputPixelFormat.bytesPerPixel == 1 &&
+-			_game.id == GID_MANIAC && _game.version == 2) {
++			((_game.id == GID_MANIAC && _game.version == 2) || isChtHiResCJK())) {
+ 			const byte *srcRow = (const byte *)src;
+ 			const byte *textRow = (const byte *)_textSurface.getBasePtr(x * m, y * m);
+ 			byte *dstPtr = _compositeBuf;
+@@ -1308,7 +1308,7 @@
+ 		// 文字表面上的，fill 不到 —— 句子列重畫時上一句就留在畫面上（issue #1：
+ 		// 暫停訊息疊在句子上）。這裡把對應的那一塊文字表面一起清掉。
+ 		if (_macScreen || (_textSurfaceMultiplier == 2 && _useCJKMode &&
+-						   _game.id == GID_MANIAC && _game.version == 2)) {
++						   ((_game.id == GID_MANIAC && _game.version == 2) || isChtHiResCJK()))) {
+ 			byte *mask = (byte *)_textSurface.getBasePtr(rect.left * _textSurfaceMultiplier, (rect.top + vs->topline) * _textSurfaceMultiplier);
+ 			fill(mask, _textSurface.pitch, CHARSET_MASK_TRANSPARENCY, width * _textSurfaceMultiplier, height * _textSurfaceMultiplier, _textSurface.format.bytesPerPixel);
+ 		}
+@@ -1363,10 +1363,27 @@
+ 			}
+ 		}
+ 
+-		if (vs->hasTwoBuffers || _macScreen) {
++		if (isChtHiResCJK()) {
++			// 繁中化（瘋狂時代 hi-res）：文字表面是整個畫面共用的，而 clearTextSurface()
++			// 清的是整片。主畫面（有雙緩衝）每重畫一次就把指令區那塊也清掉，
++			// 而 v6 的 verb 只在狀態改變時才重畫 —— 於是指令列的中文被清掉之後
++			// 再也不會回來，畫面上看到的只是先前合成留在螢幕上的殘影；
++			// 一旦某格所在的 strip 因為句子列更新而重新合成，那一格就空了
++			// （症狀：只有與句子列橫向重疊的「使用」那格消失）。
++			// 這裡改成只清當前虛擬螢幕對應的那一塊，各畫面互不干擾。
++			byte *mask = (byte *)_textSurface.getBasePtr(0, vs->topline * _textSurfaceMultiplier);
++			fill(mask, _textSurface.pitch, CHARSET_MASK_TRANSPARENCY,
++				 vs->w * _textSurfaceMultiplier, vs->h * _textSurfaceMultiplier,
++				 _textSurface.format.bytesPerPixel);
++		} else if (vs->hasTwoBuffers || _macScreen) {
+ 			// Clean out the charset mask
+ 			clearTextSurface();
+-		} else if (_textSurfaceMultiplier == 2 && _game.id == GID_MANIAC && _game.version == 2) {
++		} else if (_textSurfaceMultiplier == 2 &&
++				   (_game.id == GID_MANIAC && _game.version == 2)) {
++			// 註：這段對 GID_TENTACLE 不適用。v2 的指令列每幀重畫，清掉整塊文字表面
++			// 之後下一幀就補回來；v6 的 verb 只在狀態改變時重畫，整塊清掉就再也不會回來
++			// （症狀是指令列的某幾格憑空消失）。v6 用的是下面 restoreBackground() 裡
++			// 那段依 rect 清除的路徑。
+ 			// 繁中化（hi-res）：上面那段 clearTextSurface() 只在 hasTwoBuffers 時執行，
+ 			// 因為原本設計裡 kTextVirtScreen / kVerbVirtScreen 的文字是直接畫進虛擬螢幕、
+ 			// 由前面的 memset 清掉的。hi-res 模式把所有文字都畫到文字表面之後，這些畫面
