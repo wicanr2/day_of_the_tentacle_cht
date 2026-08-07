@@ -1,0 +1,31 @@
+; 瘋狂時代 繁體中文化 —— ScummVM 設定範本
+;
+; 兩個 target 缺一不可：
+;   dott-zh    主遊戲
+;   maniac-zh  泰德表哥電腦裡的一代（SCUMM v1）
+;
+; [重要] `easter_egg` 要明確指到一代的 target 名。不寫的話 ScummVM 會改用
+; 路徑搜尋（找主遊戲目錄底下叫 maniac 的子目錄），而同一份 LFL 同時符合
+; C64／V1 DOS／NES 等多個版本，auto-detect 會挑到第一個候選（C64），
+; 進去就是 `Assertion _game.version == 1 failed` 直接中止。
+; `extra=V1` 同理，是給 target 自己用的消歧。
+;
+; [重要] 兩個 target 都**不要**寫 language。ScummVM 看到遊戲目錄裡有
+; chinese_gb16x12.fnt 就會判成 ZH_CHN（detection_internal.h），
+; 手動寫 language=zh 反而會被判成 ZH_TWN 而不載中文字型，畫面變成一整排亂碼。
+
+[dott-zh]
+engineid=scumm
+gameid=tentacle
+description=Day of the Tentacle 瘋狂時代（繁體中文）
+path=./game/dott
+easter_egg=maniac-zh
+subtitles=true
+
+[maniac-zh]
+engineid=scumm
+gameid=maniac
+description=Maniac Mansion 瘋狂大樓（繁體中文）
+path=./game/dott/maniac
+platform=pc
+extra=V1
