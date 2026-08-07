@@ -30,7 +30,8 @@ __pycache__/
 *.pyc
 
 # 雜誌整頁掃描留本機（版權），只推裁切的標題 banner
-banner/gamehunter-*.jpeg
+banner/review-*
+banner/gamehunter-*
 
 # 小樣／中間產物
 dumps/
