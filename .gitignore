@@ -1,0 +1,33 @@
+# 遊戲資料與版權物，一律不入版控
+*.LFL
+*.OVL
+TENTACLE.0*
+monster.*
+*.sof
+*.sou
+*.ROM
+*.iso
+*.BIN
+*.zip
+
+# 倚天點陣字（商業字型）與其衍生物
+font-src/
+*.fnt
+STDFONT.*
+SPCFONT.*
+SPCFSUPP.*
+STD.24*
+
+# 建置與發佈產物
+dist-all/
+build/
+tools/scummvm-src/
+tools/scummtr-src/
+tools/scummvm-tools-src/
+dumps/
+shots/
+__pycache__/
+*.pyc
+
+# 雜誌整頁掃描留本機（版權），只推裁切的標題 banner
+banner/gamehunter-*.jpeg
