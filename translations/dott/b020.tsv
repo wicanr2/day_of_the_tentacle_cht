@@ -1,121 +1,121 @@
 # 原文\t譯文　　譯文欄留空 = 沿用原文；escape（\ddd）與 ^ 原樣保留
-Mmmm^	
-Idiots!	
-It seems you're NOT exactly the sideshow attraction you imagined.\255\003You're just three COMPLETE goofballs^\255\003^stuck in ONE suit of clothes!	
-hook 2	
-jump to 4 5 0	
-spot 1	
-spot 2	
-spot 3	
-spot 4	
-Well, I'm glad THAT'S taken care of.	
-Looks like everything's back to normal!	
-There's no tape in the machine.	
-It's already at the end.	
-fast forward	
-The tape's at the end.	
-play	
-stop	
-speed	
-It's already rewound.	
-rewind	
-There's not much of interest to record.	
-I think I broke the button.	
-record	
-eject	
-Dr. Fred Edison?	
-Internal Revenue.	
-Come with us.	
-We'd like to go over some of your records with you^	
-^upstairs.	
-      Dr.     	
-     Fred     	
-    Edison?   	
-   Internal   	
-   Revenue.   	
-     Come     	
-     with     	
-      us.     	
-I guess not too many birds bathe in the evening.	
-bird bath	
-He's already painted.	
-He looks like a tall, mummified Dr. Fred.	
-No way! He's too heavy.	
-I think I'll need a little more leverage.	
-He doesn't seem interested.	
-Ha!  Got ya good, old buddy!	
-That's no way to treat an old friend.	
-Dead Cousin Ted	
-It might catch the whole house on fire!	
-It's the one I hung from the roof.	
-I don't think that will do much good at the moment.	
-dangling rope	
-I don't think that will do much good from here.	
-rope	
-`HELP WANTED: Lab Assistant`\255\003`Hard-working drone needed to assist genius with experiments.`	
-`High school diploma not required.`	
-It's on the other side of the window.	
-Help Wanted sign	
-Green, are you ok?	
-Tmk m grg uff!	
-Eh?	
-I think he'll be ok here for now.	
-We better not move him.	
-I'm petrified of these things now.	
-No, we have to turn off the Sludge-O-Matic\015 first.	
-I don't want to be locked out.	
-Tampering with the mail is a federal offense.	
-It won't do much good by itself.	
-parking lot	
-It's a hole.\255\003Shaped like me.\255\003I'm not proud of it.\255\003But there it is.	
-I'm not throwing anything down there.	
-Bernard-shaped hole	
-Ted is red.\255\003See red Ted.	
-Hey, Ted.	
-Talkative as ever, eh, Ted?	
-You haven't changed a whole lot.	
-You know, I bet you'd really like my friend Hoagie.	
-Boy, I haven't seen you since I was here five years ago.	
-Too bad that guy noticed you weren't Dr. Fred.	
-How am I going to get Dr. Fred out of here without that \254\008     big goon stopping me?	
-How am I going to get Dr. Fred out of that room without that \254\008     big goon stopping me?	
-I don't suppose you know where the IRS took Dr. Fred?	
-Boy, I wish I had as little on my mind as you do.	
-Well, I'd best be on about saving the world.	
-I think they were going to audit him or something.	
-THEY'RE still here, so he probably is, too.	
-I wonder where he keeps all his financial records.	
-I bet they've got him all tied up in bureaucratic red tape.	
-I guess I'd best be on about saving the world.	
-Maybe I can get him out so fast they don't hear me.	
-Maybe I can fix it so they don't notice he's gone.	
-Maybe I can overpower the IRS guy somehow.	
-If only you looked a bit more like Fred.	
-Maybe we could turn down the lights in here.	
-Maybe I'll try something else.	
-No offense intended, of course.	
-I mean, my best friends are stranded in time.	
-Purple Tentacle's probably taking over the planet by now.	
-I hope they're able to get power to their johns.	
-We've got the main unit working.	
-I've got to somehow get hold of a diamond.	
-Maybe I could make one.	
-Maybe I could buy one.	
-Maybe I could get someone else to buy me one.	
-I wish I knew someone with a lot of money.	
-We've got to go back in time to shut off the sludge \254\008     machine.	
-I guess first I've got to get Hoagie and Laverne back.	
-At least the main unit of the time machine is working.	
-He's a roadie for a heavy metal band.	
-You could hit him over the head with a bowling ball and it \254\008     wouldn't faze him.	
-He can pass out standing up and not drop anything.	
-The two of you have a lot in common.	
-Wassup?	
-Don't feel like talking, huh?\255\003Vow of silence or something probably, right?	
-Well, that's cool.	
-I have something for Red Edison.	
-Know where I can find some oil?	
-Know where I can get some vinegar?	
-Know where I can get some gold?	
-Great hat, man.	
-Well, nice talking to you, dude.	
+Mmmm^	嗯^
+Idiots!	白痴！
+It seems you're NOT exactly the sideshow attraction you imagined.\255\003You're just three COMPLETE goofballs^\255\003^stuck in ONE suit of clothes!	看來你們並不是自己想像中的那種奇觀秀。\255\003你們只是三個徹頭徹尾的呆瓜^\255\003^塞在同一套衣服裡！
+hook 2	掛鉤 2
+jump to 4 5 0	跳到 4 5 0
+spot 1	點 1
+spot 2	點 2
+spot 3	點 3
+spot 4	點 4
+Well, I'm glad THAT'S taken care of.	那件事解決了，真好。
+Looks like everything's back to normal!	看來一切都恢復正常了！
+There's no tape in the machine.	機器裡沒有帶子。
+It's already at the end.	已經到結尾了。
+fast forward	快轉
+The tape's at the end.	帶子到結尾了。
+play	播放
+stop	停止
+speed	速度
+It's already rewound.	已經倒帶好了。
+rewind	倒帶
+There's not much of interest to record.	沒什麼值得錄的。
+I think I broke the button.	我想我把按鈕弄壞了。
+record	錄影
+eject	退帶
+Dr. Fred Edison?	佛瑞德・艾迪生博士？
+Internal Revenue.	國稅局。
+Come with us.	跟我們走。
+We'd like to go over some of your records with you^	我們想跟你核對一些帳目^
+^upstairs.	^在樓上。
+      Dr.     	     佛瑞德    
+     Fred     	     艾迪生    
+    Edison?   	     博士？    
+   Internal   	     國稅     
+   Revenue.   	     局。     
+     Come     	      跟      
+     with     	     我們     
+      us.     	     走。     
+I guess not too many birds bathe in the evening.	我猜傍晚洗澡的鳥不多。
+bird bath	鳥浴盆
+He's already painted.	他已經漆過了。
+He looks like a tall, mummified Dr. Fred.	他看起來像個高高的、木乃伊化的佛瑞德博士。
+No way! He's too heavy.	想都別想！他太重了。
+I think I'll need a little more leverage.	我想我需要多一點槓桿。
+He doesn't seem interested.	他好像沒興趣。
+Ha!  Got ya good, old buddy!	哈！整到你了，老兄！
+That's no way to treat an old friend.	這樣對老朋友太過分了。
+Dead Cousin Ted	泰德表哥的屍體
+It might catch the whole house on fire!	可能會把整棟房子燒了！
+It's the one I hung from the roof.	那是我從屋頂垂下來的那條。
+I don't think that will do much good at the moment.	我看現在那樣沒什麼用。
+dangling rope	垂下的繩子
+I don't think that will do much good from here.	我看從這裡那樣沒什麼用。
+rope	繩子
+`HELP WANTED: Lab Assistant`\255\003`Hard-working drone needed to assist genius with experiments.`	`徵人：實驗室助理`\255\003`誠徵勤奮的雜工，協助天才進行實驗。`
+`High school diploma not required.`	`無需高中文憑。`
+It's on the other side of the window.	它在窗戶的另一邊。
+Help Wanted sign	徵人告示
+Green, are you ok?	小綠，你還好嗎？
+Tmk m grg uff!	拿 掉 我 的 塞 口 布！
+Eh?	啊？
+I think he'll be ok here for now.	我想他暫時待在這裡沒問題。
+We better not move him.	我們最好別移動他。
+I'm petrified of these things now.	我現在超怕這些東西。
+No, we have to turn off the Sludge-O-Matic\015 first.	不，我們得先關掉污泥自動機\015。
+I don't want to be locked out.	我可不想被鎖在外面。
+Tampering with the mail is a federal offense.	動別人的郵件是聯邦罪。
+It won't do much good by itself.	光靠它沒什麼用。
+parking lot	停車場
+It's a hole.\255\003Shaped like me.\255\003I'm not proud of it.\255\003But there it is.	是個洞。\255\003形狀跟我一樣。\255\003我不引以為傲。\255\003但它就在那。
+I'm not throwing anything down there.	我不會往那裡丟東西。
+Bernard-shaped hole	伯納形狀的洞
+Ted is red.\255\003See red Ted.	泰德是紅的。\255\003看紅泰德。
+Hey, Ted.	嘿，泰德。
+Talkative as ever, eh, Ted?	一如往常地健談啊，泰德？
+You haven't changed a whole lot.	你沒什麼變。
+You know, I bet you'd really like my friend Hoagie.	你知道嗎，我敢說你會很喜歡我朋友霍基。
+Boy, I haven't seen you since I was here five years ago.	天啊，自從五年前我來過之後就沒見過你了。
+Too bad that guy noticed you weren't Dr. Fred.	可惜那傢伙發現你不是佛瑞德博士。
+How am I going to get Dr. Fred out of here without that \254\008     big goon stopping me?	我要怎麼在不被那個 \254\008     大塊頭攔住的情況下把佛瑞德博士弄出去？
+How am I going to get Dr. Fred out of that room without that \254\008     big goon stopping me?	我要怎麼在不被那個 \254\008     大塊頭攔住的情況下把佛瑞德博士弄出那個房間？
+I don't suppose you know where the IRS took Dr. Fred?	你該不會知道國稅局把佛瑞德博士帶去哪了吧？
+Boy, I wish I had as little on my mind as you do.	天啊，真希望我腦子裡的事跟你一樣少。
+Well, I'd best be on about saving the world.	好啦，我還是去拯救世界吧。
+I think they were going to audit him or something.	我想他們是要查他的稅之類的。
+THEY'RE still here, so he probably is, too.	他們還在這裡，所以他大概也還在。
+I wonder where he keeps all his financial records.	不知道他把財務記錄都放哪。
+I bet they've got him all tied up in bureaucratic red tape.	我敢說他們用官僚的繁文縟節把他綁得死死的。
+I guess I'd best be on about saving the world.	我看我還是去拯救世界吧。
+Maybe I can get him out so fast they don't hear me.	也許我可以快到讓他們聽不見就把他弄出來。
+Maybe I can fix it so they don't notice he's gone.	也許我可以想辦法讓他們沒發現他不見了。
+Maybe I can overpower the IRS guy somehow.	也許我可以想辦法制伏那個國稅局的人。
+If only you looked a bit more like Fred.	要是你長得再像佛瑞德一點就好了。
+Maybe we could turn down the lights in here.	也許我們可以把這裡的燈調暗。
+Maybe I'll try something else.	也許我該試點別的。
+No offense intended, of course.	當然，無意冒犯。
+I mean, my best friends are stranded in time.	我是說，我最好的朋友困在時間裡。
+Purple Tentacle's probably taking over the planet by now.	紫色觸手現在大概正在接管地球。
+I hope they're able to get power to their johns.	希望他們能給自己的廁所通上電。
+We've got the main unit working.	主機組已經能動了。
+I've got to somehow get hold of a diamond.	我得想辦法弄到一顆鑽石。
+Maybe I could make one.	也許我可以自己做一顆。
+Maybe I could buy one.	也許我可以買一顆。
+Maybe I could get someone else to buy me one.	也許我可以叫別人買給我。
+I wish I knew someone with a lot of money.	真希望我認識有很多錢的人。
+We've got to go back in time to shut off the sludge \254\008     machine.	我們得回到過去關掉那台污泥 \254\008     機器。
+I guess first I've got to get Hoagie and Laverne back.	我想首先得先把霍基和拉玟弄回來。
+At least the main unit of the time machine is working.	至少時光機的主機組能動了。
+He's a roadie for a heavy metal band.	他是重金屬樂團的巡演技師。
+You could hit him over the head with a bowling ball and it \254\008     wouldn't faze him.	你拿保齡球砸他的頭，他也 \254\008     不會皺一下眉。
+He can pass out standing up and not drop anything.	他可以站著昏過去，手上的東西一樣都不掉。
+The two of you have a lot in common.	你們兩個有很多共同點。
+Wassup?	怎樣？
+Don't feel like talking, huh?\255\003Vow of silence or something probably, right?	不想講話啊？\255\003大概是發了什麼禁語誓之類的，對吧？
+Well, that's cool.	那也酷。
+I have something for Red Edison.	我有東西要給瑞德・艾迪生。
+Know where I can find some oil?	知道哪裡有油嗎？
+Know where I can get some vinegar?	知道哪裡弄得到醋嗎？
+Know where I can get some gold?	知道哪裡弄得到黃金嗎？
+Great hat, man.	帽子不錯，老兄。
+Well, nice talking to you, dude.	好啦，跟你聊天很愉快，老兄。
