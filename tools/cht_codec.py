@@ -28,7 +28,7 @@ import argparse
 import json
 import sys
 
-from cht_common import read_mixed_text
+from cht_common import LEAD_MAX, LEAD_MIN, TRAIL_MAX, TRAIL_MIN, read_mixed_text
 
 
 def load_table(path):
@@ -75,7 +75,7 @@ def decode_text(data, dec):
     n = len(data)
     while i < n:
         b = data[i]
-        if 0xA1 <= b <= 0xFD and i + 1 < n and 0xA1 <= data[i + 1] <= 0xFD:
+        if LEAD_MIN <= b <= LEAD_MAX and i + 1 < n and TRAIL_MIN <= data[i + 1] <= TRAIL_MAX:
             ch = dec.get((b, data[i + 1]))
             if ch is not None:
                 out.append(ch)

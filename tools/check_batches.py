@@ -7,9 +7,12 @@
 檢查項目（任何一項不過就是會在遊戲裡出事的）：
   1. TAB 欄位數 —— 必須恰好一個 TAB
   2. escape 序列 \\ddd —— 譯文必須與原文完全相同（順序也是）；
-     它們是控制碼與語音索引，動到就換行錯亂或語音對不上
+     它們是控制碼與語音索引，動到就換行錯亂或語音對不上。
+     唯一的例外是 \\001（硬換行）：中文長度與英文不同，斷點本來就該重定，
+     所以允許譯文少放，但不准多放。
   3. `^` 的數量 —— 顯示成省略號／停頓，少一個畫面就變樣
-  4. 反引號 ` 的數量 —— 原文用它當引號
+  4. 反引號 ` 的數量 —— 原文用它當引號。譯文改用全形引號「」『』時
+     視為合法替代（一代中文化已實機驗證），但不可只換一半
   5. 譯文不得含 0xA1–0xFD 範圍的單一 latin-1 字元 ——
      CJK 模式下會被引擎當成雙位元組首碼，整段錯位
   6. 譯文不得含半形 TAB／控制字元
@@ -20,6 +23,8 @@ import sys
 
 ESC = re.compile(r'\\\d{3}')
 BAD_LATIN1 = re.compile(r'[¡-ý]')
+NEWLINE_ESC = '\\001'
+FULLWIDTH_QUOTE = re.compile(r'[「」『』]')
 
 
 def check_file(path):
@@ -38,13 +43,23 @@ def check_file(path):
             continue
         n_done += 1
 
-        if ESC.findall(src) != ESC.findall(dst):
-            problems.append(f'{path}:{ln} escape 不一致\n'
-                            f'      原文 {ESC.findall(src)}\n      譯文 {ESC.findall(dst)}')
+        src_esc = [e for e in ESC.findall(src) if e != NEWLINE_ESC]
+        dst_esc = [e for e in ESC.findall(dst) if e != NEWLINE_ESC]
+        if src_esc != dst_esc:
+            problems.append(f'{path}:{ln} escape 不一致（\\001 除外）\n'
+                            f'      原文 {src_esc}\n      譯文 {dst_esc}')
+        if dst.count(NEWLINE_ESC) > src.count(NEWLINE_ESC):
+            problems.append(f'{path}:{ln} 譯文的 \\001 比原文多 '
+                            f'（{src.count(NEWLINE_ESC)} → {dst.count(NEWLINE_ESC)}）')
         if src.count('^') != dst.count('^'):
             problems.append(f'{path}:{ln} `^` 數量 {src.count("^")} → {dst.count("^")}')
         if src.count('`') != dst.count('`'):
-            problems.append(f'{path}:{ln} 反引號數量 {src.count("`")} → {dst.count("`")}')
+            # 譯文整段改用全形引號是允許的替代寫法，但不可只換一半
+            substituted = (src.count('`') and not dst.count('`')
+                           and len(FULLWIDTH_QUOTE.findall(dst)) >= src.count('`'))
+            if not substituted:
+                problems.append(f'{path}:{ln} 反引號數量 {src.count("`")} → {dst.count("`")}'
+                                f'（改用全形引號時要成對替換完）')
         bad = BAD_LATIN1.findall(dst)
         if bad:
             problems.append(f'{path}:{ln} 譯文含會撞碼的 latin-1 字元 {bad}（間隔號要用 ・ U+30FB）')

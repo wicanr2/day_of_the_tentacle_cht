@@ -2,14 +2,24 @@
 
 | 檔案 | 對象 | 規模 |
 |---|---|---|
-| `patches/scummvm-tentacle-zhtw.patch` | ScummVM（`engines/scumm/`，3 個檔） | +97 |
+| `patches/scummvm-zhtw.patch` | ScummVM（`engines/scumm/`，9 個檔） | +331 |
 | `patches/scummtr-maniacv1-lossless.patch` | ScummTR（`src/ScummRp/`，3 個檔） | +107 |
 
 兩份都以「預設行為與上游完全相同」為前提：ScummTR 那份全部包在巨集開關裡，
-ScummVM 那份的每一處都夾在 `isChtHiResCJK()`（= 本作 ＋ 中文 ＋ hi-res）之內。
+ScummVM 那份的每一處都夾在「本作／一代 ＋ 中文 ＋ hi-res」的條件之內。
 
-`scummvm-tentacle-zhtw.patch` 的基準是**已套用一代（Maniac Mansion V2）修補的樹**，
-因為 easter egg 那條產線要用到一代的 v1/v2 修補。重建順序見 `30-pipeline.md`。
+`scummvm-zhtw.patch` 是**自足的單一檔**，基準為乾淨的上游 ScummVM
+（`e37bbe20`），涵蓋兩條產線：
+
+- **瘋狂時代（v6）**：hi-res CJK 的完整路徑，條件是 `isChtHiResCJK()`。
+- **泰德電腦裡的一代（v1）**：沿用一代中文化為 SCUMM v2 寫的那套（碼空間 0x88–0x9F、
+  16×15 字模、14 格制版面），把其中 14 處的閘門由 `_game.version == 2` 放寬成
+  `<= 2`。放寬的依據不是猜測：ScummVM 的 `metaengine.cpp` 對 `case 1: case 2:`
+  都建 `ScummEngine_v2`，v1 與 v2 共用同一套腳本解碼（含「位元組 | 0x80」的空白壓縮），
+  因此同一組碼空間與渲染路徑對兩版都成立。
+
+放寬只動中文化自己加的行；`GF_DEMO`、`rtSound`、`IT_ITA` 那幾處帶 `version == 2`
+的是上游原有邏輯，一律不動（用 `git diff` 逐行分辨，不靠肉眼認 pattern）。
 
 ## 字型與畫面：倚天 16×14，畫在 2 倍的文字表面上
 
@@ -53,7 +63,7 @@ ScummVM 那份的每一處都夾在 `isChtHiResCJK()`（= 本作 ＋ 中文 ＋ 
 
 換字型檔就等於換尺寸，不必另外開設定，也不必重編引擎。
 
-## ScummVM 的三個檔
+## 瘋狂時代（v6）動到的三個檔
 
 ### `scumm.h`（1 處）
 
@@ -131,3 +141,53 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="\
 
 每次改完 ScummTR 都要重跑「英文原封回填 → 逐檔 byte 比對」：
 v1 的 53 個 LFL 與 `TENTACLE.000/.001` 全部 byte-perfect。
+
+## 一代（v1）產線：與瘋狂時代的差異
+
+同一份 patch、同一套工具，但**碼空間與字模都不同**（`tools/cht_common.py` 的
+`CHT_PROFILE`）：
+
+| | 瘋狂時代（v6） | 一代（v1） |
+|---|---|---|
+| lead | 0xA1–0xF7 | **0x88–0x9F** |
+| trail | 0xA1–0xFD | 0xA1–0xFD |
+| 索引 | (lead−0xA1)×94 + (trail−0xA1) | (lead−0x88)×93 + (trail−0xA1) |
+| glyph 數 | 8178 | 2232 |
+| 字模 | 16×14（末列全空，裁掉） | 16×15（原尺寸） |
+
+lead 之所以要縮到 0x88–0x9F，是因為 v1/v2 的腳本用「位元組 | 0x80」表示
+「該位元組後接一個空白」。可列印 ASCII | 0x80 = 0xA0–0xFE、控制碼 0x01–0x03 | 0x80
+= 0x81–0x83，這些值都不能當首碼，剩下的連續區間就是 0x84–0x9F，取 0x88–0x9F。
+
+字模不裁末列，是因為 v1/v2 的引擎按 `檔案大小 / 2232` 判尺寸，30 bytes → 16×15；
+而 v1 的版面本來就用 14 格制（見 `verbs.cpp` 的 `getSentenceLineHeight()`），
+不像 v6 那樣被句子列與指令第一列之間的 7 個像素卡住。
+
+### 指令列的量測驗收
+
+實機截圖逐像素量過（`shots/v1zh/v28.png`，640×480 = 邏輯 320×200 的 2 倍）：
+
+| 指令 | 實體像素範圍 | 寬 |
+|---|---|---|
+| 推／拉／給（單字） | 10–25 | 16 |
+| 打開／關上／閱讀 | 122–153 | 32 |
+| 走到／拿起／查看 | 250–281 | 32 |
+| 開鎖／換人／使用 | 394–425 | 32 |
+| 開啟／關閉／修理 | 522–553 | 32 |
+
+單字 16、雙字 32，就是 16×15 字模的 1 倍與 2 倍，**沒有重疊也沒有溢出**。
+（肉眼看「開啟」「關閉」像糊在一起，那是倚天 15 點對 19 劃字的固有極限，
+不是排版錯誤——這一條是先量了像素才敢下的結論。）
+
+### 那三行「整行 verb 表」不必翻
+
+v1 的文字裡有三行長得像指令列的字串：
+
+```
+Push   Open    Walk to  Unlock  Turn on
+Pull   Close   Pick up  New kid Turn off
+Give   Read    What is  Use     Fix
+```
+
+實際畫面上的指令列是靠**個別的 VERB 字串**（`Walk to@@`、`Unlock@@`…，`@` 是
+長度 padding）畫的，這三行是殘留。一代中文化留原文、實機正常，本作照做。

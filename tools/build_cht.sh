@@ -13,15 +13,20 @@ WHICH="${1:-dott}"
 W=..
 SCUMMTR="$W/tools/scummtr-src/build/bin/scummtr"
 
+# 兩條產線的碼空間、字模尺寸都不同，見 tools/cht_common.py 的 PROFILES：
+#   dott      lead 0xA1-0xF7、8178 字位、16x14（倚天 15 點裁掉全空的第 15 列）
+#   maniac-v1 lead 0x88-0x9F、2232 字位、16x15（v1/v2 的空白壓縮吃掉 0xA0 以上的首碼）
 case "$WHICH" in
   dott)
     GAMEID=tentacle; ORIG="$W/game-orig/dott"; DEST="$W/game-cht/dott"
     RAW="$W/dumps/dott_raw.txt"; BATCH="translations/dott"
-    COPY='TENTACLE.00*' ;;
+    COPY='TENTACLE.00*'
+    export CHT_PROFILE=dott; FONT_ROWS=14 ;;
   maniac-v1)
     GAMEID=maniacv1; ORIG="$W/game-orig/maniac-v1"; DEST="$W/game-cht/dott/maniac"
     RAW="$W/dumps/v1_raw.txt"; BATCH="translations/maniac-v1"
-    COPY='*.LFL' ;;
+    COPY='*.LFL'
+    export CHT_PROFILE=maniacv1; FONT_ROWS=15 ;;
   *) echo "未知的產線：$WHICH"; exit 2 ;;
 esac
 
@@ -38,9 +43,9 @@ echo "=== 4. 編碼 ==="
 python3 tools/cht_codec.py encode-file -t "cht_table_${WHICH}.json" \
     "$W/dumps/${WHICH}_zh.txt" "$W/dumps/${WHICH}_enc.txt"
 
-echo "=== 5. 烘倚天 16x14 字型 ==="
+echo "=== 5. 烘倚天 16x${FONT_ROWS} 字型 ==="
 python3 tools/build_eten_font.py "cht_table_${WHICH}.json" --eten-dir "$W/font-src" \
-    --size 16 --rows 14 --embolden -o "$W/dumps/${WHICH}.fnt"
+    --size 16 --rows "$FONT_ROWS" --embolden -o "$W/dumps/${WHICH}.fnt"
 
 echo "=== 6. 回填 ==="
 mkdir -p "$DEST"
