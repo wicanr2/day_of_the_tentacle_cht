@@ -1,0 +1,121 @@
+# 原文\t譯文　　譯文欄留空 = 沿用原文；escape（\ddd）與 ^ 原樣保留
+Push	
+Pu¸	
+in	
+with	
+on	
+to	
+this room is # \255\004\000\064.	
+x2 value overflowing in ellipse check	
+y2 value overflowing in ellipse check	
+very skinny ellipse warning	
+very flat ellipse warning	
+What?!?\255\003Why would I want to flush that down the toilet?	
+Okay, I flushed it.	
+That won't fit in there.	
+wet soggy noodles	
+There's something already in there.	
+I can't get to the Chron-O-John from here.	
+I don't think I can put that in the Chron-O-John.	
+I'll just run to the Chron-O-John.	
+I'll use the Chron-O-John.	
+There's something in the Chron-O-John!	
+I waited, but she never picked it up.\255\003Hope she's OK.	
+Molasses machine.	
+Street legal machine.	
+Trans-warp drive machine.	
+Talk color \255\004\205\000 for actor \255\004\001\000	
+Selected actor is \255\004\001\000	
+ambience debugging on	
+ambience debugging off	
+Live MIDI OFF :-(	
+Live MIDI ON  :-)	
+Machine rating is \255\005\182\000	
+Key pressed: \255\004\001\064	
+It doesn't seem to open.	
+I can't open it.	
+I don't think I can open it.	
+That doesn't sound like a good idea.	
+I don't got nothin' to prove.	
+That might not be wise.	
+It won't budge.	
+I can't move it.	
+Bitchin'.	
+Neat.	
+Not my type.	
+I don't think I can pick that up.	
+No way could I pick that up.	
+I can't.	
+I can't reach that from here.	
+My arms aren't quite long enough.	
+I don't have that.	
+I haven't got that.	
+I don't got that.	
+I don't think I can do that.	
+Jeepers!	
+Gnarly!	
+It won't fit.	
+I don't think so.	
+starting hoagie script	
+warm boot ending	
+selected-room \255\004\004\000	
+selected-actor \255\004\001\000	
+ambience: \255\004\016\001  	
+q-sound:  \255\004\056\000  	
+q-id:     \255\004\056\000  	
+chunk: \255\004\056\000  	
+beat:  \255\004\056\000  	
+tick:  \255\004\056\000  	
+volume:   \255\004\056\000  	
+speed:    \255\004\056\000  	
+priority: \255\004\056\000  	
+j-hook: \255\004\056\000  	
+warm boot after \255\004\000\064 ending	
+warm-boot-music-after-marker was started	
+sound-wasn't playing or multiple iterations	
+WB-after-marker: sound-wasn't running...  clearing queue and warm-booting	
+marker has cleared, time to exit	
+warm boot after marker \255\004\000\064  \255\004\001\064 ending	
+fade time was 0 or omitted in part-fader	
+ENTERING verify start sound	
+we found a trigger on the queue!	
+no trigger in the queue. just starting the sound	
+sound was already running. not doing anything	
+LEAVING verify start sound	
+ENTERING q-it-up	
+LEAVING q-it-up	
+the current ambience in change-ambience is \255\004\016\001	
+bernie	
+laver-baby	
+hoag-boy	
+YO! we changed a room!	
+error flag is not 2	
+Thermodynamic flux induction circuit design is perhaps the most fascinating branch of practical electrical theory^	
+Although limited to a low-pressure, sub-zero, nitrogen-free environment, the flux induction circuit can still be quite useful^	
+`The LALR compiler is constructed by the following method:`\255\003First develop a rigorous elective grammar^	
+When induction elements have NP-completeness, the Krungie factor can be ignored^	
+Yaaaaaaaaaaahhhhh!	
+EEeeeeeeeeeeee!	
+copy-protect: point 5	
+done	
+No, that's not quite right^	
+copy-protect: point 1	
+copy-protect: point 2	
+But first^\255\003^the copy protection!	
+Drat!\255\003This will never work!\255\003I forgot, I never quite got these proportions correct.	
+Maybe I can help.\255\003I got an `A` in physics class.	
+Find the patent number in your manual and	
+correct the plans, then click on the corner.	
+copy-protect: point 3	
+Say, that looks pretty good!	
+copy-protect: point 4	
+Edison's Super Salad Battery	
+Pat. No. \255\004\132\000\255\004\133\000	
+gold	
+lettuce	
+croutons	
+window-window	
+house-from-sky	
+Rash of Cow Tipping\254\001Baffles Police	
+Triangular Man Spotted\254\001at Scene	
+Froofroo Emerald\254\001Stolen!	

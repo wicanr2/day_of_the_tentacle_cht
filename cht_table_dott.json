@@ -1,0 +1,2547 @@
+{
+ "generated": "2026-08-07T18:55:44",
+ "sources": [
+  "dott_zh.txt"
+ ],
+ "count": 423,
+ "chars": {
+  "伯": {
+   "idx": 0,
+   "lead": 161,
+   "trail": 161,
+   "count": 89
+  },
+  "納": {
+   "idx": 1,
+   "lead": 161,
+   "trail": 162,
+   "count": 89
+  },
+  "。": {
+   "idx": 2,
+   "lead": 161,
+   "trail": 163,
+   "count": 81
+  },
+  "拉": {
+   "idx": 3,
+   "lead": 161,
+   "trail": 164,
+   "count": 69
+  },
+  "玟": {
+   "idx": 4,
+   "lead": 161,
+   "trail": 165,
+   "count": 69
+  },
+  "的": {
+   "idx": 5,
+   "lead": 161,
+   "trail": 166,
+   "count": 61
+  },
+  "門": {
+   "idx": 6,
+   "lead": 161,
+   "trail": 167,
+   "count": 57
+  },
+  "基": {
+   "idx": 7,
+   "lead": 161,
+   "trail": 168,
+   "count": 50
+  },
+  "霍": {
+   "idx": 9,
+   "lead": 161,
+   "trail": 170,
+   "count": 50
+  },
+  "我": {
+   "idx": 10,
+   "lead": 161,
+   "trail": 171,
+   "count": 49
+  },
+  "，": {
+   "idx": 11,
+   "lead": 161,
+   "trail": 172,
+   "count": 45
+  },
+  "！": {
+   "idx": 12,
+   "lead": 161,
+   "trail": 173,
+   "count": 39
+  },
+  "你": {
+   "idx": 13,
+   "lead": 161,
+   "trail": 174,
+   "count": 31
+  },
+  "是": {
+   "idx": 14,
+   "lead": 161,
+   "trail": 175,
+   "count": 30
+  },
+  "手": {
+   "idx": 15,
+   "lead": 161,
+   "trail": 176,
+   "count": 25
+  },
+  "色": {
+   "idx": 16,
+   "lead": 161,
+   "trail": 177,
+   "count": 25
+  },
+  "觸": {
+   "idx": 17,
+   "lead": 161,
+   "trail": 178,
+   "count": 25
+  },
+  "在": {
+   "idx": 18,
+   "lead": 161,
+   "trail": 179,
+   "count": 23
+  },
+  "？": {
+   "idx": 19,
+   "lead": 161,
+   "trail": 180,
+   "count": 23
+  },
+  "來": {
+   "idx": 20,
+   "lead": 161,
+   "trail": 181,
+   "count": 22
+  },
+  "紫": {
+   "idx": 21,
+   "lead": 161,
+   "trail": 182,
+   "count": 19
+  },
+  "了": {
+   "idx": 22,
+   "lead": 161,
+   "trail": 183,
+   "count": 18
+  },
+  "不": {
+   "idx": 23,
+   "lead": 161,
+   "trail": 184,
+   "count": 16
+  },
+  "著": {
+   "idx": 24,
+   "lead": 161,
+   "trail": 185,
+   "count": 16
+  },
+  "那": {
+   "idx": 25,
+   "lead": 161,
+   "trail": 186,
+   "count": 16
+  },
+  "好": {
+   "idx": 26,
+   "lead": 161,
+   "trail": 187,
+   "count": 14
+  },
+  "這": {
+   "idx": 27,
+   "lead": 161,
+   "trail": 188,
+   "count": 13
+  },
+  "麼": {
+   "idx": 28,
+   "lead": 161,
+   "trail": 189,
+   "count": 13
+  },
+  "得": {
+   "idx": 29,
+   "lead": 161,
+   "trail": 190,
+   "count": 12
+  },
+  "現": {
+   "idx": 30,
+   "lead": 161,
+   "trail": 191,
+   "count": 12
+  },
+  "看": {
+   "idx": 31,
+   "lead": 161,
+   "trail": 192,
+   "count": 12
+  },
+  "鈴": {
+   "idx": 32,
+   "lead": 161,
+   "trail": 193,
+   "count": 12
+  },
+  "啊": {
+   "idx": 33,
+   "lead": 161,
+   "trail": 194,
+   "count": 11
+  },
+  "就": {
+   "idx": 34,
+   "lead": 161,
+   "trail": 195,
+   "count": 11
+  },
+  "關": {
+   "idx": 36,
+   "lead": 161,
+   "trail": 197,
+   "count": 11
+  },
+  "還": {
+   "idx": 39,
+   "lead": 161,
+   "trail": 200,
+   "count": 10
+  },
+  "一": {
+   "idx": 41,
+   "lead": 161,
+   "trail": 202,
+   "count": 9
+  },
+  "上": {
+   "idx": 42,
+   "lead": 161,
+   "trail": 203,
+   "count": 9
+  },
+  "把": {
+   "idx": 43,
+   "lead": 161,
+   "trail": 204,
+   "count": 9
+  },
+  "沒": {
+   "idx": 44,
+   "lead": 161,
+   "trail": 205,
+   "count": 9
+  },
+  "要": {
+   "idx": 45,
+   "lead": 161,
+   "trail": 206,
+   "count": 9
+  },
+  "電": {
+   "idx": 46,
+   "lead": 161,
+   "trail": 207,
+   "count": 9
+  },
+  "以": {
+   "idx": 47,
+   "lead": 161,
+   "trail": 208,
+   "count": 8
+  },
+  "克": {
+   "idx": 48,
+   "lead": 161,
+   "trail": 209,
+   "count": 8
+  },
+  "可": {
+   "idx": 49,
+   "lead": 161,
+   "trail": 210,
+   "count": 8
+  },
+  "哇": {
+   "idx": 50,
+   "lead": 161,
+   "trail": 211,
+   "count": 8
+  },
+  "天": {
+   "idx": 51,
+   "lead": 161,
+   "trail": 212,
+   "count": 8
+  },
+  "用": {
+   "idx": 52,
+   "lead": 161,
+   "trail": 213,
+   "count": 8
+  },
+  "說": {
+   "idx": 54,
+   "lead": 161,
+   "trail": 215,
+   "count": 8
+  },
+  "都": {
+   "idx": 55,
+   "lead": 161,
+   "trail": 216,
+   "count": 8
+  },
+  "・": {
+   "idx": 56,
+   "lead": 161,
+   "trail": 217,
+   "count": 7
+  },
+  "個": {
+   "idx": 57,
+   "lead": 161,
+   "trail": 218,
+   "count": 7
+  },
+  "到": {
+   "idx": 58,
+   "lead": 161,
+   "trail": 219,
+   "count": 7
+  },
+  "士": {
+   "idx": 60,
+   "lead": 161,
+   "trail": 221,
+   "count": 7
+  },
+  "才": {
+   "idx": 61,
+   "lead": 161,
+   "trail": 222,
+   "count": 7
+  },
+  "真": {
+   "idx": 66,
+   "lead": 161,
+   "trail": 227,
+   "count": 7
+  },
+  "起": {
+   "idx": 68,
+   "lead": 161,
+   "trail": 229,
+   "count": 7
+  },
+  "—": {
+   "idx": 76,
+   "lead": 161,
+   "trail": 237,
+   "count": 6
+  },
+  "什": {
+   "idx": 79,
+   "lead": 161,
+   "trail": 240,
+   "count": 6
+  },
+  "們": {
+   "idx": 80,
+   "lead": 161,
+   "trail": 241,
+   "count": 6
+  },
+  "博": {
+   "idx": 82,
+   "lead": 161,
+   "trail": 243,
+   "count": 6
+  },
+  "友": {
+   "idx": 84,
+   "lead": 161,
+   "trail": 245,
+   "count": 6
+  },
+  "和": {
+   "idx": 86,
+   "lead": 161,
+   "trail": 247,
+   "count": 6
+  },
+  "器": {
+   "idx": 87,
+   "lead": 161,
+   "trail": 248,
+   "count": 6
+  },
+  "多": {
+   "idx": 89,
+   "lead": 161,
+   "trail": 250,
+   "count": 6
+  },
+  "德": {
+   "idx": 92,
+   "lead": 161,
+   "trail": 253,
+   "count": 6
+  },
+  "有": {
+   "idx": 94,
+   "lead": 162,
+   "trail": 161,
+   "count": 6
+  },
+  "朋": {
+   "idx": 95,
+   "lead": 162,
+   "trail": 162,
+   "count": 6
+  },
+  "樣": {
+   "idx": 96,
+   "lead": 162,
+   "trail": 163,
+   "count": 6
+  },
+  "瑞": {
+   "idx": 97,
+   "lead": 162,
+   "trail": 164,
+   "count": 6
+  },
+  "田": {
+   "idx": 98,
+   "lead": 162,
+   "trail": 165,
+   "count": 6
+  },
+  "綠": {
+   "idx": 99,
+   "lead": 162,
+   "trail": 166,
+   "count": 6
+  },
+  "野": {
+   "idx": 100,
+   "lead": 162,
+   "trail": 167,
+   "count": 6
+  },
+  "¸": {
+   "idx": 101,
+   "lead": 162,
+   "trail": 168,
+   "count": 5
+  },
+  "佛": {
+   "idx": 103,
+   "lead": 162,
+   "trail": 170,
+   "count": 5
+  },
+  "信": {
+   "idx": 104,
+   "lead": 162,
+   "trail": 171,
+   "count": 5
+  },
+  "前": {
+   "idx": 105,
+   "lead": 162,
+   "trail": 172,
+   "count": 5
+  },
+  "回": {
+   "idx": 106,
+   "lead": 162,
+   "trail": 173,
+   "count": 5
+  },
+  "子": {
+   "idx": 107,
+   "lead": 162,
+   "trail": 174,
+   "count": 5
+  },
+  "對": {
+   "idx": 108,
+   "lead": 162,
+   "trail": 175,
+   "count": 5
+  },
+  "然": {
+   "idx": 109,
+   "lead": 162,
+   "trail": 176,
+   "count": 5
+  },
+  "班": {
+   "idx": 110,
+   "lead": 162,
+   "trail": 177,
+   "count": 5
+  },
+  "聽": {
+   "idx": 111,
+   "lead": 162,
+   "trail": 178,
+   "count": 5
+  },
+  "行": {
+   "idx": 112,
+   "lead": 162,
+   "trail": 179,
+   "count": 5
+  },
+  "道": {
+   "idx": 113,
+   "lead": 162,
+   "trail": 180,
+   "count": 5
+  },
+  "也": {
+   "idx": 114,
+   "lead": 162,
+   "trail": 181,
+   "count": 4
+  },
+  "全": {
+   "idx": 115,
+   "lead": 162,
+   "trail": 182,
+   "count": 4
+  },
+  "兩": {
+   "idx": 116,
+   "lead": 162,
+   "trail": 183,
+   "count": 4
+  },
+  "去": {
+   "idx": 117,
+   "lead": 162,
+   "trail": 184,
+   "count": 4
+  },
+  "哪": {
+   "idx": 118,
+   "lead": 162,
+   "trail": 185,
+   "count": 4
+  },
+  "學": {
+   "idx": 119,
+   "lead": 162,
+   "trail": 186,
+   "count": 4
+  },
+  "富": {
+   "idx": 120,
+   "lead": 162,
+   "trail": 187,
+   "count": 4
+  },
+  "實": {
+   "idx": 121,
+   "lead": 162,
+   "trail": 188,
+   "count": 4
+  },
+  "巴": {
+   "idx": 122,
+   "lead": 162,
+   "trail": 189,
+   "count": 4
+  },
+  "怎": {
+   "idx": 123,
+   "lead": 162,
+   "trail": 190,
+   "count": 4
+  },
+  "您": {
+   "idx": 124,
+   "lead": 162,
+   "trail": 191,
+   "count": 4
+  },
+  "房": {
+   "idx": 125,
+   "lead": 162,
+   "trail": 192,
+   "count": 4
+  },
+  "更": {
+   "idx": 126,
+   "lead": 162,
+   "trail": 193,
+   "count": 4
+  },
+  "林": {
+   "idx": 127,
+   "lead": 162,
+   "trail": 194,
+   "count": 4
+  },
+  "機": {
+   "idx": 128,
+   "lead": 162,
+   "trail": 195,
+   "count": 4
+  },
+  "牠": {
+   "idx": 130,
+   "lead": 162,
+   "trail": 197,
+   "count": 4
+  },
+  "知": {
+   "idx": 133,
+   "lead": 162,
+   "trail": 200,
+   "count": 4
+  },
+  "箱": {
+   "idx": 135,
+   "lead": 162,
+   "trail": 202,
+   "count": 4
+  },
+  "能": {
+   "idx": 136,
+   "lead": 162,
+   "trail": 203,
+   "count": 4
+  },
+  "茅": {
+   "idx": 137,
+   "lead": 162,
+   "trail": 204,
+   "count": 4
+  },
+  "蘭": {
+   "idx": 138,
+   "lead": 162,
+   "trail": 205,
+   "count": 4
+  },
+  "車": {
+   "idx": 139,
+   "lead": 162,
+   "trail": 206,
+   "count": 4
+  },
+  "通": {
+   "idx": 140,
+   "lead": 162,
+   "trail": 207,
+   "count": 4
+  },
+  "開": {
+   "idx": 141,
+   "lead": 162,
+   "trail": 208,
+   "count": 4
+  },
+  "風": {
+   "idx": 142,
+   "lead": 162,
+   "trail": 209,
+   "count": 4
+  },
+  "之": {
+   "idx": 143,
+   "lead": 162,
+   "trail": 210,
+   "count": 3
+  },
+  "乾": {
+   "idx": 144,
+   "lead": 162,
+   "trail": 211,
+   "count": 3
+  },
+  "他": {
+   "idx": 145,
+   "lead": 162,
+   "trail": 212,
+   "count": 3
+  },
+  "像": {
+   "idx": 146,
+   "lead": 162,
+   "trail": 213,
+   "count": 3
+  },
+  "儀": {
+   "idx": 148,
+   "lead": 162,
+   "trail": 215,
+   "count": 3
+  },
+  "刻": {
+   "idx": 149,
+   "lead": 162,
+   "trail": 216,
+   "count": 3
+  },
+  "呃": {
+   "idx": 150,
+   "lead": 162,
+   "trail": 217,
+   "count": 3
+  },
+  "喔": {
+   "idx": 151,
+   "lead": 162,
+   "trail": 218,
+   "count": 3
+  },
+  "嗎": {
+   "idx": 152,
+   "lead": 162,
+   "trail": 219,
+   "count": 3
+  },
+  "嗯": {
+   "idx": 154,
+   "lead": 162,
+   "trail": 221,
+   "count": 3
+  },
+  "因": {
+   "idx": 155,
+   "lead": 162,
+   "trail": 222,
+   "count": 3
+  },
+  "夠": {
+   "idx": 160,
+   "lead": 162,
+   "trail": 227,
+   "count": 3
+  },
+  "大": {
+   "idx": 162,
+   "lead": 162,
+   "trail": 229,
+   "count": 3
+  },
+  "如": {
+   "idx": 170,
+   "lead": 162,
+   "trail": 237,
+   "count": 3
+  },
+  "妙": {
+   "idx": 173,
+   "lead": 162,
+   "trail": 240,
+   "count": 3
+  },
+  "帶": {
+   "idx": 174,
+   "lead": 162,
+   "trail": 241,
+   "count": 3
+  },
+  "懂": {
+   "idx": 176,
+   "lead": 162,
+   "trail": 243,
+   "count": 3
+  },
+  "推": {
+   "idx": 178,
+   "lead": 162,
+   "trail": 245,
+   "count": 3
+  },
+  "摩": {
+   "idx": 180,
+   "lead": 162,
+   "trail": 247,
+   "count": 3
+  },
+  "據": {
+   "idx": 181,
+   "lead": 162,
+   "trail": 248,
+   "count": 3
+  },
+  "改": {
+   "idx": 183,
+   "lead": 162,
+   "trail": 250,
+   "count": 3
+  },
+  "新": {
+   "idx": 186,
+   "lead": 162,
+   "trail": 253,
+   "count": 3
+  },
+  "明": {
+   "idx": 188,
+   "lead": 163,
+   "trail": 161,
+   "count": 3
+  },
+  "時": {
+   "idx": 189,
+   "lead": 163,
+   "trail": 162,
+   "count": 3
+  },
+  "最": {
+   "idx": 190,
+   "lead": 163,
+   "trail": 163,
+   "count": 3
+  },
+  "會": {
+   "idx": 191,
+   "lead": 163,
+   "trail": 164,
+   "count": 3
+  },
+  "東": {
+   "idx": 192,
+   "lead": 163,
+   "trail": 165,
+   "count": 3
+  },
+  "根": {
+   "idx": 193,
+   "lead": 163,
+   "trail": 166,
+   "count": 3
+  },
+  "此": {
+   "idx": 194,
+   "lead": 163,
+   "trail": 167,
+   "count": 3
+  },
+  "淨": {
+   "idx": 195,
+   "lead": 163,
+   "trail": 168,
+   "count": 3
+  },
+  "為": {
+   "idx": 197,
+   "lead": 163,
+   "trail": 170,
+   "count": 3
+  },
+  "煉": {
+   "idx": 198,
+   "lead": 163,
+   "trail": 171,
+   "count": 3
+  },
+  "爾": {
+   "idx": 199,
+   "lead": 163,
+   "trail": 172,
+   "count": 3
+  },
+  "狂": {
+   "idx": 200,
+   "lead": 163,
+   "trail": 173,
+   "count": 3
+  },
+  "瘋": {
+   "idx": 201,
+   "lead": 163,
+   "trail": 174,
+   "count": 3
+  },
+  "科": {
+   "idx": 202,
+   "lead": 163,
+   "trail": 175,
+   "count": 3
+  },
+  "穎": {
+   "idx": 203,
+   "lead": 163,
+   "trail": 176,
+   "count": 3
+  },
+  "立": {
+   "idx": 204,
+   "lead": 163,
+   "trail": 177,
+   "count": 3
+  },
+  "筆": {
+   "idx": 205,
+   "lead": 163,
+   "trail": 178,
+   "count": 3
+  },
+  "等": {
+   "idx": 206,
+   "lead": 163,
+   "trail": 179,
+   "count": 3
+  },
+  "精": {
+   "idx": 207,
+   "lead": 163,
+   "trail": 180,
+   "count": 3
+  },
+  "給": {
+   "idx": 208,
+   "lead": 163,
+   "trail": 181,
+   "count": 3
+  },
+  "聞": {
+   "idx": 209,
+   "lead": 163,
+   "trail": 182,
+   "count": 3
+  },
+  "袋": {
+   "idx": 210,
+   "lead": 163,
+   "trail": 183,
+   "count": 3
+  },
+  "裡": {
+   "idx": 211,
+   "lead": 163,
+   "trail": 184,
+   "count": 3
+  },
+  "西": {
+   "idx": 212,
+   "lead": 163,
+   "trail": 185,
+   "count": 3
+  },
+  "覺": {
+   "idx": 213,
+   "lead": 163,
+   "trail": 186,
+   "count": 3
+  },
+  "計": {
+   "idx": 214,
+   "lead": 163,
+   "trail": 187,
+   "count": 3
+  },
+  "設": {
+   "idx": 215,
+   "lead": 163,
+   "trail": 188,
+   "count": 3
+  },
+  "誰": {
+   "idx": 216,
+   "lead": 163,
+   "trail": 189,
+   "count": 3
+  },
+  "跟": {
+   "idx": 217,
+   "lead": 163,
+   "trail": 190,
+   "count": 3
+  },
+  "遠": {
+   "idx": 218,
+   "lead": 163,
+   "trail": 191,
+   "count": 3
+  },
+  "閃": {
+   "idx": 219,
+   "lead": 163,
+   "trail": 192,
+   "count": 3
+  },
+  "離": {
+   "idx": 220,
+   "lead": 163,
+   "trail": 193,
+   "count": 3
+  },
+  "雨": {
+   "idx": 221,
+   "lead": 163,
+   "trail": 194,
+   "count": 3
+  },
+  "馬": {
+   "idx": 222,
+   "lead": 163,
+   "trail": 195,
+   "count": 3
+  },
+  "髒": {
+   "idx": 224,
+   "lead": 163,
+   "trail": 197,
+   "count": 3
+  },
+  "點": {
+   "idx": 227,
+   "lead": 163,
+   "trail": 200,
+   "count": 3
+  },
+  "°": {
+   "idx": 229,
+   "lead": 163,
+   "trail": 202,
+   "count": 2
+  },
+  "　": {
+   "idx": 230,
+   "lead": 163,
+   "trail": 203,
+   "count": 2
+  },
+  "但": {
+   "idx": 231,
+   "lead": 163,
+   "trail": 204,
+   "count": 2
+  },
+  "位": {
+   "idx": 232,
+   "lead": 163,
+   "trail": 205,
+   "count": 2
+  },
+  "倉": {
+   "idx": 233,
+   "lead": 163,
+   "trail": 206,
+   "count": 2
+  },
+  "候": {
+   "idx": 234,
+   "lead": 163,
+   "trail": 207,
+   "count": 2
+  },
+  "充": {
+   "idx": 235,
+   "lead": 163,
+   "trail": 208,
+   "count": 2
+  },
+  "別": {
+   "idx": 236,
+   "lead": 163,
+   "trail": 209,
+   "count": 2
+  },
+  "利": {
+   "idx": 237,
+   "lead": 163,
+   "trail": 210,
+   "count": 2
+  },
+  "動": {
+   "idx": 238,
+   "lead": 163,
+   "trail": 211,
+   "count": 2
+  },
+  "口": {
+   "idx": 239,
+   "lead": 163,
+   "trail": 212,
+   "count": 2
+  },
+  "叮": {
+   "idx": 240,
+   "lead": 163,
+   "trail": 213,
+   "count": 2
+  },
+  "吧": {
+   "idx": 242,
+   "lead": 163,
+   "trail": 215,
+   "count": 2
+  },
+  "咚": {
+   "idx": 243,
+   "lead": 163,
+   "trail": 216,
+   "count": 2
+  },
+  "哼": {
+   "idx": 244,
+   "lead": 163,
+   "trail": 217,
+   "count": 2
+  },
+  "唔": {
+   "idx": 245,
+   "lead": 163,
+   "trail": 218,
+   "count": 2
+  },
+  "喊": {
+   "idx": 246,
+   "lead": 163,
+   "trail": 219,
+   "count": 2
+  },
+  "嘛": {
+   "idx": 248,
+   "lead": 163,
+   "trail": 221,
+   "count": 2
+  },
+  "太": {
+   "idx": 249,
+   "lead": 163,
+   "trail": 222,
+   "count": 2
+  },
+  "它": {
+   "idx": 254,
+   "lead": 163,
+   "trail": 227,
+   "count": 2
+  },
+  "客": {
+   "idx": 256,
+   "lead": 163,
+   "trail": 229,
+   "count": 2
+  },
+  "家": {
+   "idx": 264,
+   "lead": 163,
+   "trail": 237,
+   "count": 2
+  },
+  "已": {
+   "idx": 267,
+   "lead": 163,
+   "trail": 240,
+   "count": 2
+  },
+  "幫": {
+   "idx": 268,
+   "lead": 163,
+   "trail": 241,
+   "count": 2
+  },
+  "幹": {
+   "idx": 270,
+   "lead": 163,
+   "trail": 243,
+   "count": 2
+  },
+  "弄": {
+   "idx": 272,
+   "lead": 163,
+   "trail": 245,
+   "count": 2
+  },
+  "後": {
+   "idx": 274,
+   "lead": 163,
+   "trail": 247,
+   "count": 2
+  },
+  "想": {
+   "idx": 275,
+   "lead": 163,
+   "trail": 248,
+   "count": 2
+  },
+  "應": {
+   "idx": 277,
+   "lead": 163,
+   "trail": 250,
+   "count": 2
+  },
+  "打": {
+   "idx": 280,
+   "lead": 163,
+   "trail": 253,
+   "count": 2
+  },
+  "旅": {
+   "idx": 282,
+   "lead": 164,
+   "trail": 161,
+   "count": 2
+  },
+  "旗": {
+   "idx": 283,
+   "lead": 164,
+   "trail": 162,
+   "count": 2
+  },
+  "暴": {
+   "idx": 284,
+   "lead": 164,
+   "trail": 163,
+   "count": 2
+  },
+  "書": {
+   "idx": 285,
+   "lead": 164,
+   "trail": 164,
+   "count": 2
+  },
+  "服": {
+   "idx": 286,
+   "lead": 164,
+   "trail": 165,
+   "count": 2
+  },
+  "本": {
+   "idx": 287,
+   "lead": 164,
+   "trail": 166,
+   "count": 2
+  },
+  "棧": {
+   "idx": 288,
+   "lead": 164,
+   "trail": 167,
+   "count": 2
+  },
+  "樓": {
+   "idx": 289,
+   "lead": 164,
+   "trail": 168,
+   "count": 2
+  },
+  "正": {
+   "idx": 291,
+   "lead": 164,
+   "trail": 170,
+   "count": 2
+  },
+  "法": {
+   "idx": 292,
+   "lead": 164,
+   "trail": 171,
+   "count": 2
+  },
+  "洗": {
+   "idx": 293,
+   "lead": 164,
+   "trail": 172,
+   "count": 2
+  },
+  "溫": {
+   "idx": 294,
+   "lead": 164,
+   "trail": 173,
+   "count": 2
+  },
+  "玩": {
+   "idx": 295,
+   "lead": 164,
+   "trail": 174,
+   "count": 2
+  },
+  "生": {
+   "idx": 296,
+   "lead": 164,
+   "trail": 175,
+   "count": 2
+  },
+  "白": {
+   "idx": 297,
+   "lead": 164,
+   "trail": 176,
+   "count": 2
+  },
+  "碰": {
+   "idx": 298,
+   "lead": 164,
+   "trail": 177,
+   "count": 2
+  },
+  "箏": {
+   "idx": 299,
+   "lead": 164,
+   "trail": 178,
+   "count": 2
+  },
+  "經": {
+   "idx": 300,
+   "lead": 164,
+   "trail": 179,
+   "count": 2
+  },
+  "羅": {
+   "idx": 301,
+   "lead": 164,
+   "trail": 180,
+   "count": 2
+  },
+  "老": {
+   "idx": 302,
+   "lead": 164,
+   "trail": 181,
+   "count": 2
+  },
+  "艾": {
+   "idx": 303,
+   "lead": 164,
+   "trail": 182,
+   "count": 2
+  },
+  "該": {
+   "idx": 304,
+   "lead": 164,
+   "trail": 183,
+   "count": 2
+  },
+  "辦": {
+   "idx": 305,
+   "lead": 164,
+   "trail": 184,
+   "count": 2
+  },
+  "迪": {
+   "idx": 306,
+   "lead": 164,
+   "trail": 185,
+   "count": 2
+  },
+  "過": {
+   "idx": 307,
+   "lead": 164,
+   "trail": 186,
+   "count": 2
+  },
+  "隻": {
+   "idx": 308,
+   "lead": 164,
+   "trail": 187,
+   "count": 2
+  },
+  "非": {
+   "idx": 309,
+   "lead": 164,
+   "trail": 188,
+   "count": 2
+  },
+  "頭": {
+   "idx": 310,
+   "lead": 164,
+   "trail": 189,
+   "count": 2
+  },
+  "飽": {
+   "idx": 311,
+   "lead": 164,
+   "trail": 190,
+   "count": 2
+  },
+  "驗": {
+   "idx": 312,
+   "lead": 164,
+   "trail": 191,
+   "count": 2
+  },
+  "鼠": {
+   "idx": 313,
+   "lead": 164,
+   "trail": 192,
+   "count": 2
+  },
+  "《": {
+   "idx": 314,
+   "lead": 164,
+   "trail": 193,
+   "count": 1
+  },
+  "》": {
+   "idx": 315,
+   "lead": 164,
+   "trail": 194,
+   "count": 1
+  },
+  "下": {
+   "idx": 316,
+   "lead": 164,
+   "trail": 195,
+   "count": 1
+  },
+  "世": {
+   "idx": 318,
+   "lead": 164,
+   "trail": 197,
+   "count": 1
+  },
+  "中": {
+   "idx": 321,
+   "lead": 164,
+   "trail": 200,
+   "count": 1
+  },
+  "主": {
+   "idx": 323,
+   "lead": 164,
+   "trail": 202,
+   "count": 1
+  },
+  "乎": {
+   "idx": 324,
+   "lead": 164,
+   "trail": 203,
+   "count": 1
+  },
+  "乏": {
+   "idx": 325,
+   "lead": 164,
+   "trail": 204,
+   "count": 1
+  },
+  "事": {
+   "idx": 326,
+   "lead": 164,
+   "trail": 205,
+   "count": 1
+  },
+  "付": {
+   "idx": 327,
+   "lead": 164,
+   "trail": 206,
+   "count": 1
+  },
+  "依": {
+   "idx": 328,
+   "lead": 164,
+   "trail": 207,
+   "count": 1
+  },
+  "侵": {
+   "idx": 329,
+   "lead": 164,
+   "trail": 208,
+   "count": 1
+  },
+  "修": {
+   "idx": 330,
+   "lead": 164,
+   "trail": 209,
+   "count": 1
+  },
+  "做": {
+   "idx": 331,
+   "lead": 164,
+   "trail": 210,
+   "count": 1
+  },
+  "催": {
+   "idx": 332,
+   "lead": 164,
+   "trail": 211,
+   "count": 1
+  },
+  "元": {
+   "idx": 333,
+   "lead": 164,
+   "trail": 212,
+   "count": 1
+  },
+  "兄": {
+   "idx": 334,
+   "lead": 164,
+   "trail": 213,
+   "count": 1
+  },
+  "光": {
+   "idx": 336,
+   "lead": 164,
+   "trail": 215,
+   "count": 1
+  },
+  "八": {
+   "idx": 337,
+   "lead": 164,
+   "trail": 216,
+   "count": 1
+  },
+  "再": {
+   "idx": 338,
+   "lead": 164,
+   "trail": 217,
+   "count": 1
+  },
+  "刷": {
+   "idx": 339,
+   "lead": 164,
+   "trail": 218,
+   "count": 1
+  },
+  "剖": {
+   "idx": 340,
+   "lead": 164,
+   "trail": 219,
+   "count": 1
+  },
+  "剛": {
+   "idx": 342,
+   "lead": 164,
+   "trail": 221,
+   "count": 1
+  },
+  "力": {
+   "idx": 343,
+   "lead": 164,
+   "trail": 222,
+   "count": 1
+  },
+  "務": {
+   "idx": 348,
+   "lead": 164,
+   "trail": 227,
+   "count": 1
+  },
+  "匯": {
+   "idx": 350,
+   "lead": 164,
+   "trail": 229,
+   "count": 1
+  },
+  "原": {
+   "idx": 358,
+   "lead": 164,
+   "trail": 237,
+   "count": 1
+  },
+  "叫": {
+   "idx": 361,
+   "lead": 164,
+   "trail": 240,
+   "count": 1
+  },
+  "台": {
+   "idx": 362,
+   "lead": 164,
+   "trail": 241,
+   "count": 1
+  },
+  "史": {
+   "idx": 364,
+   "lead": 164,
+   "trail": 243,
+   "count": 1
+  },
+  "合": {
+   "idx": 366,
+   "lead": 164,
+   "trail": 245,
+   "count": 1
+  },
+  "名": {
+   "idx": 368,
+   "lead": 164,
+   "trail": 247,
+   "count": 1
+  },
+  "否": {
+   "idx": 369,
+   "lead": 164,
+   "trail": 248,
+   "count": 1
+  },
+  "呀": {
+   "idx": 371,
+   "lead": 164,
+   "trail": 250,
+   "count": 1
+  },
+  "呆": {
+   "idx": 374,
+   "lead": 164,
+   "trail": 253,
+   "count": 1
+  },
+  "呢": {
+   "idx": 376,
+   "lead": 165,
+   "trail": 161,
+   "count": 1
+  },
+  "味": {
+   "idx": 377,
+   "lead": 165,
+   "trail": 162,
+   "count": 1
+  },
+  "咬": {
+   "idx": 378,
+   "lead": 165,
+   "trail": 163,
+   "count": 1
+  },
+  "咿": {
+   "idx": 379,
+   "lead": 165,
+   "trail": 164,
+   "count": 1
+  },
+  "問": {
+   "idx": 380,
+   "lead": 165,
+   "trail": 165,
+   "count": 1
+  },
+  "喂": {
+   "idx": 381,
+   "lead": 165,
+   "trail": 166,
+   "count": 1
+  },
+  "喝": {
+   "idx": 382,
+   "lead": 165,
+   "trail": 167,
+   "count": 1
+  },
+  "單": {
+   "idx": 383,
+   "lead": 165,
+   "trail": 168,
+   "count": 1
+  },
+  "嘲": {
+   "idx": 385,
+   "lead": 165,
+   "trail": 170,
+   "count": 1
+  },
+  "嘿": {
+   "idx": 386,
+   "lead": 165,
+   "trail": 171,
+   "count": 1
+  },
+  "圓": {
+   "idx": 387,
+   "lead": 165,
+   "trail": 172,
+   "count": 1
+  },
+  "團": {
+   "idx": 388,
+   "lead": 165,
+   "trail": 173,
+   "count": 1
+  },
+  "堆": {
+   "idx": 389,
+   "lead": 165,
+   "trail": 174,
+   "count": 1
+  },
+  "女": {
+   "idx": 390,
+   "lead": 165,
+   "trail": 175,
+   "count": 1
+  },
+  "她": {
+   "idx": 391,
+   "lead": 165,
+   "trail": 176,
+   "count": 1
+  },
+  "字": {
+   "idx": 392,
+   "lead": 165,
+   "trail": 177,
+   "count": 1
+  },
+  "孩": {
+   "idx": 393,
+   "lead": 165,
+   "trail": 178,
+   "count": 1
+  },
+  "完": {
+   "idx": 394,
+   "lead": 165,
+   "trail": 179,
+   "count": 1
+  },
+  "定": {
+   "idx": 395,
+   "lead": 165,
+   "trail": 180,
+   "count": 1
+  },
+  "寄": {
+   "idx": 396,
+   "lead": 165,
+   "trail": 181,
+   "count": 1
+  },
+  "專": {
+   "idx": 397,
+   "lead": 165,
+   "trail": 182,
+   "count": 1
+  },
+  "小": {
+   "idx": 398,
+   "lead": 165,
+   "trail": 183,
+   "count": 1
+  },
+  "希": {
+   "idx": 399,
+   "lead": 165,
+   "trail": 184,
+   "count": 1
+  },
+  "師": {
+   "idx": 400,
+   "lead": 165,
+   "trail": 185,
+   "count": 1
+  },
+  "帳": {
+   "idx": 401,
+   "lead": 165,
+   "trail": 186,
+   "count": 1
+  },
+  "幼": {
+   "idx": 402,
+   "lead": 165,
+   "trail": 187,
+   "count": 1
+  },
+  "幾": {
+   "idx": 403,
+   "lead": 165,
+   "trail": 188,
+   "count": 1
+  },
+  "延": {
+   "idx": 404,
+   "lead": 165,
+   "trail": 189,
+   "count": 1
+  },
+  "引": {
+   "idx": 405,
+   "lead": 165,
+   "trail": 190,
+   "count": 1
+  },
+  "張": {
+   "idx": 406,
+   "lead": 165,
+   "trail": 191,
+   "count": 1
+  },
+  "征": {
+   "idx": 407,
+   "lead": 165,
+   "trail": 192,
+   "count": 1
+  },
+  "很": {
+   "idx": 408,
+   "lead": 165,
+   "trail": 193,
+   "count": 1
+  },
+  "律": {
+   "idx": 409,
+   "lead": 165,
+   "trail": 194,
+   "count": 1
+  },
+  "從": {
+   "idx": 410,
+   "lead": 165,
+   "trail": 195,
+   "count": 1
+  },
+  "心": {
+   "idx": 412,
+   "lead": 165,
+   "trail": 197,
+   "count": 1
+  },
+  "必": {
+   "idx": 415,
+   "lead": 165,
+   "trail": 200,
+   "count": 1
+  },
+  "快": {
+   "idx": 417,
+   "lead": 165,
+   "trail": 202,
+   "count": 1
+  },
+  "急": {
+   "idx": 418,
+   "lead": 165,
+   "trail": 203,
+   "count": 1
+  },
+  "性": {
+   "idx": 419,
+   "lead": 165,
+   "trail": 204,
+   "count": 1
+  },
+  "怪": {
+   "idx": 420,
+   "lead": 165,
+   "trail": 205,
+   "count": 1
+  },
+  "惜": {
+   "idx": 421,
+   "lead": 165,
+   "trail": 206,
+   "count": 1
+  },
+  "意": {
+   "idx": 422,
+   "lead": 165,
+   "trail": 207,
+   "count": 1
+  },
+  "愛": {
+   "idx": 423,
+   "lead": 165,
+   "trail": 208,
+   "count": 1
+  },
+  "成": {
+   "idx": 424,
+   "lead": 165,
+   "trail": 209,
+   "count": 1
+  },
+  "戲": {
+   "idx": 425,
+   "lead": 165,
+   "trail": 210,
+   "count": 1
+  },
+  "戶": {
+   "idx": 426,
+   "lead": 165,
+   "trail": 211,
+   "count": 1
+  },
+  "拜": {
+   "idx": 427,
+   "lead": 165,
+   "trail": 212,
+   "count": 1
+  },
+  "拿": {
+   "idx": 428,
+   "lead": 165,
+   "trail": 213,
+   "count": 1
+  },
+  "捐": {
+   "idx": 430,
+   "lead": 165,
+   "trail": 215,
+   "count": 1
+  },
+  "掉": {
+   "idx": 431,
+   "lead": 165,
+   "trail": 216,
+   "count": 1
+  },
+  "接": {
+   "idx": 432,
+   "lead": 165,
+   "trail": 217,
+   "count": 1
+  },
+  "暖": {
+   "idx": 433,
+   "lead": 165,
+   "trail": 218,
+   "count": 1
+  },
+  "望": {
+   "idx": 434,
+   "lead": 165,
+   "trail": 219,
+   "count": 1
+  },
+  "期": {
+   "idx": 436,
+   "lead": 165,
+   "trail": 221,
+   "count": 1
+  },
+  "未": {
+   "idx": 437,
+   "lead": 165,
+   "trail": 222,
+   "count": 1
+  },
+  "案": {
+   "idx": 442,
+   "lead": 165,
+   "trail": 227,
+   "count": 1
+  },
+  "條": {
+   "idx": 444,
+   "lead": 165,
+   "trail": 229,
+   "count": 1
+  },
+  "棒": {
+   "idx": 452,
+   "lead": 165,
+   "trail": 237,
+   "count": 1
+  },
+  "棟": {
+   "idx": 455,
+   "lead": 165,
+   "trail": 240,
+   "count": 1
+  },
+  "樂": {
+   "idx": 456,
+   "lead": 165,
+   "trail": 241,
+   "count": 1
+  },
+  "標": {
+   "idx": 458,
+   "lead": 165,
+   "trail": 243,
+   "count": 1
+  },
+  "模": {
+   "idx": 460,
+   "lead": 165,
+   "trail": 245,
+   "count": 1
+  },
+  "檔": {
+   "idx": 462,
+   "lead": 165,
+   "trail": 247,
+   "count": 1
+  },
+  "款": {
+   "idx": 463,
+   "lead": 165,
+   "trail": 248,
+   "count": 1
+  },
+  "段": {
+   "idx": 465,
+   "lead": 165,
+   "trail": 250,
+   "count": 1
+  },
+  "殺": {
+   "idx": 468,
+   "lead": 165,
+   "trail": 253,
+   "count": 1
+  },
+  "水": {
+   "idx": 470,
+   "lead": 166,
+   "trail": 161,
+   "count": 1
+  },
+  "池": {
+   "idx": 471,
+   "lead": 166,
+   "trail": 162,
+   "count": 1
+  },
+  "汽": {
+   "idx": 472,
+   "lead": 166,
+   "trail": 163,
+   "count": 1
+  },
+  "況": {
+   "idx": 473,
+   "lead": 166,
+   "trail": 164,
+   "count": 1
+  },
+  "活": {
+   "idx": 474,
+   "lead": 166,
+   "trail": 165,
+   "count": 1
+  },
+  "渴": {
+   "idx": 475,
+   "lead": 166,
+   "trail": 166,
+   "count": 1
+  },
+  "潑": {
+   "idx": 476,
+   "lead": 166,
+   "trail": 167,
+   "count": 1
+  },
+  "潤": {
+   "idx": 477,
+   "lead": 166,
+   "trail": 168,
+   "count": 1
+  },
+  "版": {
+   "idx": 479,
+   "lead": 166,
+   "trail": 170,
+   "count": 1
+  },
+  "狀": {
+   "idx": 480,
+   "lead": 166,
+   "trail": 171,
+   "count": 1
+  },
+  "界": {
+   "idx": 481,
+   "lead": 166,
+   "trail": 172,
+   "count": 1
+  },
+  "略": {
+   "idx": 482,
+   "lead": 166,
+   "trail": 173,
+   "count": 1
+  },
+  "異": {
+   "idx": 483,
+   "lead": 166,
+   "trail": 174,
+   "count": 1
+  },
+  "痴": {
+   "idx": 484,
+   "lead": 166,
+   "trail": 175,
+   "count": 1
+  },
+  "百": {
+   "idx": 485,
+   "lead": 166,
+   "trail": 176,
+   "count": 1
+  },
+  "皂": {
+   "idx": 486,
+   "lead": 166,
+   "trail": 177,
+   "count": 1
+  },
+  "相": {
+   "idx": 487,
+   "lead": 166,
+   "trail": 178,
+   "count": 1
+  },
+  "眠": {
+   "idx": 488,
+   "lead": 166,
+   "trail": 179,
+   "count": 1
+  },
+  "瞧": {
+   "idx": 489,
+   "lead": 166,
+   "trail": 180,
+   "count": 1
+  },
+  "石": {
+   "idx": 490,
+   "lead": 166,
+   "trail": 181,
+   "count": 1
+  },
+  "社": {
+   "idx": 491,
+   "lead": 166,
+   "trail": 182,
+   "count": 1
+  },
+  "稅": {
+   "idx": 492,
+   "lead": 166,
+   "trail": 183,
+   "count": 1
+  },
+  "稚": {
+   "idx": 493,
+   "lead": 166,
+   "trail": 184,
+   "count": 1
+  },
+  "空": {
+   "idx": 494,
+   "lead": 166,
+   "trail": 185,
+   "count": 1
+  },
+  "突": {
+   "idx": 495,
+   "lead": 166,
+   "trail": 186,
+   "count": 1
+  },
+  "站": {
+   "idx": 496,
+   "lead": 166,
+   "trail": 187,
+   "count": 1
+  },
+  "童": {
+   "idx": 497,
+   "lead": 166,
+   "trail": 188,
+   "count": 1
+  },
+  "笑": {
+   "idx": 498,
+   "lead": 166,
+   "trail": 189,
+   "count": 1
+  },
+  "算": {
+   "idx": 499,
+   "lead": 166,
+   "trail": 190,
+   "count": 1
+  },
+  "簡": {
+   "idx": 500,
+   "lead": 166,
+   "trail": 191,
+   "count": 1
+  },
+  "糕": {
+   "idx": 501,
+   "lead": 166,
+   "trail": 192,
+   "count": 1
+  },
+  "糟": {
+   "idx": 502,
+   "lead": 166,
+   "trail": 193,
+   "count": 1
+  },
+  "約": {
+   "idx": 503,
+   "lead": 166,
+   "trail": 194,
+   "count": 1
+  },
+  "紙": {
+   "idx": 504,
+   "lead": 166,
+   "trail": 195,
+   "count": 1
+  },
+  "緊": {
+   "idx": 506,
+   "lead": 166,
+   "trail": 197,
+   "count": 1
+  },
+  "總": {
+   "idx": 509,
+   "lead": 166,
+   "trail": 200,
+   "count": 1
+  },
+  "置": {
+   "idx": 511,
+   "lead": 166,
+   "trail": 202,
+   "count": 1
+  },
+  "美": {
+   "idx": 512,
+   "lead": 166,
+   "trail": 203,
+   "count": 1
+  },
+  "群": {
+   "idx": 513,
+   "lead": 166,
+   "trail": 204,
+   "count": 1
+  },
+  "翻": {
+   "idx": 514,
+   "lead": 166,
+   "trail": 205,
+   "count": 1
+  },
+  "而": {
+   "idx": 515,
+   "lead": 166,
+   "trail": 206,
+   "count": 1
+  },
+  "耗": {
+   "idx": 516,
+   "lead": 166,
+   "trail": 207,
+   "count": 1
+  },
+  "聰": {
+   "idx": 517,
+   "lead": 166,
+   "trail": 208,
+   "count": 1
+  },
+  "肥": {
+   "idx": 518,
+   "lead": 166,
+   "trail": 209,
+   "count": 1
+  },
+  "胡": {
+   "idx": 519,
+   "lead": 166,
+   "trail": 210,
+   "count": 1
+  },
+  "胸": {
+   "idx": 520,
+   "lead": 166,
+   "trail": 211,
+   "count": 1
+  },
+  "腦": {
+   "idx": 521,
+   "lead": 166,
+   "trail": 212,
+   "count": 1
+  },
+  "舊": {
+   "idx": 522,
+   "lead": 166,
+   "trail": 213,
+   "count": 1
+  },
+  "艙": {
+   "idx": 524,
+   "lead": 166,
+   "trail": 215,
+   "count": 1
+  },
+  "萬": {
+   "idx": 525,
+   "lead": 166,
+   "trail": 216,
+   "count": 1
+  },
+  "處": {
+   "idx": 526,
+   "lead": 166,
+   "trail": 217,
+   "count": 1
+  },
+  "衣": {
+   "idx": 527,
+   "lead": 166,
+   "trail": 218,
+   "count": 1
+  },
+  "袍": {
+   "idx": 528,
+   "lead": 166,
+   "trail": 219,
+   "count": 1
+  },
+  "被": {
+   "idx": 530,
+   "lead": 166,
+   "trail": 221,
+   "count": 1
+  },
+  "補": {
+   "idx": 531,
+   "lead": 166,
+   "trail": 222,
+   "count": 1
+  },
+  "裝": {
+   "idx": 536,
+   "lead": 166,
+   "trail": 227,
+   "count": 1
+  },
+  "解": {
+   "idx": 538,
+   "lead": 166,
+   "trail": 229,
+   "count": 1
+  },
+  "託": {
+   "idx": 546,
+   "lead": 166,
+   "trail": 237,
+   "count": 1
+  },
+  "話": {
+   "idx": 549,
+   "lead": 166,
+   "trail": 240,
+   "count": 1
+  },
+  "課": {
+   "idx": 550,
+   "lead": 166,
+   "trail": 241,
+   "count": 1
+  },
+  "請": {
+   "idx": 552,
+   "lead": 166,
+   "trail": 243,
+   "count": 1
+  },
+  "講": {
+   "idx": 554,
+   "lead": 166,
+   "trail": 245,
+   "count": 1
+  },
+  "變": {
+   "idx": 556,
+   "lead": 166,
+   "trail": 247,
+   "count": 1
+  },
+  "貨": {
+   "idx": 557,
+   "lead": 166,
+   "trail": 248,
+   "count": 1
+  },
+  "趁": {
+   "idx": 559,
+   "lead": 166,
+   "trail": 250,
+   "count": 1
+  },
+  "身": {
+   "idx": 562,
+   "lead": 166,
+   "trail": 253,
+   "count": 1
+  },
+  "軍": {
+   "idx": 564,
+   "lead": 167,
+   "trail": 161,
+   "count": 1
+  },
+  "輩": {
+   "idx": 565,
+   "lead": 167,
+   "trail": 162,
+   "count": 1
+  },
+  "近": {
+   "idx": 566,
+   "lead": 167,
+   "trail": 163,
+   "count": 1
+  },
+  "透": {
+   "idx": 567,
+   "lead": 167,
+   "trail": 164,
+   "count": 1
+  },
+  "進": {
+   "idx": 568,
+   "lead": 167,
+   "trail": 165,
+   "count": 1
+  },
+  "遊": {
+   "idx": 569,
+   "lead": 167,
+   "trail": 166,
+   "count": 1
+  },
+  "遞": {
+   "idx": 570,
+   "lead": 167,
+   "trail": 167,
+   "count": 1
+  },
+  "郵": {
+   "idx": 571,
+   "lead": 167,
+   "trail": 168,
+   "count": 1
+  },
+  "重": {
+   "idx": 573,
+   "lead": 167,
+   "trail": 170,
+   "count": 1
+  },
+  "銀": {
+   "idx": 574,
+   "lead": 167,
+   "trail": 171,
+   "count": 1
+  },
+  "錢": {
+   "idx": 575,
+   "lead": 167,
+   "trail": 172,
+   "count": 1
+  },
+  "錯": {
+   "idx": 576,
+   "lead": 167,
+   "trail": 173,
+   "count": 1
+  },
+  "鑽": {
+   "idx": 577,
+   "lead": 167,
+   "trail": 174,
+   "count": 1
+  },
+  "附": {
+   "idx": 578,
+   "lead": 167,
+   "trail": 175,
+   "count": 1
+  },
+  "除": {
+   "idx": 579,
+   "lead": 167,
+   "trail": 176,
+   "count": 1
+  },
+  "陽": {
+   "idx": 580,
+   "lead": 167,
+   "trail": 177,
+   "count": 1
+  },
+  "階": {
+   "idx": 581,
+   "lead": 167,
+   "trail": 178,
+   "count": 1
+  },
+  "面": {
+   "idx": 582,
+   "lead": 167,
+   "trail": 179,
+   "count": 1
+  },
+  "須": {
+   "idx": 583,
+   "lead": 167,
+   "trail": 180,
+   "count": 1
+  },
+  "顆": {
+   "idx": 584,
+   "lead": 167,
+   "trail": 181,
+   "count": 1
+  },
+  "類": {
+   "idx": 585,
+   "lead": 167,
+   "trail": 182,
+   "count": 1
+  },
+  "顯": {
+   "idx": 586,
+   "lead": 167,
+   "trail": 183,
+   "count": 1
+  },
+  "養": {
+   "idx": 587,
+   "lead": 167,
+   "trail": 184,
+   "count": 1
+  },
+  "館": {
+   "idx": 588,
+   "lead": 167,
+   "trail": 185,
+   "count": 1
+  },
+  "馨": {
+   "idx": 589,
+   "lead": 167,
+   "trail": 186,
+   "count": 1
+  },
+  "體": {
+   "idx": 590,
+   "lead": 167,
+   "trail": 187,
+   "count": 1
+  },
+  "：": {
+   "idx": 591,
+   "lead": 167,
+   "trail": 188,
+   "count": 1
+  }
+ }
+}
