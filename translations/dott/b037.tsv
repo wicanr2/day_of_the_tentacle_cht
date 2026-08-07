@@ -1,5 +1,5 @@
 # 原文\t譯文　　譯文欄留空 = 沿用原文；escape（\ddd）與 ^ 原樣保留
-\255\012\015\000Based on Characters Created by\255\002	
+\255\012\015\000Based on Characters Created by\255\002	\255\012\015\000原創角色\255\002
 \255\012\193\000Ron Gilbert and Gary Winnick\255\002	
 \255\012\015\000Produced  and\255\001    Directed by\255\001 \255\001\255\012\193\000  Tim Schafer\255\001          and\255\001   Dave Grossman	
 \255\012\015\000Produced  and\255\001    Directed by\255\001 \255\001\255\012\193\000Dave Grossman\255\001          and\255\001    Tim Schafer	
@@ -7,7 +7,7 @@ Some Programmer is an idiot because they didn't adjust the NUMBER-OF-CREDITS def
 Jiffy adjustment: \255\004\064\001	
 Adjusted jiffies: \255\004\001\064	
 Credit count:     \255\004\063\001	
-THE END	
+THE END	劇終
 Starring \255\012\014\000Richard Sanders\255\012\010\000 as Bernard	
 Featuring the Voices of\255\001\255\012\014\000Denny Delk\255\001Jane Jacobs\255\001Nick Jameson\255\001Ginny Schafer\255\001David Traylor\255\001Peggy Roberts-Hope	
 Voices Recorded at\255\001Room 222 Studios, Hollywood, California\255\001Special Thanks to Larry & Robin	
@@ -48,20 +48,20 @@ Further Thanks to\255\001\255\012\014\000Linda Jones\255\001and\255\001Chuck Jon
 Sam and Max\015 appear\255\001courtesy of \255\012\014\000Steve Purcell	
 Seagull appears courtesy of LOOM\015	
 jiffy2 is \255\004\012\000	
-It's no use!\255\003I can't stop the sludge!\255\003Well, I guess turning it off works^	
-Reminds me of the last time I had the flu.	
-What beautiful, clear water.	
-Gross.  No way.	
-I'd like to, but there's no time.	
-pipes dumping green sludge	
-`KEEP OUT:  Area contaminated with industrial waste.`	
-I think that's a kumquat tree.	
-It looks like pureed horseshoe crab.	
-Mmmmm.  That looks inviting!	
-Ah, a burning river of sludge^\255\003^wouldn't that be nice!	
-Just because someone else has littered this creek doesn't make it okay for me to do the same.	
-I can't risk touching it.\255\003Mother says I have the hands of a pianist.	
-There's no time for that, now.	
-sludge	
-pipes dumping crystal clear water	
-partially recovered river	
+It's no use!\255\003I can't stop the sludge!\255\003Well, I guess turning it off works^	沒用的！\255\003我阻止不了污泥！\255\003好吧，我看關掉它是有用的^
+Reminds me of the last time I had the flu.	這讓我想起上次得流感的時候。
+What beautiful, clear water.	多麼清澈美麗的水。
+Gross.  No way.	噁。才不要。
+I'd like to, but there's no time.	我是想啦，但沒時間了。
+pipes dumping green sludge	排放綠色污泥的管子
+`KEEP OUT:  Area contaminated with industrial waste.`	`禁止進入：本區遭工業廢棄物污染。`
+I think that's a kumquat tree.	我想那是棵金桔樹。
+It looks like pureed horseshoe crab.	看起來像鱟打成的泥。
+Mmmmm.  That looks inviting!	嗯——。那看起來真誘人！
+Ah, a burning river of sludge^\255\003^wouldn't that be nice!	啊，一條燃燒的污泥河^\255\003^那該有多好！
+Just because someone else has littered this creek doesn't make it okay for me to do the same.	別人在這條溪亂丟垃圾，不代表我也可以。
+I can't risk touching it.\255\003Mother says I have the hands of a pianist.	我不能冒險碰它。\255\003媽媽說我有一雙鋼琴家的手。
+There's no time for that, now.	現在沒時間做那個。
+sludge	污泥
+pipes dumping crystal clear water	排放清澈淨水的管子
+partially recovered river	部分復原的河流
