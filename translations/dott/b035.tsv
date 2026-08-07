@@ -1,26 +1,26 @@
 # 原文\t譯文　　譯文欄留空 = 沿用原文；escape（\ddd）與 ^ 原樣保留
-Push	
-Pu¸	
-in	
-with	
-on	
-to	
+Push	推
+Pu¸	拉
+in	放進
+with	用
+on	在
+to	給
 this room is # \255\004\000\064.	
 x2 value overflowing in ellipse check	
 y2 value overflowing in ellipse check	
 very skinny ellipse warning	
 very flat ellipse warning	
-What?!?\255\003Why would I want to flush that down the toilet?	
-Okay, I flushed it.	
-That won't fit in there.	
-wet soggy noodles	
-There's something already in there.	
-I can't get to the Chron-O-John from here.	
-I don't think I can put that in the Chron-O-John.	
-I'll just run to the Chron-O-John.	
-I'll use the Chron-O-John.	
-There's something in the Chron-O-John!	
-I waited, but she never picked it up.\255\003Hope she's OK.	
+What?!?\255\003Why would I want to flush that down the toilet?	什麼？！\255\003我幹嘛要把那個沖進馬桶？
+Okay, I flushed it.	好，我沖掉了。
+That won't fit in there.	那個塞不進去。
+wet soggy noodles	濕軟的麵條
+There's something already in there.	裡面已經有東西了。
+I can't get to the Chron-O-John from here.	我從這裡到不了時光廁。
+I don't think I can put that in the Chron-O-John.	我看那個不能放進時光廁。
+I'll just run to the Chron-O-John.	我直接跑去時光廁就好。
+I'll use the Chron-O-John.	我會用時光廁。
+There's something in the Chron-O-John!	時光廁裡有東西！
+I waited, but she never picked it up.\255\003Hope she's OK.	我等了，但她一直沒拿。\255\003希望她沒事。
 Molasses machine.	
 Street legal machine.	
 Trans-warp drive machine.	
@@ -32,30 +32,30 @@ Live MIDI OFF :-(
 Live MIDI ON  :-)	
 Machine rating is \255\005\182\000	
 Key pressed: \255\004\001\064	
-It doesn't seem to open.	
-I can't open it.	
-I don't think I can open it.	
-That doesn't sound like a good idea.	
-I don't got nothin' to prove.	
-That might not be wise.	
-It won't budge.	
-I can't move it.	
-Bitchin'.	
-Neat.	
-Not my type.	
-I don't think I can pick that up.	
-No way could I pick that up.	
-I can't.	
-I can't reach that from here.	
-My arms aren't quite long enough.	
-I don't have that.	
-I haven't got that.	
-I don't got that.	
-I don't think I can do that.	
-Jeepers!	
-Gnarly!	
-It won't fit.	
-I don't think so.	
+It doesn't seem to open.	它好像打不開。
+I can't open it.	我打不開。
+I don't think I can open it.	我看我打不開它。
+That doesn't sound like a good idea.	那聽起來不是個好主意。
+I don't got nothin' to prove.	我沒什麼好證明的。
+That might not be wise.	那可能不太明智。
+It won't budge.	它動都不動。
+I can't move it.	我搬不動它。
+Bitchin'.	讚啦。
+Neat.	不錯。
+Not my type.	不是我的菜。
+I don't think I can pick that up.	我看我拿不起那個。
+No way could I pick that up.	我絕對拿不起那個。
+I can't.	我沒辦法。
+I can't reach that from here.	我從這裡搆不到。
+My arms aren't quite long enough.	我的手臂不夠長。
+I don't have that.	我沒有那個。
+I haven't got that.	我沒那東西。
+I don't got that.	我沒那玩意兒。
+I don't think I can do that.	我看我辦不到。
+Jeepers!	我的媽呀！
+Gnarly!	猛喔！
+It won't fit.	塞不進去。
+I don't think so.	我看不行。
 starting hoagie script	
 warm boot ending	
 selected-room \255\004\004\000	
@@ -90,32 +90,32 @@ laver-baby
 hoag-boy	
 YO! we changed a room!	
 error flag is not 2	
-Thermodynamic flux induction circuit design is perhaps the most fascinating branch of practical electrical theory^	
-Although limited to a low-pressure, sub-zero, nitrogen-free environment, the flux induction circuit can still be quite useful^	
-`The LALR compiler is constructed by the following method:`\255\003First develop a rigorous elective grammar^	
-When induction elements have NP-completeness, the Krungie factor can be ignored^	
-Yaaaaaaaaaaahhhhh!	
-EEeeeeeeeeeeee!	
+Thermodynamic flux induction circuit design is perhaps the most fascinating branch of practical electrical theory^	熱力學通量感應電路設計，或許是實用電學理論中最引人入勝的分支^
+Although limited to a low-pressure, sub-zero, nitrogen-free environment, the flux induction circuit can still be quite useful^	通量感應電路雖然僅限於低壓、零度以下、無氮的環境，仍然相當有用^
+`The LALR compiler is constructed by the following method:`\255\003First develop a rigorous elective grammar^	`LALR 編譯器以下列方法建構：`\255\003首先發展一套嚴謹的可選文法^
+When induction elements have NP-completeness, the Krungie factor can be ignored^	當感應元件具有 NP 完備性時，克朗基因子可以忽略^
+Yaaaaaaaaaaahhhhh!	呀啊啊啊啊啊啊！
+EEeeeeeeeeeeee!	咿咿咿咿咿咿！
 copy-protect: point 5	
 done	
-No, that's not quite right^	
+No, that's not quite right^	不，那不太對^
 copy-protect: point 1	
 copy-protect: point 2	
-But first^\255\003^the copy protection!	
-Drat!\255\003This will never work!\255\003I forgot, I never quite got these proportions correct.	
-Maybe I can help.\255\003I got an `A` in physics class.	
-Find the patent number in your manual and	
-correct the plans, then click on the corner.	
+But first^\255\003^the copy protection!	不過首先^\255\003^防拷保護！
+Drat!\255\003This will never work!\255\003I forgot, I never quite got these proportions correct.	可惡！\255\003這絕對行不通！\255\003我忘了，這些比例我一直沒弄對過。
+Maybe I can help.\255\003I got an `A` in physics class.	也許我幫得上忙。\255\003我物理課拿`A`。
+Find the patent number in your manual and	請在說明書中找出專利號碼，
+correct the plans, then click on the corner.	修正設計圖，然後點擊角落。
 copy-protect: point 3	
-Say, that looks pretty good!	
+Say, that looks pretty good!	欸，這看起來相當不錯！
 copy-protect: point 4	
-Edison's Super Salad Battery	
-Pat. No. \255\004\132\000\255\004\133\000	
-gold	
-lettuce	
-croutons	
+Edison's Super Salad Battery	艾迪生超級沙拉電池
+Pat. No. \255\004\132\000\255\004\133\000	專利號 \255\004\132\000\255\004\133\000
+gold	黃金
+lettuce	萵苣
+croutons	麵包丁
 window-window	
 house-from-sky	
-Rash of Cow Tipping\254\001Baffles Police	
-Triangular Man Spotted\254\001at Scene	
-Froofroo Emerald\254\001Stolen!	
+Rash of Cow Tipping\254\001Baffles Police	推牛惡作劇頻傳\254\001警方束手無策
+Triangular Man Spotted\254\001at Scene	現場目擊\254\001三角形男子
+Froofroo Emerald\254\001Stolen!	芙魯芙魯翡翠\254\001遭竊！
