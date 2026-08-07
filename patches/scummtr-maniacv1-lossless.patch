@@ -1,0 +1,250 @@
+--- a/src/ScummRp/toc.hpp
++++ b/src/ScummRp/toc.hpp
+@@ -33,6 +33,10 @@
+ 
+ #include <stdexcept>
+ #include <string>
++#if defined(SCUMMTR_PRESERVE_V1_ROOM_OFFSETS) || defined(SCUMMTR_PRESERVE_DUP_INDEX_ENTRIES)
++#include <vector>
++#include <utility>
++#endif
+ 
+ /*
+  * TableOfContent
+@@ -83,8 +87,18 @@
+ 	TableOfContent::Type _type;
+ 	int _iterator[256];
+ 	bool _accessed[256];
++#ifdef SCUMMTR_PRESERVE_DUP_INDEX_ENTRIES
++	// _checkDupOffset() 為了讓內部模型不出現重複位移，會把成對索引中較小編號
++	// 那筆設成 -1（見 block.cpp 的 "Hack for Maniac Mansion V1" 等）。抑制本身
++	// 是必要的，但那是原版資料真有的內容，寫回檔案等於改壞遊戲，所以留一份原值。
++	std::vector<std::pair<int, int32> > _suppressedOffsets;
++#endif
+ 
+ protected:
++#ifdef SCUMMTR_PRESERVE_DUP_INDEX_ENTRIES
++	void _restoreSuppressedOffsets();
++	void _reapplySuppressedOffsets();
++#endif
+ 	bool _idInRange(int id) const;
+ 	bool _validItem(int id) const;
+ 	bool _validId(int id) const;
+@@ -117,6 +131,10 @@
+ 	virtual TableOfContent::TocElement operator[](int id) const;
+ 	virtual void load(FilePart &file, GlobalTocFormat format, int size);
+ 	virtual void save(FilePart &file, GlobalTocFormat format, bool fixedSize);
++#ifdef SCUMMTR_PRESERVE_DUP_INDEX_ENTRIES
++	// 由 _checkDupOffset() 呼叫，取代直接寫 offset = -1
++	void suppressOffset(int id);
++#endif
+ 
+ public:
+ 	TableOfContent(TableOfContent::Type t);
+@@ -150,6 +168,11 @@
+ 
+ protected:
+ 	bool _first;
++#ifdef SCUMMTR_PRESERVE_V1_ROOM_OFFSETS
++	// V1 的 room offset 在載入時會被清成 0（見 load() 的 "hack for V1"），
++	// 這裡留一份原值，寫回時還原，讓純文字回填能 byte-perfect。
++	std::vector<int32> _v1OrigOffsets;
++#endif
+ 
+ protected:
+ 	void _zap() override;
+--- a/src/ScummRp/toc.cpp
++++ b/src/ScummRp/toc.cpp
+@@ -412,8 +412,46 @@
+ 	}
+ }
+ 
++#ifdef SCUMMTR_PRESERVE_DUP_INDEX_ENTRIES
++void TableOfContent::suppressOffset(int id)
++{
++	if (!_idInRange(id))
++		return;
++
++	bool known = false;
++	for (size_t i = 0; i < _suppressedOffsets.size(); ++i)
++		if (_suppressedOffsets[i].first == id)
++		{
++			known = true;
++			break;
++		}
++
++	if (!known)
++		_suppressedOffsets.push_back(std::make_pair(id, _toc[id].offset));
++
++	_toc[id].offset = -1;
++}
++
++void TableOfContent::_restoreSuppressedOffsets()
++{
++	for (size_t i = 0; i < _suppressedOffsets.size(); ++i)
++		if (_idInRange(_suppressedOffsets[i].first))
++			_toc[_suppressedOffsets[i].first].offset = _suppressedOffsets[i].second;
++}
++
++void TableOfContent::_reapplySuppressedOffsets()
++{
++	for (size_t i = 0; i < _suppressedOffsets.size(); ++i)
++		if (_idInRange(_suppressedOffsets[i].first))
++			_toc[_suppressedOffsets[i].first].offset = -1;
++}
++#endif
++
+ void TableOfContent::save(FilePart &file, GlobalTocFormat format, bool fixedSize)
+ {
++#ifdef SCUMMTR_PRESERVE_DUP_INDEX_ENTRIES
++	_restoreSuppressedOffsets();
++#endif
+ 	switch (format)
+ 	{
+ 	case GTCFMT_8SEP16:
+@@ -422,10 +460,16 @@
+ 	default:
+ 		throw std::logic_error("TableOfContent::save: Invalid format (not V1)");
+ 	}
++#ifdef SCUMMTR_PRESERVE_DUP_INDEX_ENTRIES
++	_reapplySuppressedOffsets();
++#endif
+ }
+ 
+ void TableOfContent::save(FilePart &file, GlobalTocFormat format)
+ {
++#ifdef SCUMMTR_PRESERVE_DUP_INDEX_ENTRIES
++	_restoreSuppressedOffsets();
++#endif
+ 	switch (format)
+ 	{
+ 	case GTCFMT_16SEP32:
+@@ -443,6 +487,9 @@
+ 	case GTCFMT_NULL:
+ 		throw std::logic_error("TableOfContent::save: Invalid format");
+ 	}
++#ifdef SCUMMTR_PRESERVE_DUP_INDEX_ENTRIES
++	_reapplySuppressedOffsets();
++#endif
+ }
+ 
+ /*
+@@ -531,15 +578,42 @@
+ 
+ 	// hack for V1
+ 	if (size > 0) // means V1
++	{
++#ifdef SCUMMTR_PRESERVE_V1_ROOM_OFFSETS
++		// 清零是 scummtr 內部模型需要的（V1 每個 room 自成一個 LFL 檔，
++		// 內部一律以 offset 0 起算），但原檔那些值不是垃圾 —— ScummVM 的
++		// readClassicIndexFile() 會把它們讀進 _res->_types[rtRoom][i]._roomoffs。
++		// 寫回 0 等於改掉遊戲資料，所以先留一份原值，save() 時還原。
++		_v1OrigOffsets.assign(_size, 0);
++		for (int i = 0; i < _size; ++i)
++			_v1OrigOffsets[i] = _toc[i].offset;
++#endif
+ 		for (int i = 0; i < _size; ++i)
+ 			_toc[i].offset = 0;
++	}
+ }
+ 
+ void GlobalRoomIndex::save(FilePart &file, GlobalTocFormat format, bool fixedSize)
+ {
+ 	// hack for V1
+ 	if (fixedSize) // means V1
++	{
++#ifdef SCUMMTR_PRESERVE_V1_ROOM_OFFSETS
++		if ((int)_v1OrigOffsets.size() == _size)
++		{
++			for (int i = 0; i < _size; ++i)
++				_toc[i].offset = _v1OrigOffsets[i];
++
++			TableOfContent::save(file, format, fixedSize);
++
++			// 還原內部模型，之後若再被讀到，行為與未開此開關時一致
++			for (int i = 0; i < _size; ++i)
++				_toc[i].offset = 0;
++			return;
++		}
++#endif
+ 		TableOfContent::save(file, format, fixedSize);
++	}
+ }
+ 
+ int GlobalRoomIndex::numberOfDisks() const
+--- a/src/ScummRp/block.cpp
++++ b/src/ScummRp/block.cpp
+@@ -747,6 +747,19 @@
+ 	}
+ }
+ 
++/*
++ * 下面這批「Hack for XXX」處理的是原版資料真有的重複索引（同一個 roomId+offset
++ * 出現兩次）。抑制其中一筆是必要的 —— 否則 scummtr 內部模型會丟
++ * "Duplicate offset in index"。但抑制結果不該被寫回原始檔：那會讓遊戲裡
++ * 對應編號的資源變成無效索引。開了 SCUMMTR_PRESERVE_DUP_INDEX_ENTRIES 之後，
++ * 內部照樣抑制，寫回時由 TableOfContent::save() 還原原值。
++ */
++#ifdef SCUMMTR_PRESERVE_DUP_INDEX_ENTRIES
++#define SCUMMTR_SUPPRESS_TOC_OFFSET(toc, id) (toc)->suppressOffset(id)
++#else
++#define SCUMMTR_SUPPRESS_TOC_OFFSET(toc, id) ((void)((*(toc))[id].offset = -1))
++#endif
++
+ void RoomPack::_checkDupOffset(byte roomId, int32 offset)
+ {
+ 	int n;
+@@ -762,7 +775,7 @@
+ 				&& (*ScummRp::tocs[i])[8].offset == (*ScummRp::tocs[i])[9].offset
+ 				&& (*ScummRp::tocs[i])[8].roomId == (*ScummRp::tocs[i])[9].roomId)
+ 			{
+-				(*ScummRp::tocs[i])[8].offset = -1;
++				SCUMMTR_SUPPRESS_TOC_OFFSET(ScummRp::tocs[i], 8);
+ 				j = 1;
+ 				ScummIO::info(INF_DETAIL, "Removed SCRP_0008 from index (duplicate of SCRP_0009)");
+ 			}
+@@ -771,7 +784,7 @@
+ 				 && (*ScummRp::tocs[i])[7].offset == (*ScummRp::tocs[i])[12].offset
+ 				 && (*ScummRp::tocs[i])[7].roomId == (*ScummRp::tocs[i])[12].roomId)
+ 			{
+-				(*ScummRp::tocs[i])[7].offset = -1;
++				SCUMMTR_SUPPRESS_TOC_OFFSET(ScummRp::tocs[i], 7);
+ 				j = 1;
+ 				ScummIO::info(INF_DETAIL, "Removed SC_0007 from index (duplicate of SC_0012)");
+ 			}
+@@ -780,7 +793,7 @@
+ 				 && (*ScummRp::tocs[i])[8].offset == (*ScummRp::tocs[i])[13].offset
+ 				 && (*ScummRp::tocs[i])[8].roomId == (*ScummRp::tocs[i])[13].roomId)
+ 			{
+-				(*ScummRp::tocs[i])[8].offset = -1;
++				SCUMMTR_SUPPRESS_TOC_OFFSET(ScummRp::tocs[i], 8);
+ 				j = 1;
+ 				ScummIO::info(INF_DETAIL, "Removed SC_0008 from index (duplicate of SC_0013)");
+ 			}
+@@ -789,7 +802,7 @@
+ 				 && (*ScummRp::tocs[i])[51].offset == (*ScummRp::tocs[i])[52].offset
+ 				 && (*ScummRp::tocs[i])[51].roomId == (*ScummRp::tocs[i])[52].roomId)
+ 			{
+-				(*ScummRp::tocs[i])[51].offset = -1;
++				SCUMMTR_SUPPRESS_TOC_OFFSET(ScummRp::tocs[i], 51);
+ 				j = 1;
+ 				ScummIO::info(INF_DETAIL, "Removed SC_0051 from index (duplicate of SC_0052)");
+ 			}
+@@ -798,7 +811,7 @@
+ 				 && (*ScummRp::tocs[i])[55].offset == (*ScummRp::tocs[i])[56].offset
+ 				 && (*ScummRp::tocs[i])[55].roomId == (*ScummRp::tocs[i])[56].roomId)
+ 			{
+-				(*ScummRp::tocs[i])[55].offset = -1;
++				SCUMMTR_SUPPRESS_TOC_OFFSET(ScummRp::tocs[i], 55);
+ 				j = 1;
+ 				ScummIO::info(INF_DETAIL, "Removed SC_0055 from index (duplicate of SC_0056)");
+ 			}
+@@ -810,7 +823,7 @@
+ 				&& (*ScummRp::tocs[i])[10].offset == (*ScummRp::tocs[i])[117].offset
+ 				&& (*ScummRp::tocs[i])[10].roomId == (*ScummRp::tocs[i])[117].roomId)
+ 			{
+-				(*ScummRp::tocs[i])[10].offset = -1;
++				SCUMMTR_SUPPRESS_TOC_OFFSET(ScummRp::tocs[i], 10);
+ 				j = 1;
+ 				ScummIO::info(INF_DETAIL, "Removed CO_0010 from index (duplicate of CO_0117)");
+ 			}

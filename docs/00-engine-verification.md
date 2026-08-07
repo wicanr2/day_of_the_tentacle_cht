@@ -108,11 +108,79 @@ ERROR: Modifying Maniac Mansion V2 is known to corrupt it
 處理方式是套用一代的 `scummtr-maniacv2-lossless.patch`（三處都以巨集開關包住，預設行為與上游相同），
 並且在動文字之前先跑「抽 → 原封回填 → 逐檔 byte 比對」。
 
-## F6：v6 talkie 的語音控制碼不可更動
+## F6：v6 talkie 的語音控制碼不可更動（本作是 16 bytes，不是 8）
 
-同為 SCUMM v6 CD 版的《妙探闖通關》實測：配音台詞開頭固定 8 bytes 的語音 offset／長度控制碼
-（`\255\010…` 兩組），是 `monster.sou` 的索引。翻譯時必須原樣保留。
-《瘋狂時代》是同樣的 talkie 結構，抽字後第一件事就是確認這個格式在本作的實際樣貌。
+《妙探闖通關》（同為 SCUMM v6 CD 版）的語音前綴是兩組 `\255\010`、共 8 bytes。
+**本作實測是四組、共 16 bytes**：
+
+```
+\255\010\024\123  \255\010\009\000  \255\010\010\000  \255\010\000\000
+```
+
+6,647 行裡有 **5,316 行**帶這個前綴（配音台詞）。翻譯時整段原樣保留。
+
+這條是「凡蒸餾自其他遊戲的規則，一律先在本作驗證再引用」的實例：照抄 8 bytes 會把後半段
+控制碼當成台詞內文一起翻掉。
+
+## F8：scummtr 會把 v1 的 room offsets 全部寫成 0
+
+`GlobalRoomIndex::load()`（`src/ScummRp/toc.cpp`）對 V1 有一段自承的 hack：
+
+```cpp
+// hack for V1
+if (size > 0) // means V1
+    for (int i = 0; i < _size; ++i)
+        _toc[i].offset = 0;
+```
+
+清零是 scummtr 內部模型需要的（V1 每個 room 自成一個 LFL 檔，內部一律以 offset 0 起算），
+但 `save()` 會把清零後的值原樣寫回 00.LFL。而 ScummVM 的 `readClassicIndexFile()`
+確實會讀這個欄位（`_res->_types[rtRoom][i]._roomoffs`）。
+
+實測：原封回填後 00.LFL 有 **103 bytes** 差異，全部是 55 個 room offset 中的非零值被寫成 0
+（另外 3 個原本就是 0、1 個 byte 恰好為 0，103 這個數字與此完全吻合）。
+
+## F9：scummtr 會把原版自帶的重複索引寫成無效
+
+`RoomPack::_checkDupOffset()`（`src/ScummRp/block.cpp`）有一批寫死的修正，其中兩條的註解
+就叫 **"Hack for Maniac Mansion V1"**：原版資料裡
+
+| 索引 | roomId | offset |
+|---|---|---|
+| script #7 ≡ #12 | 8 | 3524 |
+| script #8 ≡ #13 | 8 | 3592 |
+
+是重複的（同 room 同 offset，已逐 byte 驗過）。scummtr 的內部模型不允許重複位移
+（否則丟 `Duplicate offset in index`），於是把編號較小那筆設成 -1。
+
+抑制本身是必要的，**但它同樣被寫回檔案**：`0xFFFF` 是 ScummVM 的「無效索引」標記，
+於是 script #7、#8 在遊戲裡就此消失。而那兩個位移經 block 鏈驗證都是**合法的 block 起點**
+（鏈：0 → 3524 → 3592 → 3614 → …），不是原版的死索引。
+
+實測：修掉 F8 之後，剩下的差異正好是這 **4 bytes**。
+
+### 修法（`patches/scummtr-maniacv1-lossless.patch`，3 檔 107 行新增）
+
+兩者同構：**內部照樣抑制，寫回時還原原值**。都以巨集開關包住，預設行為與上游完全相同。
+
+- `SCUMMTR_PRESERVE_V1_ROOM_OFFSETS` — `GlobalRoomIndex` 留一份 room offset 原值，`save()` 時放回。
+- `SCUMMTR_PRESERVE_DUP_INDEX_ENTRIES` — `_checkDupOffset()` 改呼叫新的 `suppressOffset()`，
+  記下原值；`TableOfContent::save()` 進入時還原、離開時再抑制。這條同時修掉 Sam & Max、
+  Loom、Monkey1 的同類 hack，不只本作。
+
+還要一併套用一代查出的三個開關（`SCUMMTR_PRESERVE_AMBIGUOUS_OI`、
+`SCUMMTR_KEEP_DANGLING_INDEX_ENTRIES`、`SCUMMTR_CJK_CUSTOM_CODESPACE`）。
+
+### 驗收（正對照完整）
+
+| 開關 | 00.LFL 差異 |
+|---|---|
+| 只有一代那三個 | 103 bytes |
+| ＋ `PRESERVE_V1_ROOM_OFFSETS` | 4 bytes |
+| ＋ `PRESERVE_DUP_INDEX_ENTRIES` | **0 bytes** |
+
+**兩條產線的 round-trip 都是 byte-perfect**：v1 的 53 個 LFL 全過（抽出 1,121 行）、
+《瘋狂時代》的 `TENTACLE.000/.001` 全過（抽出 6,647 行）。
 
 ## F7：SMUSH 字幕吃的是同一份 CJK 字型
 
@@ -127,9 +195,22 @@ ERROR: Modifying Maniac Mansion V2 is known to corrupt it
 
 ## 待驗
 
+> **U1、U4、U7 已驗完，結論併入上面各節；U2/U3 由小樣實測收斂成具體的版面問題，見
+> `50-status.md`。以下是還沒有結論的項目。**
+>
+> - **U1（已驗）**：`--detect` 回 `scumm:tentacle → Day of the Tentacle (CD/English)`，
+>   v1 回 `scumm:maniac → Maniac Mansion (V1/DOS/English)`。偵測正常，不必處理。
+>   （中文化後 md5 改變，會走 fallback 並印 `Your game version appears to be unknown`，
+>   屬預期行為，發佈包用 ini 指定 gameid。）
+> - **U4（已驗）**：指令列是**文字**，在 `[061:SCRP#0097]` 與 `#0123`，各 14 個字串——
+>   Walk to／Give／Open／Close／Pick up／`L\xb0k at`／Talk to／Use／Push／`Pu\xb8`
+>   ＋介系詞 in／with／on／to。其中 `0xB0`＝“oo”、`0xB8`＝“ll” 是原文自用的合字，
+>   兩者都落在 CJK 碼空間 `0xA1–0xFD` 內；全檔只有這 7 處（另有 3 處 `0x82`/`0x90`
+>   不在碼空間、無害），翻成中文後自然消失。v1 的原文完全沒有高位元組。
+> - **U7（已驗）**：見 F6，本作是 16 bytes。
+
 | # | 項目 | 驗證方式 |
 |---|---|---|
-| U1 | 這份 `TENTACLE.000` 的前 5000 bytes md5 `cca440023dc1ec82e57ad26e9733a33e` 不在 `scumm-md5.h` 裡，可能是未收錄的變體 | `scummvm --path=… --detect`，看是否報 unknown md5、gameid 是否為 `tentacle` |
 | U2 | **倚天 24×24 hi-res 在 v6 上成不成立**。v2 的作法是 `_textSurfaceMultiplier=2` 加上補齊 `drawStripToScreen()` 的底圖 2× 放大；v6 的對應路徑、`CharsetRendererClassic`、SMUSH（F7）、verb 版面都是另一套 | 先讀 v6 的對應程式碼；小樣回填後截圖看底圖有無雪花、SMUSH 字幕有無爆框、對白有無超出畫面 |
 | U3 | v6 的對白是畫在房間畫面上的浮動文字，字大一倍後長句的換行與置中 | 小樣長句實測；必要時在譯文端做像素級斷行 |
 | U4 | 《瘋狂時代》的指令列是文字還是圖 | descumm 反編 verb script ＋ 實機截圖 |
