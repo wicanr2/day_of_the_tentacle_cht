@@ -86,21 +86,60 @@ min 67   p25 132   中位 180   p75 242   max 390 Hz
 | 299 Hz | `^YESTERDAY!`（佛瑞德博士激動時） |
 | 390 Hz | `Hahahaha!`（笑聲） |
 
-## TTS 引擎
+## TTS 引擎的比較（都實測過）
 
-`edge-tts` 7.2.8 實測可用，台灣中文有三個聲音：
+### piper：腔調不對，出局
 
-| ShortName | 性別 |
-|---|---|
-| `zh-TW-HsiaoChenNeural` | 女 |
-| `zh-TW-YunJheNeural` | 男 |
-| `zh-TW-HsiaoYuNeural` | 女 |
+本地、離線、極快，但中文模型只有四個，**全部是 zh_CN**（大陸腔），
+每個只有一位說話者：`zh_CN-chaowen-medium`、`zh_CN-huayan-medium`、
+`zh_CN-huayan-x_low`、`zh_CN-xiao_ya-medium`。本專案要的是台灣語音。
 
-只有三個聲音，但支援 `pitch` / `rate` / `volume`，可以衍生出足夠的音色區隔。
-實測 ±30Hz 的 pitch 偏移品質仍可接受。
+### edge-tts：夠用
+
+三個台灣聲音，實測各 pitch 下的**實際基頻**：
+
+| 聲音 | −40Hz | +0Hz | +40Hz | 同一句的長度 |
+|---|---|---|---|---|
+| `zh-TW-YunJheNeural`（男） | 82 | 110 | 140 Hz | 5.9 s |
+| `zh-TW-HsiaoYuNeural`（女） | 138 | 188 | 239 Hz | 6.7 s |
+| `zh-TW-HsiaoChenNeural`（女） | 158 | 216 | 271 Hz | 5.8 s |
+
+**連續覆蓋 82–271 Hz，中間沒有斷層**；HsiaoYu 的語速明顯較慢，是額外的音色維度。
+原音的 F0 分布是 66–390 Hz（中位 180），兩端各有一小塊超出覆蓋範圍，
+可以用後製調 pitch 補。
 
 [雷] 裝在 `dott-cht:latest` 的 `/opt/venv` 會相依衝突（那個 venv 帶
 `--system-site-packages`），要另開一個乾淨的 venv。
+
+### voice cloning（F5-TTS 等）
+
+質的不同——用英文原音當 reference，讓角色**用自己的聲音講中文**。
+本機沒有 NVIDIA GPU（只有 Intel Meteor Lake 內顯），14 核 CPU，
+所以只能跑 CPU 版。速度實測見下。
+
+## 音高帶：不必先知道哪句是誰說的
+
+全量 F0（4,436 段量得到）：
+
+```
+十分位  66 / 105 / 121 / 139 / 160 / 179 / 205 / 225 / 244 / 266 / 390 Hz
+音訊總長 201 分鐘，平均每句 2.72 秒，最長 21.4 秒
+```
+
+依 edge-tts 的實測覆蓋範圍切成 10 帶，每帶 192–661 句，分布相當均勻
+（`tools/voice_bands.py`）。同一角色的句子多半落在同一帶，聽感自然一致；
+帶的中心頻率就是那組句子該有的音高。每帶另外挑一段 3–8 秒的原音當
+voice cloning 的 reference。
+
+## 音訊規格：8 bit，跟原版同一個量級
+
+原版語音是 1993 年的 **8-bit 22,050 Hz** 錄音（`ffprobe` 的
+`bits_per_raw_sample=8`），FLAC 壓完每秒約 7.2 KB。
+
+TTS 直出的 24-bit 每秒要 35 KB，全量換完 `monster.sof` 會從 95 MB 膨脹到
+**550 MB**。降成 8 bit（`-c:a pcm_u8` 再壓 FLAC）之後每秒 8.6 KB，
+30 句實測平均 25.6 KB，**全量推估 111 MB**——與原版音訊的 90.5 MB 同一個量級。
+顆粒感反而更貼近遊戲本身的錄音。
 
 ## 小樣（已跑通）
 
