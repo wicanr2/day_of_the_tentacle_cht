@@ -138,7 +138,7 @@ debugger `room 42` 跳過去就行。房間號是從 `scummtr -h` 的 dump 反�
 |---|---|---|---|
 | 引擎 | ✅ slim 版（53 相依，自帶 49 支 .so） | ✅ mingw 交叉編譯 + SDL2.dll | ✅ CI 出 universal（arm64+x86_64） |
 | ScummTR | ✅ | ✅ 交叉編譯 | ✅ CI 一併編 universal |
-| patch 包 | ✅ 11 MB | ✅ 13 MB | ✅ 18 MB |
+| patch 包 | ✅ 12 MB | ✅ 14 MB | ✅ 19 MB |
 | full 包 | ✅ 99 MB | ✅ 105 MB | ✅ 110 MB |
 | 實測 | ✅ 乾淨的 `ubuntu:24.04` 跑得起來 | ✅ wine 下 `--version` 與 `--detect` 都對 | ⚠ 兩支都驗過是 fat binary，但**沒有實體 Mac 可測** |
 
@@ -146,6 +146,11 @@ macOS 的 `.app` 精簡過：CI 會把 ScummVM 樹裡的 engine-data 整批塞�
 15 MB、`fonts-cjk.dat` 37 MB…），而這支 binary 只編了 SCUMM，那些永遠不會被讀。
 只留 `fonts.dat` 與 `classicmacfonts.dat` 之後，Resources 從 72 MB 降到 7.1 MB，
 patch 包從 82 MB 降到 18 MB。
+
+三平台的 binary 都用正對照確認過含語音切換（`strings | grep CHTVOICE`，
+macOS 的 universal binary 會出現兩次，每個架構各一）。查的是
+`ScummVM.app/Contents/MacOS/scummvm.bin`——同目錄的 `scummvm` 是啟動用的
+shell script，對它做 `strings` 永遠是 0。
 
 `Features compiled in: FLAC` 兩個平台都確認過——沒有它 `monster.sof` 讀不出來，
 而且**不會報錯**，只是整片語音消失。
@@ -163,8 +168,14 @@ patch 包從 82 MB 降到 18 MB。
 回填後 `TENTACLE.001` 數得出 549,985 個中文字組、`maniac/01.LFL` 數得出 87 個，
 遊戲正常進到開場動畫。`Unrecognized game`（ini 註解用了 `;`）那個雷就是在這一步抓到的。
 
+### mac CI 的下載會偶爾斷
+
+`downloads.xiph.org` 從 GitHub 的 macOS runner 連過去偶爾斷在 TLS 握手
+（curl exit 35，LibreSSL `SSL_ERROR_SYSCALL`）。`--retry 3` 救不了——curl 只
+重試它認定的暫時性狀況，35 不在其中——要 `--retry-all-errors`。已改，並加了
+osuosl 鏡像當備援。
+
 ## 待辦
 
-1. macOS：等 CI 產出 `.app` 與 universal `scummtr`，用 `tools/package-macos.sh` 注入中文資料。
-2. 中文語音（TTS）。
-3. GitHub Release、宣傳片。
+1. 嘴型同步：中文語音的時間戳仍是英文節奏，沒有依中文長度重算。
+2. GitHub Release、宣傳片（含兩組中文語音的 A/B 展示）。
