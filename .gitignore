@@ -42,3 +42,7 @@ tools/promo/out/
 
 # 小樣／中間產物
 dumps/
+
+# AppImage 打包用的暫存（appimagetool 本體、圖示、ROM 目錄都在 repo 外）
+*.AppImage
+promo-icon.png

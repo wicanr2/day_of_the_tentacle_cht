@@ -140,6 +140,7 @@ debugger `room 42` 跳過去就行。房間號是從 `scummtr -h` 的 dump 反�
 | ScummTR | ✅ | ✅ 交叉編譯 | ✅ CI 一併編 universal |
 | patch 包 | ✅ 12 MB | ✅ 14 MB | ✅ 19 MB |
 | full 包（含三組語音 + MT-32） | ✅ 255 MB | ✅ 265 MB | ✅ 270 MB |
+| AppImage（full） | ✅ 276 MB 單檔 | — | — |
 | 實測 | ✅ 乾淨的 `ubuntu:24.04` 跑得起來 | ✅ wine 下 `--version` 與 `--detect` 都對 | ⚠ 兩支都驗過是 fat binary，但**沒有實體 Mac 可測** |
 
 macOS 的 `.app` 精簡過：CI 會把 ScummVM 樹裡的 engine-data 整批塞進去（`ultima.dat`
@@ -167,6 +168,29 @@ shell script，對它做 `strings` 永遠是 0。
 拿 patch 包走一次玩家的路徑：`套用中文化.sh` 吃原版目錄 → 回填 → 啟動。
 回填後 `TENTACLE.001` 數得出 549,985 個中文字組、`maniac/01.LFL` 數得出 87 個，
 遊戲正常進到開場動畫。`Unrecognized game`（ini 註解用了 `;`）那個雷就是在這一步抓到的。
+
+### AppImage（full，單檔）
+
+`tools/build-appimage.sh` 把整個 full 版包成一支 276 MB 的 AppImage：引擎、49 支
+`.so`、中文化後的遊戲資料、三組語音、MT-32 ROM 全在裡面，圖示用遊戲自己的標題 logo。
+
+兩個實作重點：
+
+- **`monster*.sof` 要複製實體檔，不能沿用目錄包的符號連結。** 目錄包為了省磁碟用
+  連結指回 `game-orig`／`game-cht`，打進 squashfs 之後在別台機器上就是死連結。
+- **AppRun 每次重寫 ini 裡的路徑欄位。** AppImage 每次執行的掛載點都不同
+  （`/tmp/.mount_XXXXXX`），寫死的絕對路徑下次就失效。但不能整份重寫——玩家的
+  語音包選擇、音量、存檔要留著。所以只 `sed` 那三行（兩個 `path=`、一個
+  `extrapath=`），其餘不動。設定與存檔放 `~/.local/share/dott-cht/`。
+
+[雷] appimagetool 自己就是一個 AppImage，容器裡沒有 FUSE 會死在
+「No suitable fusermount binary found on the $PATH」。設 `APPIMAGE_EXTRACT_AND_RUN=1`
+讓它先自解再執行就好。產出的 AppImage 在沒有 FUSE 的環境（例如容器）同樣要用這個
+環境變數；一般桌面有 FUSE，直接雙擊即可。
+
+驗收（乾淨 `ubuntu:24.04`，無 FUSE）：AppImage 跑起來進到開場，左右聲道差 423
+（MT-32 生效），把設定改成 `cht_voice_pack=1` 之後播放期間開的是
+`monster-tw.sof`——中文語音包在 squashfs 裡讀得到。
 
 ### MT-32：只進 full 包
 
