@@ -175,7 +175,14 @@ shell script，對它做 `strings` 永遠是 0。
 重試它認定的暫時性狀況，35 不在其中——要 `--retry-all-errors`。已改，並加了
 osuosl 鏡像當備援。
 
+## Release
+
+**v1.0 已釋出**，只上三個 patch 包（Linux `.tar.zst`／Windows `.zip`／
+macOS `.tar.gz`）。**full 包與語音包不進 Release**——full 包含中文化後的遊戲
+資料，語音包是原版 `monster.sof` 的改造版（113 段仍是原音）且 edge-tts 的輸出
+散布屬灰色地帶。兩者只留本機 `dist-all/`。
+
 ## 待辦
 
 1. 嘴型同步：中文語音的時間戳仍是英文節奏，沒有依中文長度重算。
-2. GitHub Release、宣傳片（含兩組中文語音的 A/B 展示）。
+2. 宣傳片（含兩組中文語音的 A/B 展示）。

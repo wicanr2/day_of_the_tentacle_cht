@@ -10,8 +10,9 @@
 
 repo 只有碼表、譯文、字型工具與引擎修補，不含遊戲資料。想直接玩，跳到〈怎麼玩〉。
 
-> **狀態：兩條產線的譯文都已完成，Linux／Windows 包可用，macOS 建置中。**
-> 瘋狂時代 4,239 句、一代 859 句，回填全部 byte-perfect。
+> **v1.0 已釋出 → [下載 Linux／Windows／macOS 安裝包](https://github.com/wicanr2/day_of_the_tentacle_cht/releases/tag/v1.0)**
+>
+> 兩條產線的譯文都已完成：瘋狂時代 4,239 句、一代 859 句，回填全部 byte-perfect。
 > 泰德電腦裡的一代已在遊戲內實測跳得進去（見下方截圖）。
 > 進度細節見 [`docs/50-status.md`](docs/50-status.md)。
 > 姊妹專案：[《瘋狂大樓》一代繁中化](https://github.com/wicanr2/maniac_mansion_cht)。
@@ -73,7 +74,8 @@ repo 只有碼表、譯文、字型工具與引擎修補，不含遊戲資料。
 `TENTACLE.001`、`monster.sof`（語音，可省），以及光碟裡 `MANIAC/` 資料夾下的
 54 個 `.LFL`。Steam／GOG 的 Remastered 版格式不同，不適用。
 
-安裝包裡有引擎、中文字型、譯文與一鍵套用腳本，但**不含遊戲資料**：
+[v1.0 的安裝包](https://github.com/wicanr2/day_of_the_tentacle_cht/releases/tag/v1.0)
+裡有引擎、中文字型、譯文與一鍵套用腳本，但**不含遊戲資料**：
 
 | 平台 | 套用 | 開始玩 |
 |---|---|---|
@@ -127,8 +129,9 @@ ScummVM 要設**兩個 target**，範本在
 所以換語音等於換一個檔名再重讀一次索引——腳本與存檔都不用動。
 機制與量測見 [`docs/60-voice.md`](docs/60-voice.md)。
 
-**語音包不散布**：它是原版 `monster.sof` 的改造版（沒翻到的 113 段仍是原音），
-而且 edge-tts 走的是微軟的線上服務。repo 裡只有產生它的工具。
+**語音包不散布，也不在 Release 裡**：它是原版 `monster.sof` 的改造版（沒翻到的
+113 段仍是原音），而且 edge-tts 走的是微軟的線上服務。repo 與安裝包裡只有
+產生它的工具，沒放語音時遊戲就是原本的英文原音。
 
 ## 1993 年的評語
 
