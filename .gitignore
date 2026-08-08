@@ -33,5 +33,12 @@ __pycache__/
 banner/review-*
 banner/gamehunter-*
 
+# 推廣片的擷取素材（原版音訊與影像）留本機，只推合成腳本與靜音 GIF
+*.mp4
+*.raw
+bgm.wav
+tools/promo/cap/
+tools/promo/out/
+
 # 小樣／中間產物
 dumps/

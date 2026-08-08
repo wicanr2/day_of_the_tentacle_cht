@@ -17,6 +17,8 @@ repo 只有碼表、譯文、字型工具與引擎修補，不含遊戲資料。
 > 進度細節見 [`docs/50-status.md`](docs/50-status.md)。
 > 姊妹專案：[《瘋狂大樓》一代繁中化](https://github.com/wicanr2/maniac_mansion_cht)。
 
+![開場：紫色觸手喝下廢水](screenshots/dott-cht-demo.gif)
+
 ![瘋狂時代 指令列中文](screenshots/dott-verbs-zh.png)
 
 ## 兩套遊戲，兩條產線
