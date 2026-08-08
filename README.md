@@ -10,7 +10,7 @@
 
 repo 只有碼表、譯文、字型工具與引擎修補，不含遊戲資料。想直接玩，跳到〈怎麼玩〉。
 
-> **狀態：兩條產線的譯文都已完成，正在收尾打包。**
+> **狀態：兩條產線的譯文都已完成，Linux／Windows 包可用，macOS 建置中。**
 > 瘋狂時代 4,239 句、一代 859 句，回填全部 byte-perfect。
 > 進度細節見 [`docs/50-status.md`](docs/50-status.md)。
 > 姊妹專案：[《瘋狂大樓》一代繁中化](https://github.com/wicanr2/maniac_mansion_cht)。
@@ -63,19 +63,45 @@ repo 只有碼表、譯文、字型工具與引擎修補，不含遊戲資料。
 
 ## 怎麼玩
 
-需要自備《Day of the Tentacle》的 CD 版資料（`TENTACLE.000`、`TENTACLE.001`、`monster.sof`），
-以及光碟裡 `MANIAC/` 資料夾下的 54 個 `.LFL`。
+需要自備《Day of the Tentacle》**1993 年的原始 CD 版**資料：`TENTACLE.000`、
+`TENTACLE.001`、`monster.sof`（語音，可省），以及光碟裡 `MANIAC/` 資料夾下的
+54 個 `.LFL`。Steam／GOG 的 Remastered 版格式不同，不適用。
 
-ScummVM 要設**兩個 target**，範本在 [`dist/scummvm-zhtw.ini.sample`](dist/scummvm-zhtw.ini.sample)。
-其中兩件事寫錯就進不去：
+安裝包裡有引擎、中文字型、譯文與一鍵套用腳本，但**不含遊戲資料**：
 
-- `easter_egg` 要明確指到一代的 target 名。不寫的話 ScummVM 改用路徑搜尋，
-  而同一份 LFL 同時符合 C64／V1 DOS／NES 多個版本，會挑到第一個候選（C64），
+| 平台 | 套用 | 開始玩 |
+|---|---|---|
+| Windows | 把原版資料夾拖到「套用中文化.bat」上 | `執行遊戲.bat` |
+| Linux | `./套用中文化.sh /路徑/到/原版` | `./執行遊戲.sh` |
+| macOS | `./套用中文化.command /路徑/到/原版` | 開啟 `.app` |
+
+腳本會把原版複製一份到包裡的 `game/` 之後才動手，不會改到你的原版。
+
+玩到中期用伯納打開泰德房間那台電腦，就會跳進中文版的一代；玩完切回來，
+《瘋狂時代》的進度原封不動。
+
+### 設定檔的三個雷
+
+ScummVM 要設**兩個 target**，範本在
+[`dist/scummvm-zhtw.ini.sample`](dist/scummvm-zhtw.ini.sample)（安裝包已經設好）。
+自己改的話有三件事寫錯就進不去，都是實際踩過的：
+
+- **註解只能用 `#`，不能用 `;`。** ScummVM 的設定解析器只認 `#`，遇到 `;`
+  開頭的行會判定檔案有問題而整份丟掉，症狀是說 `Unrecognized game`，
+  看起來像 target 名字打錯。
+- **`easter_egg` 要明確指到一代的 target 名。** 不寫的話走路徑搜尋，
+  而同一份 LFL 同時符合 C64／V1 DOS／NES，會挑到第一個候選（C64），
   啟動時直接 assertion 中止。
-- 兩個 target 都**不要**寫 `language`。ScummVM 看到遊戲夾裡有 `chinese_gb16x12.fnt`
-  就會判成中文；手動寫 `language=zh` 反而會被當成別的中文變體而不載字型，整片亂碼。
+- **兩個 target 都不要寫 `language`。** ScummVM 看到遊戲夾裡有
+  `chinese_gb16x12.fnt` 就會判成中文；手寫 `language=zh` 反而被當成別的中文變體，
+  不載字型、整片亂碼。
 
-（完整的三平台安裝包與下載連結待補。）
+### 字型
+
+安裝包裡的中文字型烘自 **WenQuanYi Zen Hei Sharp 的 15px embedded bitmap**
+（設計師手繪的點陣，GPL + 字體例外條款）。開發時另有一份倚天中文系統的原生點陣字，
+筆畫更銳利，但那是商業字型的衍生物，只留本機不散布。兩份的字模尺寸與碼位完全相同，
+換檔就換字形。
 
 ## 1993 年的評語
 
