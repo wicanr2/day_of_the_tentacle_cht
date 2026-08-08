@@ -43,9 +43,18 @@ echo "=== 4. 編碼 ==="
 python3 tools/cht_codec.py encode-file -t "cht_table_${WHICH}.json" \
     "$W/dumps/${WHICH}_zh.txt" "$W/dumps/${WHICH}_enc.txt"
 
-echo "=== 5. 烘倚天 16x${FONT_ROWS} 字型 ==="
+# 兩份字型，字模尺寸與碼位完全相同，差別只在字形來源與能不能公開散布：
+#   ${WHICH}.fnt      倚天中文系統的原生點陣字 —— 最清晰，但是商業字型的衍生物，
+#                     只能留本機（full 包）。
+#   ${WHICH}-wqy.fnt  WenQuanYi Zen Hei Sharp 的 embedded bitmap strike（15px 手繪點陣），
+#                     GPL + 字體例外條款，可以跟公開的 patch 包一起散布。
+echo "=== 5a. 烘倚天 16x${FONT_ROWS} 字型（本機用）==="
 python3 tools/build_eten_font.py "cht_table_${WHICH}.json" --eten-dir "$W/font-src" \
     --size 16 --rows "$FONT_ROWS" --embolden -o "$W/dumps/${WHICH}.fnt"
+
+echo "=== 5b. 烘 WQY 16x${FONT_ROWS} 字型（可公開）==="
+python3 tools/build_eten_font.py "cht_table_${WHICH}.json" --source wqy \
+    --size 16 --rows "$FONT_ROWS" --embolden -o "$W/dumps/${WHICH}-wqy.fnt"
 
 echo "=== 6. 回填 ==="
 mkdir -p "$DEST"

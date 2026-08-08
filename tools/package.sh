@@ -21,7 +21,13 @@ NAME="dott-cht-${PLATFORM}-${KIND}-${STAMP}"
 D="$OUT/$NAME"
 
 case "$PLATFORM" in
-  linux) BIN="$W/tools/scummvm-src/scummvm";     BINNAME=scummvm
+  # 散布用的是 scummvm-slim（--disable-all-engines --enable-engine=scumm，
+  # 關掉 curl/fluidsynth/一堆 codec）：開發用那支完整配置的 ldd 有 100 條，
+  # 塞進散布包等於要求玩家機器上樣樣齊全。slim 版剩 53 條，其中大半是 SDL2
+  # 自己的 X11/wayland/pulse 相依，桌面環境本來就有。
+  linux) BIN="$W/tools/scummvm-slim/scummvm"
+         [ -f "$BIN" ] || BIN="$W/tools/scummvm-src/scummvm"
+         BINNAME=scummvm
          TR="$W/tools/scummtr-src/build/bin/scummtr"; TRNAME=scummtr ;;
   win)   BIN="$W/tools/scummvm-win/scummvm.exe"; BINNAME=scummvm.exe
          TR="$W/tools/scummtr-win/build/bin/scummtr.exe"; TRNAME=scummtr.exe ;;
@@ -36,12 +42,36 @@ cp "$BIN" "$D/$BINNAME"
 # Windows 版動態連結 SDL2，少了這支 DLL 會安靜地跳出（exit 53，畫面上什麼都沒有）。
 # 其餘相依（GDI32/KERNEL32/SHELL32/USER32/WINMM/WINSPOOL/msvcrt/ole32）都是系統 DLL。
 if [ "$PLATFORM" = win ]; then
-    cp "$W/tools/scummvm-win/SDL2.dll" "$D/" 2>/dev/null ||         echo "警告：找不到 SDL2.dll，Windows 版會跑不起來"
+    cp "$W/tools/scummvm-win/SDL2.dll" "$D/" 2>/dev/null || \
+        echo "警告：找不到 SDL2.dll，Windows 版會跑不起來"
+else
+    # 把非系統的 .so 收進 lib/，啟動腳本再指 LD_LIBRARY_PATH。
+    #
+    # 只排除兩類：
+    #   glibc 系列與 loader —— 跟系統的 ld.so 綁死，換版本必炸。
+    #   libGL / libEGL / libGLX —— 跟顯示驅動綁死，帶自己的版本會跟 mesa/nvidia 打架。
+    # X11 / xcb / wayland 那些**要收**：它們是純協議庫，不碰驅動，而且不是每台
+    # 目標機器都齊全（第一版把它們排掉，在乾淨的 ubuntu 上就是
+    # 「libX11.so.6: cannot open shared object file」）。
+    mkdir -p "$D/lib"
+    ldd "$BIN" | awk '/=> \//{print $3}' | sort -u | while read -r so; do
+        case "$(basename "$so")" in
+            libc.so.*|libm.so.*|libpthread.so.*|libdl.so.*|librt.so.*) continue ;;
+            ld-linux*|libGL.so.*|libGLdispatch*|libGLX*|libEGL*) continue ;;
+        esac
+        cp -L "$so" "$D/lib/" 2>/dev/null || true
+    done
+    echo "自帶 $(ls "$D/lib" | wc -l) 支 .so"
 fi
 
 # ---- 中文資料：字型 ＋ 編碼後的譯文（兩條產線各一份）----
-cp "$W/dumps/dott.fnt"       "$D/cht/dott-chinese_gb16x12.fnt"
-cp "$W/dumps/maniac-v1.fnt"  "$D/cht/maniac-chinese_gb16x12.fnt"
+#
+# 公開的 patch 包用 WQY Zen Hei Sharp 烘的字型（GPL + 字體例外，可散布）；
+# full 包留本機，用倚天中文系統的原生點陣字（更清晰，但是商業字型的衍生物）。
+# 兩份的字模尺寸與碼位完全相同，換檔就換字形，不必重編引擎也不必重新回填。
+if [ "$KIND" = full ]; then FONTSFX=""; else FONTSFX="-wqy"; fi
+cp "$W/dumps/dott${FONTSFX}.fnt"       "$D/cht/dott-chinese_gb16x12.fnt"
+cp "$W/dumps/maniac-v1${FONTSFX}.fnt"  "$D/cht/maniac-chinese_gb16x12.fnt"
 cp "$W/dumps/dott_enc.txt"       "$D/cht/dott_zh.txt"
 cp "$W/dumps/maniac-v1_enc.txt"  "$D/cht/maniac_zh.txt"
 
@@ -65,7 +95,10 @@ if [ "$PLATFORM" = linux ]; then
     cat > "$D/執行遊戲.sh" <<'SH'
 #!/bin/sh
 cd "$(dirname "$0")"
-./scummvm --config=./scummvm.ini dott-zh
+# lib/ 裡是這包自帶的 .so（SDL2、FLAC 等）；放在系統路徑之後，
+# 系統上已有較新版本時優先用系統的。
+LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$(pwd)/lib" \
+  ./scummvm --config=./scummvm.ini dott-zh
 SH
     chmod +x "$D/執行遊戲.sh"
     if [ "$KIND" = patch ]; then
@@ -167,7 +200,7 @@ cp README-dist.md "$D/README.txt" 2>/dev/null || true
 # ---- 壓縮 ----
 # full 包裡的 monster.sof 是符號連結（95 MB，不重複複製），tar 要 -h 解引用；
 # 沒有 -h 的話玩家端解出來會是一條指向本機路徑的死連結。
-( cd "$OUT" && case "$PLATFORM" in
+( cd "$OUT" && rm -f "$NAME.tar.zst" "$NAME.zip" && case "$PLATFORM" in
     linux) tar chf - "$NAME" | zstd -19 -T0 -q -o "$NAME.tar.zst" ;;
     win)   zip -qr9 "$NAME.zip" "$NAME" ;;
   esac )

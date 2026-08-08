@@ -147,6 +147,33 @@ import -window root shot.png
 3. **兩個 target 都不要寫 `language`。** ScummVM 看到 `chinese_gb16x12.fnt`
    自己會判 ZH_CHN；手寫 `language=zh` 反而變成別的中文變體，不載字型、整片亂碼。
 
+### Linux 包的可攜性
+
+散布用的引擎是另編的 **slim** 版（`--disable-all-engines --enable-engine=scumm`，
+關掉 curl/fluidsynth 與一堆 codec）：開發用那支完整配置 `ldd` 有 100 條，
+塞進散布包等於要求玩家機器樣樣齊全；slim 剩 53 條。
+
+其中 49 支 `.so` 收進包裡的 `lib/`，啟動腳本用 `LD_LIBRARY_PATH` 指過去。
+只有兩類不收：
+
+* **glibc 系列與 loader**（`libc`/`libm`/`libpthread`/`libdl`/`librt`/`ld-linux`）——
+  跟系統的 `ld.so` 綁死，換版本必炸。
+* **`libGL` / `libEGL` / `libGLX`** —— 跟顯示驅動綁死，帶自己的版本會跟 mesa/nvidia 打架。
+
+X11、xcb、wayland 那些**要收**：它們是純協議庫，不碰驅動，而且不是每台機器都齊全。
+第一版把它們一起排掉，在乾淨的 `ubuntu:24.04` 上就是
+`libX11.so.6: cannot open shared object file`。
+
+驗收方式是拿一個**沒裝過任何相依**的 image 跑：
+
+```bash
+docker run --rm -v "$PWD/dist-all":/d:ro ubuntu:24.04 bash -c '
+  cd /tmp && cp -r /d/dott-cht-linux-patch-* p && cd p
+  LD_LIBRARY_PATH=/tmp/p/lib ./scummvm --version'
+```
+
+要看到 `Features compiled in: FLAC ...`——FLAC 在，`monster.sof` 才讀得出來。
+
 ## 9. 端到端驗收
 
 打完包要走一次玩家的路徑，不能只看包裡有哪些檔：
@@ -160,6 +187,20 @@ cp -r dist-all/dott-cht-linux-patch-* /tmp/e2e && cd /tmp/e2e
 驗收點：回填後的 `TENTACLE.001` 裡數得出中文字組（首碼 0xA1–0xF7 接尾碼
 0xA1–0xFD）、`maniac/01.LFL` 也數得出（首碼 0x88–0x9F），而且遊戲真的進得去。
 `Unrecognized game` 那個雷就是在這一步抓到的——只看包內容永遠看不出來。
+
+### 字型有兩份
+
+`build_cht.sh` 一次烘兩份，字模尺寸與碼位完全相同，差別只在字形來源：
+
+| 檔案 | 來源 | 用途 |
+|---|---|---|
+| `dumps/<產線>.fnt` | 倚天中文系統的原生點陣字 | 最清晰，但是商業字型的衍生物，**只進 full 包（本機）** |
+| `dumps/<產線>-wqy.fnt` | WenQuanYi Zen Hei Sharp 的 embedded bitmap strike | GPL + 字體例外，**跟公開的 patch 包一起散布** |
+
+WQY Zen Hei Sharp（`.ttc` 的 face index 2）帶 12/13/14/15/16 px 五個 embedded
+bitmap strike，是設計師手繪的點陣，不是把 outline 描下來的——所以 16×14／16×15
+兩種字模都有對得上的 strike。品質略遜倚天（筆畫較細，加粗後可讀），但這是可以
+公開散布的版本。`package.sh` 依 `full`／`patch` 自動選，不必手動換檔。
 
 ## 10. macOS
 

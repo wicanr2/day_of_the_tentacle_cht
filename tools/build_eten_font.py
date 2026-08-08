@@ -46,6 +46,44 @@ def rows_to_bytes(rows):
     return bytes(out)
 
 
+def pick_strike(face, target):
+    """挑最接近 target 高度的 embedded bitmap strike；沒有回 None。"""
+    best, bestd = None, 1 << 30
+    for i in range(face.num_fixed_sizes):
+        sz = face.available_sizes[i]
+        d = abs(sz.height - target)
+        if d < bestd:
+            best, bestd = i, d
+    return best
+
+
+def embedded_glyph(face, ch, strike):
+    """讀 embedded bitmap strike（設計師手繪點陣），比描 outline 銳利得多。
+
+    WenQuanYi Zen Hei Sharp（face index 2）帶 12/13/14/15/16 px 五個 strike，
+    15px 那個正好對得上本專案的 16×15 字模。
+    """
+    import freetype
+    face.select_size(strike)
+    face.load_char(ch, freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_MONO |
+                   freetype.FT_LOAD_MONOCHROME)
+    bm = face.glyph.bitmap
+    rows = [[0] * DIM[0] for _ in range(DIM[1])]
+    y0 = DIM[1] - (3 if DIM[1] <= 16 else 4) - face.glyph.bitmap_top
+    x0 = face.glyph.bitmap_left
+    for y in range(bm.rows):
+        ty = y0 + y
+        if not 0 <= ty < DIM[1]:
+            continue
+        for x in range(bm.width):
+            tx = x0 + x
+            if not 0 <= tx < DIM[0]:
+                continue
+            if bm.buffer[y * bm.pitch + (x >> 3)] & (0x80 >> (x & 7)):
+                rows[ty][tx] = 1
+    return rows
+
+
 def ttf_glyph(face, ch):
     """Big5 缺字時的備援：從 TTF 描同尺寸點陣。"""
     import freetype
@@ -87,6 +125,12 @@ def main():
     ap.add_argument("--rows", type=int, default=0,
                     help="只輸出每字前 N 列（倚天 15 點的第 15 列全空，"
                          "本作預設裁成 14 列讓邏輯字高剛好 7）")
+    ap.add_argument("--source", choices=("eten", "wqy"), default="eten",
+                    help="eten = 倚天點陣字（本機用，商業字型）；"
+                         "wqy = WenQuanYi Zen Hei Sharp 的 embedded bitmap"
+                         "（GPL + 字體例外，可隨散布包公開）")
+    ap.add_argument("--wqy-face", type=int, default=2,
+                    help="Zen Hei Sharp 在 .ttc 裡的 face index（帶 12-16px strike 的那個）")
     ap.add_argument("--preview")
     args = ap.parse_args()
 
@@ -102,18 +146,31 @@ def main():
     # 攤平成 {字: (lead, trail)}
     if "chars" in table:
         table = {ch: (v["lead"], v["trail"]) for ch, v in table["chars"].items()}
-    d = args.eten_dir
-    ext = "24" if args.size == 24 else "15"
-    native_dim = DIM24 if args.size == 24 else DIM15
-    eten = EtenFont(f"{d}/STDFONT.{ext}", f"{d}/SPCFONT.{ext}",
-                    f"{d}/SPCFSUPP.{ext}", dim=native_dim)
+    eten = None
+    wqy_face = wqy_strike = None
+    if args.source == "eten":
+        d = args.eten_dir
+        ext = "24" if args.size == 24 else "15"
+        native_dim = DIM24 if args.size == 24 else DIM15
+        eten = EtenFont(f"{d}/STDFONT.{ext}", f"{d}/SPCFONT.{ext}",
+                        f"{d}/SPCFSUPP.{ext}", dim=native_dim)
+    else:
+        import freetype
+        wqy_face = freetype.Face(args.fallback_ttf, args.wqy_face)
+        wqy_strike = pick_strike(wqy_face, DIM[1])
+        if wqy_strike is None:
+            sys.exit(f"{args.fallback_ttf} face {args.wqy_face} 沒有 embedded bitmap strike")
+        sz = wqy_face.available_sizes[wqy_strike]
+        print(f"WQY strike: {sz.width}x{sz.height}px（目標 {DIM[0]}x{DIM[1]}）")
 
     blob = bytearray(GLYPH_BYTES * CAPACITY)
     fallback = []
     face = None
 
     for ch, (lead, trail) in table.items():
-        rows = eten.bitmap(ch)
+        rows = eten.bitmap(ch) if eten else embedded_glyph(wqy_face, ch, wqy_strike)
+        if rows is not None and args.source == "wqy" and not any(any(r) for r in rows):
+            rows = None      # strike 缺字，退回 outline
         if rows is None:
             if face is None:
                 import freetype
