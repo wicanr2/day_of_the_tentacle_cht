@@ -12,6 +12,7 @@ repo 只有碼表、譯文、字型工具與引擎修補，不含遊戲資料。
 
 > **狀態：兩條產線的譯文都已完成，Linux／Windows 包可用，macOS 建置中。**
 > 瘋狂時代 4,239 句、一代 859 句，回填全部 byte-perfect。
+> 泰德電腦裡的一代已在遊戲內實測跳得進去（見下方截圖）。
 > 進度細節見 [`docs/50-status.md`](docs/50-status.md)。
 > 姊妹專案：[《瘋狂大樓》一代繁中化](https://github.com/wicanr2/maniac_mansion_cht)。
 
@@ -37,6 +38,11 @@ repo 只有碼表、譯文、字型工具與引擎修補，不含遊戲資料。
 
 ![一代 選角畫面中文](screenshots/v1-selectkids-zh.png)
 ![一代 指令列中文](screenshots/v1-verbs-zh.png)
+
+在《瘋狂時代》裡對怪異愛德房間那台電腦下「使用」，ScummVM 就切進中文版的一代：
+
+![使用電腦](screenshots/egg-1-ed-room-zh.png)
+![一代啟動](screenshots/egg-2-maniac-launched.png)
 
 一代專案做的是 1988 年的 Enhanced 版（SCUMM v2），與光碟裡這份 **V1 不是同一套資料**（md5 已比對，見技術文件）。譯文移植得過來，工程要重做一遍。
 
