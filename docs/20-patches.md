@@ -2,7 +2,7 @@
 
 | 檔案 | 對象 | 規模 |
 |---|---|---|
-| `patches/scummvm-zhtw.patch` | ScummVM（`engines/scumm/`，13 個檔） | +432 −23 |
+| `patches/scummvm-zhtw.patch` | ScummVM（`engines/scumm/`，13 個檔） | +481 −23 |
 | `patches/scummtr-maniacv1-lossless.patch` | ScummTR（`src/ScummRp/`，3 個檔） | +116 −6 |
 
 兩份都以「預設行為與上游完全相同」為前提：ScummTR 那份全部包在巨集開關裡，
@@ -15,6 +15,7 @@ ScummVM 那份的每一處都夾在「本作／一代 ＋ 中文 ＋ hi-res」�
 - **語音包切換**：遊戲中 Ctrl+T 在原版英文／台式中文／原音克隆之間循環，
   改動集中在 `sound.cpp` 的檔名選擇與一個切換函式，見
   [`60-voice.md`](60-voice.md)。
+- **指令列另一套字型**：遊戲夾裡放 `chinese_verb.fnt` 就啟用，見下節。
 - **泰德電腦裡的一代（v1）**：沿用一代中文化為 SCUMM v2 寫的那套（碼空間 0x88–0x9F、
   16×15 字模、14 格制版面），把其中 14 處的閘門由 `_game.version == 2` 放寬成
   `<= 2`。放寬的依據不是猜測：ScummVM 的 `metaengine.cpp` 對 `case 1: case 2:`
@@ -122,6 +123,35 @@ WQY Zen Hei 描補。
 8. **`restoreBackground()` 一併清對應的文字表面** — 指令列這種沒有雙緩衝的虛擬螢幕，
    原本靠 `fill()` 把文字一起蓋掉，而 hi-res 的中文畫在文字表面上，`fill` 碰不到。
 9. **`restoreCharsetBg()` 改成只清「當前虛擬螢幕」對應的那一塊** — 見下。
+
+## 指令列用華康少女體
+
+指令列（給予／打開／查看…）與對白分開用兩套字型：對白是倚天明體，指令列是
+華康少女體（圓體）。做法是遊戲夾裡多放一個 `chinese_verb.fnt`，格式與碼位跟正文
+字型完全相同，`ScummEngine::drawVerb()` 畫字前把 `_useVerbFont` 打開，
+`get2byteCharPtr()` 就改從那份取字模。沒放這個檔就整個關掉，行為與上游一致。
+
+### [雷] FreeType 的 mono 光柵器會把重量級字面的內白填掉
+
+第一次用 `FT_LOAD_TARGET_MONO` 描少女體 W7，16×14 出來糊成一團——「給」「拿」
+「開」都認不出是什麼字，差點下結論說這個尺寸做不到。
+
+真正的原因不是尺寸而是光柵器：少女體 W7 是很重的圓體，mono 光柵器在小尺寸下
+會把封閉筆畫內部一起塗黑。**改成灰階算完（`FT_LOAD_RENDER` 不帶 MONO）再自己
+設門檻二值化**，同樣的 16×14 就清清楚楚。門檻越高筆畫越細，實測 140 是平衡點
+（110 太肥、170 起筆畫開始斷）。
+
+工具支援：`build_eten_font.py --source gray --gray-font <ttf> --gray-threshold N`。
+
+### 為什麼不是 24×24
+
+瘋狂大樓 Deluxe 的指令列是 24×24 的重畫 sprite，本作試過同尺寸——**撞版面**。
+原因是 SCUMM 的**句子列（「走到 查克盆栽」）也走 `drawVerb()`**，把 verb 字模
+放大等於連句子列一起放大，而句子列（邏輯 y=145）到指令第一列（152）只有 7 個
+邏輯像素 = 14 實體像素。這正是本專案當初選 16×14 的同一個理由。
+
+引擎的載入端仍保留 24×24 的支援（由檔案大小回推：每字 28 bytes = 16×14、
+72 bytes = 24×24），將來若動了版面就能直接用。
 
 ## [雷·必看] `clearTextSurface()` 清的是整片，而 v6 的 verb 不會自己重畫
 

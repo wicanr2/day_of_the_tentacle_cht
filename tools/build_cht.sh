@@ -56,6 +56,19 @@ echo "=== 5b. 烘 WQY 16x${FONT_ROWS} 字型（可公開）==="
 python3 tools/build_eten_font.py "cht_table_${WHICH}.json" --source wqy \
     --size 16 --rows "$FONT_ROWS" --embolden -o "$W/dumps/${WHICH}-wqy.fnt"
 
+# 指令列（給予／打開／查看…）另外一套字型：華康少女體。它是圓體，跟倚天明體
+# 的對比讓指令列一眼就分得出來，也貼近瘋狂大樓 Deluxe 的做法。
+# [雷] 一定要走灰階光柵器再自己設門檻——FreeType 的 mono 光柵器會把少女體 W7
+#      這種重量級字面的內白填掉，16x14 直接糊成一團。門檻 140 是實測的平衡點。
+# 同樣是商業字型的衍生物，只進 full 包。
+if [ "$WHICH" = dott ] && [ -f "$W/font-src/girl.ttc" ]; then
+    echo "=== 5c. 烘華康少女體 16x${FONT_ROWS} 指令列字型（本機用）==="
+    python3 tools/build_eten_font.py "cht_table_${WHICH}.json" \
+        --source gray --gray-font "$W/font-src/girl.ttc" \
+        --gray-px "$FONT_ROWS" --gray-threshold 140 \
+        --size 16 --rows "$FONT_ROWS" -o "$W/dumps/${WHICH}-verb.fnt"
+fi
+
 echo "=== 6. 回填 ==="
 mkdir -p "$DEST"
 rm -f "$DEST"/*scummio-tmp
@@ -65,6 +78,7 @@ cp "$W/dumps/${WHICH}_enc.txt" "$DEST/scummtr.txt"
 ( cd "$DEST" && "$OLDPWD/$SCUMMTR" -g "$GAMEID" -r -w -if )
 rm -f "$DEST/scummtr.txt"
 cp "$W/dumps/${WHICH}.fnt" "$DEST/chinese_gb16x12.fnt"
+[ -f "$W/dumps/${WHICH}-verb.fnt" ] && cp "$W/dumps/${WHICH}-verb.fnt" "$DEST/chinese_verb.fnt"
 
 echo "=== 完成：$DEST ==="
 ls -la "$DEST" | head -8

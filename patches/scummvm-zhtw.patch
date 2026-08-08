@@ -1,5 +1,5 @@
 diff --git a/engines/scumm/charset.cpp b/engines/scumm/charset.cpp
-index 190e1818..60a8c407 100644
+index 190e1818..5fa75b34 100644
 --- a/engines/scumm/charset.cpp
 +++ b/engines/scumm/charset.cpp
 @@ -106,6 +106,9 @@ void ScummEngine::loadCJKFont() {
@@ -82,7 +82,41 @@ index 190e1818..60a8c407 100644
  				_2byteWidth = 12;
  				_2byteHeight = 12;
  				_newLineCharacter = 0x21;
-@@ -310,6 +367,16 @@ byte *ScummEngine::get2byteCharPtr(int idx) {
+@@ -174,6 +231,33 @@ void ScummEngine::loadCJKFont() {
+ 			_2byteFontPtr = new byte[((_2byteWidth + 7) / 8) * _2byteHeight * numChar];
+ 			fp.read(_2byteFontPtr, ((_2byteWidth + 7) / 8) * _2byteHeight * numChar);
+ 			fp.close();
++
++			// 繁中化：指令列（給予／打開／查看…）另外用一套字型。遊戲夾裡放
++			// chinese_verb.fnt 就會啟用，格式與尺寸跟正文字型完全相同——只是字面
++			// 不一樣，所以版面、行高、hit-test 一概不受影響。沒放就整個關掉。
++			//
++			// 字模尺寸由檔案大小回推（這個格式沒有檔頭）：每字 bytes = 檔長 / numChar，
++			// 支援兩種——28 = 16x14（與正文同尺寸），72 = 24x24（指令列列距 16 邏輯
++			// 像素 = 32 實體，放得下）。其他大小一律忽略，不猜。
++			ScummFile verbFp(this);
++			if (openFile(verbFp, "chinese_verb.fnt")) {
++				const int32 per = verbFp.size() / numChar;
++				if (per == 28) {
++					_2byteVerbWidth = 16; _2byteVerbHeight = 14;
++				} else if (per == 72) {
++					_2byteVerbWidth = _2byteVerbHeight = 24;
++				} else {
++					warning("chinese_verb.fnt 每字 %d bytes，不是 28（16x14）或 72（24x24），忽略",
++							(int)per);
++					_2byteVerbWidth = 0;
++				}
++				if (_2byteVerbWidth) {
++					const uint32 sz = ((_2byteVerbWidth + 7) / 8) * _2byteVerbHeight * numChar;
++					_2byteVerbFontPtr = new byte[sz];
++					verbFp.read(_2byteVerbFontPtr, sz);
++				}
++				verbFp.close();
++			}
+ 		} else {
+ 			if (fontFile)
+ 				error("SCUMM::Font: Could not open %s",fontFile);
+@@ -310,11 +394,25 @@ byte *ScummEngine::get2byteCharPtr(int idx) {
  			return _2byteFontPtr + base;
  		}
  	case Common::ZH_CHN:
@@ -99,7 +133,16 @@ index 190e1818..60a8c407 100644
  		idx = ((idx % 256) - 0xa1)* 94  + ((idx / 256) - 0xa1);
  		break;
  	default:
-@@ -451,6 +518,19 @@ int CharsetRendererCommon::getFontHeight() const {
+ 		idx = 0;
+ 	}
++	// 繁中化：畫指令列時改從 verb 字型取字模。兩份檔的尺寸與索引完全一致，
++	// 所以只是換一個基底指標，其餘計算共用。
++	if (_useVerbFont && _2byteVerbFontPtr)
++		return _2byteVerbFontPtr + ((_2byteVerbWidth + 7) / 8) * _2byteVerbHeight * idx;
+ 	return	_2byteFontPtr + ((_2byteWidth + 7) / 8) * _2byteHeight * idx;
+ }
+ 
+@@ -451,6 +549,19 @@ int CharsetRendererCommon::getFontHeight() const {
  	} else if (_vm->_isIndy4Jap) {
  		return _vm->_force2ByteCharHeight ? 14 : _fontHeight;
  	} else if (_vm->_useCJKMode && !isSegaCD) {
@@ -119,7 +162,7 @@ index 190e1818..60a8c407 100644
  		return MAX(_vm->_2byteHeight + 1, _fontHeight);
  	} else {
  		return _fontHeight;
-@@ -462,7 +542,9 @@ int CharsetRendererClassic::getCharWidth(uint16 chr) const {
+@@ -462,7 +573,9 @@ int CharsetRendererClassic::getCharWidth(uint16 chr) const {
  	int spacing = 0;
  
  	if (_vm->_useCJKMode && chr >= 0x80)
@@ -130,7 +173,7 @@ index 190e1818..60a8c407 100644
  
  	int offs = READ_LE_UINT32(_fontPtr + chr * 4 + 4);
  	if (offs)
-@@ -560,7 +642,11 @@ int CharsetRenderer::getStringWidth(int arg, const byte *text) {
+@@ -560,7 +673,11 @@ int CharsetRenderer::getStringWidth(int arg, const byte *text) {
  						width += _vm->_2byteWidth;
  					}
  				} else {
@@ -143,7 +186,7 @@ index 190e1818..60a8c407 100644
  					// Original keeps glyph width and character dimensions separately
  					if (_vm->_language == Common::KO_KOR || _vm->_language == Common::ZH_TWN) {
  						width++;
-@@ -865,10 +951,19 @@ void CharsetRendererPC::drawBits1Kor(Graphics::Surface &dest, int x1, int y1, co
+@@ -865,10 +982,19 @@ void CharsetRendererPC::drawBits1Kor(Graphics::Surface &dest, int x1, int y1, co
  }
  
  int CharsetRendererV3::getDrawWidthIntern(uint16 chr) {
@@ -164,7 +207,7 @@ index 190e1818..60a8c407 100644
  	return 8;
  }
  
-@@ -981,7 +1076,19 @@ void CharsetRendererV3::printChar(int chr, bool ignoreCharsetMask) {
+@@ -981,7 +1107,19 @@ void CharsetRendererV3::printChar(int chr, bool ignoreCharsetMask) {
  		_textScreenID = vs->number;
  	}
  
@@ -185,7 +228,7 @@ index 190e1818..60a8c407 100644
  #ifndef DISABLE_TOWNS_DUAL_LAYER_MODE
  		&& (_vm->_game.platform != Common::kPlatformFMTowns)
  #endif
-@@ -1208,6 +1315,14 @@ void CharsetRendererClassic::printChar(int chr, bool ignoreCharsetMask) {
+@@ -1208,6 +1346,14 @@ void CharsetRendererClassic::printChar(int chr, bool ignoreCharsetMask) {
  	if ((_vm->_language == Common::ZH_TWN || _vm->_language == Common::KO_KOR) && is2byte)
  		_origWidth++;
  
@@ -200,7 +243,7 @@ index 190e1818..60a8c407 100644
  	_left += _origWidth;
  	if (is2byte)
  		_left += _cjkSpacing;
-@@ -1295,9 +1410,24 @@ void CharsetRendererClassic::printCharIntern(bool is2byte, const byte *charPtr,
+@@ -1295,9 +1441,24 @@ void CharsetRendererClassic::printCharIntern(bool is2byte, const byte *charPtr,
  			drawTop = _top - _vm->_screenTop;
  		}
  
@@ -488,7 +531,7 @@ index cb0f5bc1..d49abf5a 100644
  		initScreens(0, _screenHeight);
  	} else if ((_game.id == GID_ZAK) && (_game.platform == Common::kPlatformC64)) {
 diff --git a/engines/scumm/scumm.h b/engines/scumm/scumm.h
-index 9864f7e9..0ac5ea04 100644
+index 9864f7e9..c12d6532 100644
 --- a/engines/scumm/scumm.h
 +++ b/engines/scumm/scumm.h
 @@ -502,6 +502,9 @@ enum ScummAction {
@@ -501,7 +544,7 @@ index 9864f7e9..0ac5ea04 100644
  	kScummActionCount
  };
  
-@@ -1778,6 +1781,22 @@ public:
+@@ -1778,8 +1781,29 @@ public:
  	bool isScummvmKorTarget();
  	bool hasLocalizer();
  
@@ -523,7 +566,14 @@ index 9864f7e9..0ac5ea04 100644
 +
  //protected:
  	byte *_2byteFontPtr = nullptr;
++	// 繁中化：指令列專用字型（遊戲夾裡的 chinese_verb.fnt），與正文字型同尺寸同索引。
++	// _useVerbFont 只在 drawVerb() 畫字的那一小段為真。
++	byte *_2byteVerbFontPtr = nullptr;
++	int _2byteVerbWidth = 0, _2byteVerbHeight = 0;
++	bool _useVerbFont = false;
  	byte *_2byteMultiFontPtr[20];
+ 	int _2byteMultiHeight[20];
+ 	int _2byteMultiWidth[20];
 diff --git a/engines/scumm/sound.cpp b/engines/scumm/sound.cpp
 index bfb33823..94daba01 100644
 --- a/engines/scumm/sound.cpp
@@ -658,7 +708,7 @@ index ebb998ec..d7bedd1f 100644
  		sentenceline.right = _virtscr[kVerbVirtScreen].w - 1 + pixelXOffset;
  	}
 diff --git a/engines/scumm/verbs.cpp b/engines/scumm/verbs.cpp
-index 1637dd33..b8018854 100644
+index 1637dd33..4493a1c4 100644
 --- a/engines/scumm/verbs.cpp
 +++ b/engines/scumm/verbs.cpp
 @@ -231,13 +231,21 @@ void ScummEngine_v2::initV2MouseOver() {
@@ -786,3 +836,24 @@ index 1637dd33..b8018854 100644
  			// Click into V2 sentence line
  			runInputScript(kSentenceClickArea, 0, 0);
  		} else if (zone->number == kVerbVirtScreen && _mouse.y >= zone->topline + inventoryArea) {
+@@ -1178,7 +1216,20 @@ void ScummEngine::drawVerb(int verb, int mode, Common::TextToSpeechManager::Acti
+ #endif
+ 
+ 		tmp = _charset->_center;
++		// 繁中化：指令列改用 chinese_verb.fnt。旗標只包住這一次 drawString，
++		// 句子列與對白仍走正文字型。
++		// 字模尺寸可能與正文不同（例如 24x24），連 _2byteWidth/_2byteHeight 一起換掉，
++		// 排版、advance、_charset->_str 邊界（進而 verb 的點擊範圍）就會自動跟著走。
++		const int savedW = _2byteWidth, savedH = _2byteHeight;
++		_useVerbFont = true;
++		if (_2byteVerbFontPtr) {
++			_2byteWidth = _2byteVerbWidth;
++			_2byteHeight = _2byteVerbHeight;
++		}
+ 		drawString(4, msg, ttsAction);
++		_useVerbFont = false;
++		_2byteWidth = savedW;
++		_2byteHeight = savedH;
+ 		_charset->_center = tmp;
+ 
+ 		if (isRtl)

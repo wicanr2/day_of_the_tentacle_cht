@@ -84,6 +84,37 @@ def embedded_glyph(face, ch, strike):
     return rows
 
 
+def gray_glyph(face, ch, px_size, thr):
+    """從 TTF/TTC 描點陣，但**走灰階光柵器再自己設門檻**。
+
+    [雷] FreeType 的 mono 光柵器（FT_LOAD_TARGET_MONO）在重量級字面上會把
+    內白填掉——華康少女體 W7 這種粗圓體在 16x14 直接糊成一團，看不出是什麼字。
+    改成灰階算完（FT_LOAD_RENDER 不帶 MONO）再用門檻二值化，同樣尺寸就清楚可讀。
+    門檻越高筆畫越細；110 對少女體 W7 是實測較好的值。
+    """
+    import freetype
+    face.set_pixel_sizes(0, px_size)
+    face.load_char(ch, freetype.FT_LOAD_RENDER)
+    bm = face.glyph.bitmap
+    rows = [[0] * DIM[0] for _ in range(DIM[1])]
+    if not bm.width or not bm.rows:
+        return rows
+    # 置中：verb 字型是獨立檔，不必跟正文字型共用基線
+    x0 = max(0, (DIM[0] - bm.width) // 2)
+    y0 = max(0, (DIM[1] - bm.rows) // 2)
+    for y in range(bm.rows):
+        ty = y0 + y
+        if not 0 <= ty < DIM[1]:
+            continue
+        for x in range(bm.width):
+            tx = x0 + x
+            if not 0 <= tx < DIM[0]:
+                continue
+            if bm.buffer[y * bm.pitch + x] >= thr:
+                rows[ty][tx] = 1
+    return rows
+
+
 def ttf_glyph(face, ch):
     """Big5 缺字時的備援：從 TTF 描同尺寸點陣。"""
     import freetype
@@ -125,10 +156,16 @@ def main():
     ap.add_argument("--rows", type=int, default=0,
                     help="只輸出每字前 N 列（倚天 15 點的第 15 列全空，"
                          "本作預設裁成 14 列讓邏輯字高剛好 7）")
-    ap.add_argument("--source", choices=("eten", "wqy"), default="eten",
+    ap.add_argument("--source", choices=("eten", "wqy", "gray"), default="eten",
                     help="eten = 倚天點陣字（本機用，商業字型）；"
                          "wqy = WenQuanYi Zen Hei Sharp 的 embedded bitmap"
-                         "（GPL + 字體例外，可隨散布包公開）")
+                         "（GPL + 字體例外，可隨散布包公開）；"
+                         "gray = 任意 TTF/TTC 走灰階光柵器 + 門檻（指令列用的少女體走這條）")
+    ap.add_argument("--gray-font", help="--source gray 用的字型檔")
+    ap.add_argument("--gray-px", type=int, default=0,
+                    help="灰階光柵的像素高，預設等於字模高")
+    ap.add_argument("--gray-threshold", type=int, default=110,
+                    help="二值化門檻（0-255），越高筆畫越細")
     ap.add_argument("--wqy-face", type=int, default=2,
                     help="Zen Hei Sharp 在 .ttc 裡的 face index（帶 12-16px strike 的那個）")
     ap.add_argument("--preview")
@@ -147,8 +184,14 @@ def main():
     if "chars" in table:
         table = {ch: (v["lead"], v["trail"]) for ch, v in table["chars"].items()}
     eten = None
-    wqy_face = wqy_strike = None
-    if args.source == "eten":
+    wqy_face = wqy_strike = gray_face = None
+    if args.source == "gray":
+        import freetype
+        if not args.gray_font:
+            sys.exit("--source gray 要給 --gray-font")
+        gray_face = freetype.Face(args.gray_font)
+        print(f"灰階光柵：{args.gray_font} @ {args.gray_px or DIM[1]}px，門檻 {args.gray_threshold}")
+    elif args.source == "eten":
         d = args.eten_dir
         ext = "24" if args.size == 24 else "15"
         native_dim = DIM24 if args.size == 24 else DIM15
@@ -168,7 +211,10 @@ def main():
     face = None
 
     for ch, (lead, trail) in table.items():
-        rows = eten.bitmap(ch) if eten else embedded_glyph(wqy_face, ch, wqy_strike)
+        if gray_face is not None:
+            rows = gray_glyph(gray_face, ch, args.gray_px or DIM[1], args.gray_threshold)
+        else:
+            rows = eten.bitmap(ch) if eten else embedded_glyph(wqy_face, ch, wqy_strike)
         if rows is not None and args.source == "wqy" and not any(any(r) for r in rows):
             rows = None      # strike 缺字，退回 outline
         if rows is None:

@@ -156,6 +156,12 @@ shell script，對它做 `strings` 永遠是 0。
 `Features compiled in: FLAC` 兩個平台都確認過——沒有它 `monster.sof` 讀不出來，
 而且**不會報錯**，只是整片語音消失。
 
+### 字型分三份
+
+公開的 patch 包用 WQY，本機 full 包用倚天；**指令列另外用華康少女體**
+（`chinese_verb.fnt`），同樣是商業字型的衍生物，只進 full 包。公開包沒有這個檔，
+指令列就沿用正文字型——引擎找不到會靜靜關掉，不是錯誤。
+
 ### 字型分兩份
 
 公開的 patch 包用 **WenQuanYi Zen Hei Sharp 的 15px embedded bitmap**
