@@ -164,12 +164,86 @@ TTS 直出的 24-bit 每秒要 35 KB，全量換完 `monster.sof` 會從 95 MB �
 `sof_pack.py` 的 `write_sof()` 現在會先檢查 `islink` 或 `st_nlink > 1`，
 是連結就先 `unlink` 再寫新檔。
 
-## 還沒做的
+## 全量合成：兩組語音都跑完了
 
-1. **全量合成**：4,431 句。edge-tts 是線上服務，每句約 1–2 秒，估
-   **2–3 小時**，要分批與重試（大量呼叫可能被限流）。
-2. **嘴型同步**：中文語音長度與英文不同，原本的時間戳會對不上嘴型。
-   保留原值最省事（嘴型跟著英文節奏動），依中文長度重算比較準。
-3. **授權**：`edge-tts` 走的是微軟 Edge 的線上服務，拿它的輸出散布屬灰色地帶。
-   離線替代是 `piper`（MIT），但台灣腔的中文模型品質較差。
-   **語音包不論用哪個引擎都不會進公開 repo**（跟遊戲資料同一條界線）。
+| | edge-tts（台式中文） | F5-TTS（原音克隆） |
+|---|---|---|
+| 句數 | 4,431 | 4,431 |
+| 失敗 | 0 | — |
+| 耗時 | 12 分 50 秒（併發 4） | 約 80 分（L40S，1.1 秒/句） |
+| 機器 | 本機 | 東京 GPU（`login_tokyo_g6_issac-sim.sh`） |
+| 產物 | `monster-tw.sof` 122 MB | `monster-cl.sof` |
+
+實際比 edge-tts 的估計（2–3 小時）快得多——併發 4 沒有被限流，每句平均 0.17 秒。
+
+F5-TTS 在 CPU 上是死路：`torchcodec` 要 `libavutil.so.56`（FFmpeg 4）加 CUDA
+runtime，而 torchaudio 2.13 沒有 fallback。GPU 機器上用 `cu124` index 裝
+torch 2.6.0 就沒這個問題。
+
+## 響度：中文比原音小聲，要逐段對齊
+
+實機錄音比對，同一段落原版 RMS 1,835，換上 TTS 只剩 477——聽起來就是「語音變小聲」。
+原因是 1993 年的錄音經過壓縮、動態範圍窄，而 TTS 直出的動態範圍寬、平均音量低。
+
+`tools/voice_normalize.py` 逐段量原版的 RMS，把對應的中文語音線性放大到同一個
+RMS，再用 0.9 滿刻度的峰值上限夾住避免削波。**逐段而不是整批統一**，因為原版
+本身各段音量就不一樣——耳語跟大吼不該被拉成一樣大。
+
+4,430 段的結果：
+
+```
+增益  中位 1.60x   p10 1.29   p90 1.92   max 4.11（上限 8.0，沒有觸頂）
+```
+
+## 遊戲中切換語音包
+
+三份 `.sof` 的索引表 `org_offset` 完全一致（差別只有音訊本身），所以切換語音
+等於「換一個檔名再重讀一次索引」，腳本與存檔都不受影響。
+
+引擎改了四個檔（都在 `patches/scummvm-zhtw.patch` 裡）：
+
+| 檔 | 做什麼 |
+|---|---|
+| `scumm.h` | `ScummAction` 加 `kScummActionChtVoicePack` |
+| `sound.h` | `ChtVoicePack` 列舉、`cycleChtVoicePack()`、`_chtVoicePack` |
+| `sound.cpp` | `setupSfxFile()` 依 `_chtVoicePack` 先試 `monster-tw.*` / `monster-cl.*`；切換函式；讀寫 `cht_voice_pack` 設定 |
+| `metaengine.cpp` | `initKeymaps()` 對 gameid `tentacle` 掛上 Ctrl+T |
+| `input.cpp` | `EVENT_CUSTOM_ENGINE_ACTION_START` 直接處理（一次性動作，不進 `_actionMap`） |
+
+幾個做法上的理由：
+
+- **切換前要先 `stopTalkSound()` 並停掉 mixer channel。** 舊的 `_offsetTable`
+  一釋放，還在解碼的串流就會指到已經釋放的記憶體。
+- **檔名選擇失敗時靜靜退回原版**，並在 OSD 說明退回了哪一組。玩家沒放中文語音
+  時一切照舊，不會因為設定檔殘留而沒有聲音。
+- **OSD 訊息用英文。** 散布包刻意不帶 `fonts-cjk.dat`（ScummVM 自己的選單也是
+  英文的），寫中文只會變成問號。
+- **Ctrl+T**：SCUMM 引擎、全域 keymap、SDL 圖形後端都沒有人用這個組合。
+  掛在 `engine-default` 上，玩家可以在 ScummVM 的按鍵設定裡改。
+
+驗收（headless，`import -window root`）：
+
+| 檢查 | 結果 |
+|---|---|
+| Ctrl+T 第一次 | OSD `Voice: Taiwanese Mandarin` |
+| Ctrl+T 第二次（`monster-cl.sof` 還沒放） | OSD `Voice pack Cloned voices not found - using Original (English)` |
+| 設定檔寫 `cht_voice_pack=1` 重開 | 播放期間 `/proc/<pid>/fd` 開的是 `monster-tw.sof` |
+
+第三項是關鍵：OSD 只證明狀態變了，`/proc/<pid>/fd` 才證明引擎真的去讀了那個檔。
+
+## 嘴型同步：保留原值
+
+中文語音長度與英文不同，原本的時間戳對不上嘴型。目前保留原值——嘴型跟著英文
+節奏動，看起來像是在講話但對不上音節。依中文長度重算會比較準，還沒做。
+
+## 授權：語音包不散布
+
+兩條界線都踩到：
+
+1. `monster-tw.sof` 是原版 `monster.sof` 的改造版，4,431 段換成中文，
+   **剩下 113 段仍是原音**。
+2. `edge-tts` 走的是微軟 Edge 的線上服務，拿它的輸出散布屬灰色地帶。
+   離線替代是 `piper`（MIT），但只有 zh_CN 模型，腔調不對。
+
+所以**語音包不論用哪個引擎都不進公開 repo，也不進 patch 散布包**，只留本機的
+`dist-all/` full 包。公開包只有英文原音會運作，切換鍵按下去會顯示「找不到」。

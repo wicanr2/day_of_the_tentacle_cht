@@ -2,8 +2,8 @@
 
 | 檔案 | 對象 | 規模 |
 |---|---|---|
-| `patches/scummvm-zhtw.patch` | ScummVM（`engines/scumm/`，9 個檔） | +331 |
-| `patches/scummtr-maniacv1-lossless.patch` | ScummTR（`src/ScummRp/`，3 個檔） | +107 |
+| `patches/scummvm-zhtw.patch` | ScummVM（`engines/scumm/`，13 個檔） | +432 −23 |
+| `patches/scummtr-maniacv1-lossless.patch` | ScummTR（`src/ScummRp/`，3 個檔） | +116 −6 |
 
 兩份都以「預設行為與上游完全相同」為前提：ScummTR 那份全部包在巨集開關裡，
 ScummVM 那份的每一處都夾在「本作／一代 ＋ 中文 ＋ hi-res」的條件之內。
@@ -12,6 +12,9 @@ ScummVM 那份的每一處都夾在「本作／一代 ＋ 中文 ＋ hi-res」�
 （`e37bbe20`），涵蓋兩條產線：
 
 - **瘋狂時代（v6）**：hi-res CJK 的完整路徑，條件是 `isChtHiResCJK()`。
+- **語音包切換**：遊戲中 Ctrl+T 在原版英文／台式中文／原音克隆之間循環，
+  改動集中在 `sound.cpp` 的檔名選擇與一個切換函式，見
+  [`60-voice.md`](60-voice.md)。
 - **泰德電腦裡的一代（v1）**：沿用一代中文化為 SCUMM v2 寫的那套（碼空間 0x88–0x9F、
   16×15 字模、14 格制版面），把其中 14 處的閘門由 `_game.version == 2` 放寬成
   `<= 2`。放寬的依據不是猜測：ScummVM 的 `metaengine.cpp` 對 `case 1: case 2:`

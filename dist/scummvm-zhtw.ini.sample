@@ -18,6 +18,13 @@
 # chinese_gb16x12.fnt 就會判成 ZH_CHN（detection_internal.h），
 # 手動寫 language=zh 反而會被判成 ZH_TWN 而不載中文字型，畫面變成一整排亂碼。
 
+# 語音包（遊戲中 Ctrl+T 循環切換，這裡記的是上次選的）：
+#   0 原版英文 monster.sof   1 台式中文 monster-tw.sof   2 原音克隆 monster-cl.sof
+# 放在 [scummvm] 是全域設定，setupSound() 啟動時讀一次；指定的檔不存在就退回 0，
+# 畫面上會說明退回了哪一組。
+[scummvm]
+cht_voice_pack=0
+
 [dott-zh]
 engineid=scumm
 gameid=tentacle

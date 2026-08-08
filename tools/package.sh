@@ -83,6 +83,13 @@ if [ "$KIND" = full ]; then
     cp "$W/game-cht/dott/maniac/chinese_gb16x12.fnt" "$D/game/dott/maniac/"
     # monster.sof 有 95 MB，用連結而不是複製，避免 dist-all 爆掉
     ln -sf "$(cd "$W/game-orig/dott" && pwd)/monster.sof" "$D/game/dott/monster.sof"
+    # 中文語音包（遊戲中 Ctrl+T 循環切換）。有才連，沒有就只有原音英文。
+    # 這兩個檔只進 full 包，patch 包（公開）不含任何語音資料。
+    for v in tw cl; do
+        if [ -f "$W/game-cht/dott/monster-$v.sof" ]; then
+            ln -sf "$(cd "$W/game-cht/dott" && pwd)/monster-$v.sof" "$D/game/dott/monster-$v.sof"
+        fi
+    done
 else
     [ -f "$TR" ] && cp "$TR" "$D/$TRNAME" || echo "警告：找不到 $TR，patch 包沒有回填工具"
 fi

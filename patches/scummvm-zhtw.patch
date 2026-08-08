@@ -367,6 +367,50 @@ index 133f6ec0..73ed255e 100644
  			sentenceline.left = 0 + pixelXOffset;
  			sentenceline.right = _virtscr[kVerbVirtScreen].w - 1 + pixelXOffset;
  		}
+diff --git a/engines/scumm/input.cpp b/engines/scumm/input.cpp
+index ecef09cf..0e5d11d6 100644
+--- a/engines/scumm/input.cpp
++++ b/engines/scumm/input.cpp
+@@ -117,6 +117,13 @@ void ScummEngine::parseEvent(Common::Event event) {
+ 
+ 	switch (event.type) {
+ 	case Common::EVENT_CUSTOM_ENGINE_ACTION_START:
++		// 繁中化：語音包切換是一次性動作，在事件當下做完就好，不必像移動類動作
++		// 那樣記進 _actionMap 等主迴圈輪詢。
++		if (event.customType == kScummActionChtVoicePack) {
++			if (_sound)
++				_sound->cycleChtVoicePack();
++			break;
++		}
+ 		if (event.customType >= kScummActionCount) {
+ 			debugC(DEBUG_GENERAL, "customType >= kScummActionCount (%d)", event.customType);
+ 		} else {
+diff --git a/engines/scumm/metaengine.cpp b/engines/scumm/metaengine.cpp
+index d69986ea..cee5a900 100644
+--- a/engines/scumm/metaengine.cpp
++++ b/engines/scumm/metaengine.cpp
+@@ -1339,6 +1339,21 @@ Common::KeymapArray ScummMetaEngine::initKeymaps(const char *target) const {
+ 		keymaps.push_back(rebel2Keymap);
+ 	}
+ 
++	// 繁中化：DOTT 的語音包切換（原版英文／台式中文／原音克隆中文）。掛在
++	// engine-default 上，玩家可以在 ScummVM 的按鍵設定裡改成別的鍵。Ctrl+T
++	// 目前在 SCUMM、全域與圖形後端都沒有人用。
++	if (gameId == "tentacle") {
++		for (uint i = 0; i < keymaps.size(); ++i) {
++			if (keymaps[i]->getId() != "engine-default")
++				continue;
++			act = new Action("CHTVOICE", _("Switch voice pack"));
++			act->setCustomEngineActionEvent(kScummActionChtVoicePack);
++			act->addDefaultInputMapping("C+t");
++			keymaps[i]->addAction(act);
++			break;
++		}
++	}
++
+ 	return keymaps;
+ }
+ 
 diff --git a/engines/scumm/script_v2.cpp b/engines/scumm/script_v2.cpp
 index 241d938a..bde68828 100644
 --- a/engines/scumm/script_v2.cpp
@@ -444,10 +488,20 @@ index cb0f5bc1..d49abf5a 100644
  		initScreens(0, _screenHeight);
  	} else if ((_game.id == GID_ZAK) && (_game.platform == Common::kPlatformC64)) {
 diff --git a/engines/scumm/scumm.h b/engines/scumm/scumm.h
-index 9864f7e9..b9f21416 100644
+index 9864f7e9..0ac5ea04 100644
 --- a/engines/scumm/scumm.h
 +++ b/engines/scumm/scumm.h
-@@ -1778,6 +1778,22 @@ public:
+@@ -502,6 +502,9 @@ enum ScummAction {
+ 	kScummActionInsaneBack,
+ 	kScummActionInsaneSkip,
+ 
++	// 繁中化：遊戲中循環切換語音包（原版英文／台式中文／原音克隆中文）
++	kScummActionChtVoicePack,
++
+ 	kScummActionCount
+ };
+ 
+@@ -1778,6 +1781,22 @@ public:
  	bool isScummvmKorTarget();
  	bool hasLocalizer();
  
@@ -470,6 +524,126 @@ index 9864f7e9..b9f21416 100644
  //protected:
  	byte *_2byteFontPtr = nullptr;
  	byte *_2byteMultiFontPtr[20];
+diff --git a/engines/scumm/sound.cpp b/engines/scumm/sound.cpp
+index bfb33823..94daba01 100644
+--- a/engines/scumm/sound.cpp
++++ b/engines/scumm/sound.cpp
+@@ -20,6 +20,7 @@
+  */
+ 
+ #include "common/config-manager.h"
++#include "common/system.h"
+ #include "common/util.h"
+ #include "common/ptr.h"
+ #include "common/substream.h"
+@@ -1030,6 +1031,14 @@ void Sound::talkSound(uint32 offset, uint32 length, int mode, int channel) {
+ }
+ 
+ void Sound::setupSound() {
++	// 繁中化：記住玩家上次選的語音包。setupSound() 是 setupSfxFile() 的第一個
++	// 呼叫點，在這裡讀比在建構子讀更貼近實際使用的時機。
++	if (ConfMan.hasKey("cht_voice_pack")) {
++		int pack = ConfMan.getInt("cht_voice_pack");
++		if (pack > kChtVoiceOriginal && pack < kChtVoicePackCount)
++			_chtVoicePack = pack;
++	}
++
+ 	setupSfxFile();
+ 
+ 	if (_vm->_game.id == GID_FT) {
+@@ -1151,6 +1160,31 @@ void Sound::setupSfxFile() {
+ 
+ 		_soundMode = kVOCMode;
+ 	} else {
++		// 繁中化：語音包切換。中文語音是另外的檔（monster-tw.* / monster-cl.*），
++		// 索引表的 org_offset 與原版完全一致，所以換檔就等於換語音，腳本與其他
++		// 資料一個位元組都不用動。找不到就靜靜回退到原版，玩家沒放中文語音時
++		// 一切照舊。
++		static const char *const chtSuffix[] = { "", "-tw", "-cl" };
++		if (_chtVoicePack > kChtVoiceOriginal && _chtVoicePack < kChtVoicePackCount) {
++			for (uint j = 0; j < 2 && !file->isOpen(); ++j) {
++				Common::String stem(basename[j]);
++				stem.deleteLastChar();          // 去掉結尾的 '.'
++				stem += chtSuffix[_chtVoicePack];
++				stem += '.';
++				for (int i = 0; extensions[i].ext; ++i) {
++					tmp = stem;
++					tmp.appendInPlace(extensions[i].ext);
++					if (_vm->openFile(*file, tmp)) {
++						_soundMode = extensions[i].mode;
++						_sfxFilename = tmp.toString('/');
++						break;
++					}
++				}
++			}
++			if (!file->isOpen())
++				_chtVoicePack = kChtVoiceOriginal;
++		}
++
+ 		for (uint j = 0; j < 2 && !file->isOpen(); ++j) {
+ 			for (int i = 0; extensions[i].ext; ++i) {
+ 				tmp = basename[j];
+@@ -1209,6 +1243,35 @@ void Sound::setupSfxFile() {
+ 	delete file;
+ }
+ 
++// 繁中化：循環切換語音包。要先把正在播的語音停掉——舊的 _offsetTable 一釋放，
++// 還在解碼的串流就會指到已經釋放的記憶體。
++void Sound::cycleChtVoicePack() {
++	stopTalkSound();
++	_mixer->stopHandle(*_talkChannelHandle);
++
++	free(_offsetTable);
++	_offsetTable = nullptr;
++	_numSoundEffects = 0;
++
++	_chtVoicePack = (_chtVoicePack + 1) % kChtVoicePackCount;
++	int wanted = _chtVoicePack;
++	setupSfxFile();
++
++	ConfMan.setInt("cht_voice_pack", _chtVoicePack);
++	ConfMan.flushToDisk();
++
++	static const char *const names[] = { "Original (English)", "Taiwanese Mandarin", "Cloned voices" };
++	Common::U32String msg;
++	if (_chtVoicePack != wanted) {
++		// setupSfxFile() 找不到該語音包時會把 _chtVoicePack 退回原版
++		msg = Common::U32String::format("Voice pack %s not found - using %s",
++										names[wanted], names[_chtVoicePack]);
++	} else {
++		msg = Common::U32String::format("Voice: %s", names[_chtVoicePack]);
++	}
++	g_system->displayMessageOnOSD(msg);
++}
++
+ bool Sound::isSfxFinished() const {
+ 	return !_mixer->hasActiveChannelOfType(Audio::Mixer::kSFXSoundType);
+ }
+diff --git a/engines/scumm/sound.h b/engines/scumm/sound.h
+index 2b9b1e66..d946baad 100644
+--- a/engines/scumm/sound.h
++++ b/engines/scumm/sound.h
+@@ -185,7 +185,20 @@ public:
+ 		_soundSE->setupMISEAudioParams(scriptNum, scriptOffset);
+ 	}
+ 
++	// 繁中化：語音包切換。三份語音檔的差別只有音訊本身，索引表的 org_offset
++	// 完全一致（腳本不用改），所以切換等於換一個檔名再重讀一次索引。
++	enum ChtVoicePack {
++		kChtVoiceOriginal = 0,   // 原版英文（monster.sof）
++		kChtVoiceTaiwanese,      // 台式中文 TTS（monster-tw.sof）
++		kChtVoiceCloned,         // 原音克隆中文（monster-cl.sof）
++		kChtVoicePackCount
++	};
++	void cycleChtVoicePack();
++	int getChtVoicePack() const { return _chtVoicePack; }
++
+ protected:
++	int _chtVoicePack = kChtVoiceOriginal;
++
+ 	void setupSfxFile();
+ 	bool isSfxFinished() const;
+ 	void processSfxQueues();
 diff --git a/engines/scumm/string.cpp b/engines/scumm/string.cpp
 index ebb998ec..d7bedd1f 100644
 --- a/engines/scumm/string.cpp
