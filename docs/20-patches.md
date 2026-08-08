@@ -2,7 +2,7 @@
 
 | 檔案 | 對象 | 規模 |
 |---|---|---|
-| `patches/scummvm-zhtw.patch` | ScummVM（`engines/scumm/`，13 個檔） | +481 −23 |
+| `patches/scummvm-zhtw.patch` | ScummVM（`engines/scumm/`，13 個檔） | +543 −23 |
 | `patches/scummtr-maniacv1-lossless.patch` | ScummTR（`src/ScummRp/`，3 個檔） | +116 −6 |
 
 兩份都以「預設行為與上游完全相同」為前提：ScummTR 那份全部包在巨集開關裡，
@@ -15,7 +15,7 @@ ScummVM 那份的每一處都夾在「本作／一代 ＋ 中文 ＋ hi-res」�
 - **語音包切換**：遊戲中 Ctrl+T 在原版英文／台式中文／原音克隆之間循環，
   改動集中在 `sound.cpp` 的檔名選擇與一個切換函式，見
   [`60-voice.md`](60-voice.md)。
-- **指令列另一套字型**：遊戲夾裡放 `chinese_verb.fnt` 就啟用，見下節。
+- **三套字型**：正文 16×14、指令列 24×24 華康少女體、對白 24×24 倚天。見下節。
 - **泰德電腦裡的一代（v1）**：沿用一代中文化為 SCUMM v2 寫的那套（碼空間 0x88–0x9F、
   16×15 字模、14 格制版面），把其中 14 處的閘門由 `_game.version == 2` 放寬成
   `<= 2`。放寬的依據不是猜測：ScummVM 的 `metaengine.cpp` 對 `case 1: case 2:`
@@ -124,12 +124,39 @@ WQY Zen Hei 描補。
    原本靠 `fill()` 把文字一起蓋掉，而 hi-res 的中文畫在文字表面上，`fill` 碰不到。
 9. **`restoreCharsetBg()` 改成只清「當前虛擬螢幕」對應的那一塊** — 見下。
 
-## 指令列用華康少女體
+## 三套字型：正文、指令列、對白
 
-指令列（給予／打開／查看…）與對白分開用兩套字型：對白是倚天明體，指令列是
-華康少女體（圓體）。做法是遊戲夾裡多放一個 `chinese_verb.fnt`，格式與碼位跟正文
-字型完全相同，`ScummEngine::drawVerb()` 畫字前把 `_useVerbFont` 打開，
-`get2byteCharPtr()` 就改從那份取字模。沒放這個檔就整個關掉，行為與上游一致。
+| 用途 | 檔名 | 字模 | 字面 |
+|---|---|---|---|
+| 正文（句子列、內建存讀檔介面） | `chinese_gb16x12.fnt` | 16×14 | 倚天 15 點 |
+| 指令列（給予／打開／查看…） | `chinese_verb.fnt` | 24×24 | 華康少女體 |
+| 角色對白 | `chinese_dialog.fnt` | 24×24 | 倚天 24 點 |
+
+三個檔的碼位完全一致，只有字模尺寸與字面不同。機制是 `get2byteCharPtr()` 依兩個
+旗標決定從哪一份取字模：
+
+- `_useVerbFont` 在 `ScummEngine::drawVerb()` 畫字的那一小段打開
+- `_useDialogFont` 在 `ScummEngine::displayDialog()` 全程打開（用 RAII 包住，
+  那個函式有五個 `return`，靠手動還原一定會漏）
+
+打開旗標時 `_2byteWidth/_2byteHeight` 一起換成該字型的尺寸，斷行、游標推進、
+`_charset->_str` 邊界（進而 verb 的點擊範圍）就會自動跟著走。缺哪個檔就關掉哪一項，
+三個都沒有時行為與上游完全相同。
+
+### [雷] 句子列也走 drawVerb()，不能一律放大
+
+指令列放大到 24×24 時第一次是連句子列（「走到 查克盆栽」）一起變大，結果疊在
+指令第一列上。實機 dump 出來的分工才看清楚：
+
+```
+slot 27 / verbid 100 / top 145        ← 句子列
+slot 3-11 / verbid 2-10 / top 152,168,184  ← 指令格
+```
+
+指令格的列距是 16 邏輯像素（32 實體），放得下 24×24；句子列到指令第一列只有
+7 邏輯像素（14 實體）。所以只有 `verbid != 100` 才換字型。
+
+對白就沒這個問題——它畫在遊戲畫面上，本來就沒有版面限制。
 
 ### [雷] FreeType 的 mono 光柵器會把重量級字面的內白填掉
 

@@ -49,6 +49,8 @@ if [ "$KIND" = full ]; then
     # 指令列的華康少女體。與倚天同一條界線：商業字型的衍生物，只進 full 包。
     [ -f "$W/game-cht/dott/chinese_verb.fnt" ] &&
         cp "$W/game-cht/dott/chinese_verb.fnt" "$D/game/dott/" || true
+    [ -f "$W/game-cht/dott/chinese_dialog.fnt" ] &&
+        cp "$W/game-cht/dott/chinese_dialog.fnt" "$D/game/dott/" || true
     cp "$W/game-cht/dott/maniac/"*.LFL "$D/game/dott/maniac/"
     cp "$W/game-cht/dott/maniac/chinese_gb16x12.fnt" "$D/game/dott/maniac/"
     ln -sf "$(cd "$W/game-orig/dott" && pwd)/monster.sof" "$D/game/dott/monster.sof"

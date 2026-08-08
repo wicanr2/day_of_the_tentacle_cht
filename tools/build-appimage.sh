@@ -47,6 +47,8 @@ cp "$W/game-cht/dott/"TENTACLE.00*            "$APPDIR/usr/share/game/dott/"
 cp "$W/game-cht/dott/chinese_gb16x12.fnt"     "$APPDIR/usr/share/game/dott/"
 [ -f "$W/game-cht/dott/chinese_verb.fnt" ] &&
     cp "$W/game-cht/dott/chinese_verb.fnt"    "$APPDIR/usr/share/game/dott/" || true
+[ -f "$W/game-cht/dott/chinese_dialog.fnt" ] &&
+    cp "$W/game-cht/dott/chinese_dialog.fnt"  "$APPDIR/usr/share/game/dott/" || true
 cp "$W/game-cht/dott/maniac/"*.LFL            "$APPDIR/usr/share/game/dott/maniac/"
 cp "$W/game-cht/dott/maniac/chinese_gb16x12.fnt" "$APPDIR/usr/share/game/dott/maniac/"
 # [重要] 這裡要複製實體檔，不能像目錄包那樣用符號連結——AppImage 打包成 squashfs

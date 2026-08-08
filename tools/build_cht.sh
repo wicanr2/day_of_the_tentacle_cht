@@ -67,6 +67,15 @@ if [ "$WHICH" = dott ] && [ -f "$W/font-src/girl.ttc" ]; then
         --source gray --gray-font "$W/font-src/girl.ttc" \
         --gray-px "$FONT_ROWS" --gray-threshold 140 \
         --size 16 --rows "$FONT_ROWS" -o "$W/dumps/${WHICH}-verb.fnt"
+
+    # 對白字型：倚天 24 點原生點陣。對白畫在遊戲畫面上，沒有指令列那種列距限制，
+    # 放大到 24x24 才看得清楚（對照極速天龍的字幕尺寸）。句子列仍用 16x14 的正文
+    # 字型，所以不會擠到指令列。
+    if [ -f "$W/font-src/STDFONT.24" ]; then
+        echo "=== 5d. 烘倚天 24x24 對白字型（本機用）==="
+        python3 tools/build_eten_font.py "cht_table_${WHICH}.json" --eten-dir "$W/font-src" \
+            --size 24 -o "$W/dumps/${WHICH}-dialog.fnt"
+    fi
 fi
 
 echo "=== 6. 回填 ==="
@@ -78,7 +87,8 @@ cp "$W/dumps/${WHICH}_enc.txt" "$DEST/scummtr.txt"
 ( cd "$DEST" && "$OLDPWD/$SCUMMTR" -g "$GAMEID" -r -w -if )
 rm -f "$DEST/scummtr.txt"
 cp "$W/dumps/${WHICH}.fnt" "$DEST/chinese_gb16x12.fnt"
-[ -f "$W/dumps/${WHICH}-verb.fnt" ] && cp "$W/dumps/${WHICH}-verb.fnt" "$DEST/chinese_verb.fnt"
+[ -f "$W/dumps/${WHICH}-verb.fnt" ]   && cp "$W/dumps/${WHICH}-verb.fnt"   "$DEST/chinese_verb.fnt"
+[ -f "$W/dumps/${WHICH}-dialog.fnt" ] && cp "$W/dumps/${WHICH}-dialog.fnt" "$DEST/chinese_dialog.fnt"
 
 echo "=== 完成：$DEST ==="
 ls -la "$DEST" | head -8
