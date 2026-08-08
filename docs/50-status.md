@@ -227,8 +227,13 @@ osuosl 鏡像當備援。
 
 ## Release
 
-**v1.0 已釋出**，只上三個 patch 包（Linux `.tar.zst`／Windows `.zip`／
-macOS `.tar.gz`）。**full 包與語音包不進 Release**——full 包含中文化後的遊戲
+**v1.1 已釋出**（v1.0 保留），只上三個 patch 包（Linux `.tar.zst`／Windows `.zip`／
+macOS `.tar.gz`）。v1.1 對安裝包使用者沒有畫面差別——指令列與對白的大字型需要額外
+的字型檔，那兩份不隨包散布；發版是為了讓 Release 的 binary 跟 repo 的 patch 對得起來。
+
+[已知落差] macOS 的 binary 比 Linux／Windows 少一個 commit（GitHub Actions 額度
+用完），差的是對白字型支援。安裝包本來就不帶對白字型，所以實際行為三平台一致；
+本機的 macOS full 包則是「指令列大、對白小」，等額度恢復再補。**full 包與語音包不進 Release**——full 包含中文化後的遊戲
 資料，語音包是原版 `monster.sof` 的改造版（113 段仍是原音）且 edge-tts 的輸出
 散布屬灰色地帶。兩者只留本機 `dist-all/`。
 

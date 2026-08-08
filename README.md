@@ -10,7 +10,7 @@
 
 repo 只有碼表、譯文、字型工具與引擎修補，不含遊戲資料。想直接玩，跳到〈怎麼玩〉。
 
-> **v1.0 已釋出 → [下載 Linux／Windows／macOS 安裝包](https://github.com/wicanr2/day_of_the_tentacle_cht/releases/tag/v1.0)**
+> **v1.1 已釋出 → [下載 Linux／Windows／macOS 安裝包](https://github.com/wicanr2/day_of_the_tentacle_cht/releases/tag/v1.1)**
 >
 > 兩條產線的譯文都已完成：瘋狂時代 4,239 句、一代 859 句，回填全部 byte-perfect。
 > 泰德電腦裡的一代已在遊戲內實測跳得進去（見下方截圖）。
@@ -76,7 +76,7 @@ repo 只有碼表、譯文、字型工具與引擎修補，不含遊戲資料。
 `TENTACLE.001`、`monster.sof`（語音，可省），以及光碟裡 `MANIAC/` 資料夾下的
 54 個 `.LFL`。Steam／GOG 的 Remastered 版格式不同，不適用。
 
-[v1.0 的安裝包](https://github.com/wicanr2/day_of_the_tentacle_cht/releases/tag/v1.0)
+[v1.1 的安裝包](https://github.com/wicanr2/day_of_the_tentacle_cht/releases/tag/v1.1)
 裡有引擎、中文字型、譯文與一鍵套用腳本，但**不含遊戲資料**：
 
 | 平台 | 套用 | 開始玩 |
