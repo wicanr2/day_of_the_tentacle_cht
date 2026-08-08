@@ -34,7 +34,7 @@ Steam、GOG 的《Day of the Tentacle Remastered》**不適用**——那是重�
 
   Windows   執行遊戲.bat
   Linux     ./執行遊戲.sh
-  macOS     開啟「瘋狂時代中文版.app」
+  macOS     開啟 ScummVM.app
 
 
 怎麼玩到泰德電腦裡的一代
@@ -47,6 +47,23 @@ Steam、GOG 的《Day of the Tentacle Remastered》**不適用**——那是重�
 不要手動改 `easter_egg=maniac-zh` 那一行。
 
 
+macOS 第一次開啟
+----------------
+
+包裡的 .app 沒有 Apple 開發者簽章，第一次雙擊 Gatekeeper 會擋下來
+（「無法打開，因為無法驗證開發者」）。兩種解法擇一：
+
+  在 Finder 裡對 ScummVM.app 按右鍵 →「打開」→ 再按一次「打開」
+
+或在終端機：
+
+  xattr -dr com.apple.quarantine ScummVM.app
+
+想自己重簽也可以：
+
+  codesign --force --deep --sign - ScummVM.app
+
+
 已知的事
 --------
 
@@ -54,6 +71,9 @@ Steam、GOG 的《Day of the Tentacle Remastered》**不適用**——那是重�
 * 工作人員名單維持原文（那些行靠空白對齊，改動會破版），只有職稱翻了。
 * 一代的媒體得獎評語裡，雜誌名維持原文。
 * 遊戲內建的存讀檔畫面已中文化，但一般建議用 ScummVM 自己的存檔功能（F5）。
+* ScummVM 自己的選單介面是英文的（三平台一致）。遊戲內的中文不受影響。
+* macOS 版是在 GitHub Actions 上編的 universal binary（arm64 + x86_64），
+  但打包流程在 Linux 上跑，**沒有在實體 Mac 上實測過**。遇到問題請回報。
 
 
 版權

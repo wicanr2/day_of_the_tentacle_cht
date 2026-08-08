@@ -26,6 +26,15 @@ APP="$D/ScummVM.app"
 RES="$APP/Contents/Resources"
 mkdir -p "$D/cht"
 
+# CI 把 ScummVM 樹裡的 engine-data 整批複製進 .app，其中大半是別的引擎在用的
+# （ultima.dat 15 MB、titanic.dat 3 MB、kyra.dat 2 MB…），而這支 binary 只編了
+# SCUMM，永遠不會去讀它們。fonts-cjk.dat 有 37 MB，是 GUI 中文介面用的；
+# 本包的 GUI 維持英文（三平台一致），所以也一併拿掉。
+# 留下的是 SCUMM 真的會碰的：GUI 預設字型、Mac 版 SCUMM 遊戲的字型、主題 zip。
+find "$RES" -maxdepth 1 -name '*.dat' \
+     ! -name 'fonts.dat' ! -name 'classicmacfonts.dat' -delete
+echo "Resources 精簡後：$(du -sh "$RES" | cut -f1)"
+
 # 字型：full 用倚天（本機），patch 用 WQY（可散布）——與 package.sh 同一條界線
 if [ "$KIND" = full ]; then FONTSFX=""; else FONTSFX="-wqy"; fi
 cp "$W/dumps/dott${FONTSFX}.fnt"      "$D/cht/dott-chinese_gb16x12.fnt"

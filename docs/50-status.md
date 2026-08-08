@@ -126,15 +126,20 @@ debugger `room 42` 跳過去就行。房間號是從 `scummtr -h` 的 dump 反�
 
 檢查器本身以故意違規的檔做過正對照，四項都抓得到。
 
-## 打包：Linux／Windows 完成，macOS 建置中
+## 打包：三平台都有了
 
 | | Linux | Windows | macOS |
 |---|---|---|---|
-| 引擎 | ✅ slim 版（53 相依，自帶 49 支 .so） | ✅ mingw 交叉編譯 + SDL2.dll | ⏳ CI 建置中 |
-| ScummTR | ✅ | ✅ 交叉編譯 | ⏳ CI 一併編 universal |
-| patch 包 | ✅ 12 MB | ✅ 14 MB | ⏳ |
-| full 包 | ✅ 104 MB | ✅ 110 MB | ⏳ |
-| 可攜性實測 | ✅ 乾淨的 `ubuntu:24.04` 跑得起來 | ✅ wine 下 `--version` 與 `--detect` 都對 | ⏳ |
+| 引擎 | ✅ slim 版（53 相依，自帶 49 支 .so） | ✅ mingw 交叉編譯 + SDL2.dll | ✅ CI 出 universal（arm64+x86_64） |
+| ScummTR | ✅ | ✅ 交叉編譯 | ✅ CI 一併編 universal |
+| patch 包 | ✅ 11 MB | ✅ 13 MB | ✅ 18 MB |
+| full 包 | ✅ 99 MB | ✅ 105 MB | ✅ 110 MB |
+| 實測 | ✅ 乾淨的 `ubuntu:24.04` 跑得起來 | ✅ wine 下 `--version` 與 `--detect` 都對 | ⚠ 兩支都驗過是 fat binary，但**沒有實體 Mac 可測** |
+
+macOS 的 `.app` 精簡過：CI 會把 ScummVM 樹裡的 engine-data 整批塞進去（`ultima.dat`
+15 MB、`fonts-cjk.dat` 37 MB…），而這支 binary 只編了 SCUMM，那些永遠不會被讀。
+只留 `fonts.dat` 與 `classicmacfonts.dat` 之後，Resources 從 72 MB 降到 7.1 MB，
+patch 包從 82 MB 降到 18 MB。
 
 `Features compiled in: FLAC` 兩個平台都確認過——沒有它 `monster.sof` 讀不出來，
 而且**不會報錯**，只是整片語音消失。
