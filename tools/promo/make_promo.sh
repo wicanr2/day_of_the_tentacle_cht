@@ -19,28 +19,41 @@ bg() {   # $1 out —— 夜空徑向漸層 + 底部地平線暗帶
     -fill "#00000066" -draw "rectangle 0,$((H-90)) ${W},${H}" "$1"
 }
 
-card() { # $1 out  $2 中文大標  $3 英文標  $4 副標  [$5 英文字級，預設 88]
+zh() { # $1 out(透明層)  $2 文字  $3 字級  $4 旋轉角度
+  # 中文字放大＋螢光綠描邊＋微幅旋轉＝貼紙感。分兩層畫：先畫粗描邊的，
+  # 再把無描邊的疊上去，筆畫內部才不會被描邊侵蝕。
+  local SW=$(( $3 / 13 ))
+  convert -background none -font "$FONT_TITLE" -pointsize "$3" \
+    -stroke "$ACCENT" -strokewidth "$SW" -fill "$TEXT" label:"$2" "$TMP/_z1.png"
+  convert -background none -font "$FONT_TITLE" -pointsize "$3" \
+    -stroke none -fill "$TEXT" label:"$2" "$TMP/_z2.png"
+  convert "$TMP/_z1.png" "$TMP/_z2.png" -gravity center -composite \
+    -background none -rotate "$4" +repage "$1"
+}
+
+card() { # $1 out  $2 中文大標  $3 英文標  $4 副標  [$5 英文字級=88]  [$6 中文字級=100]
   bg "$TMP/_bg.png"
-  local PS=${5:-88}
+  local PS=${5:-88} ZS=${6:-100}
+  zh "$TMP/_zh.png" "$2" "$ZS" -2.5
   convert "$TMP/_bg.png" -gravity center \
     -font "$FONT_TITLE" \
-    -fill "$ACCENT_DK" -pointsize $PS -annotate +4-84 "$3" \
-    -fill "$ACCENT"    -pointsize $PS -annotate +0-88 "$3" \
-    -fill "$TEXT"      -pointsize 72 -annotate +0+16    "$2" \
-    -font "$FONT_BODY" -fill "$ACCENT2" -pointsize 32 -annotate +0+112 "$4" \
+    -fill "$ACCENT_DK" -pointsize $PS -annotate +4-116 "$3" \
+    -fill "$ACCENT"    -pointsize $PS -annotate +0-120 "$3" \
+    "$TMP/_zh.png" -gravity center -geometry +0+22 -composite \
+    -font "$FONT_BODY" -fill "$ACCENT2" -pointsize 32 -gravity center -annotate +0+134 "$4" \
     "$1"
 }
 
 dcard() { # $1 out  $2 中文台詞  $3 英文原文  $4 說話者
   bg "$TMP/_bg.png"
+  zh "$TMP/_zh.png" "$2" 84 1.8
   convert "$TMP/_bg.png" \
     -font "$FONT_TITLE" -fill "#ffffff1f" -pointsize 300 \
       -gravity northwest -annotate +36+10 '“' \
-    -font "$FONT_TITLE" -fill "$TEXT"    -pointsize 62 \
-      -gravity west -annotate +150-40 "$2" \
+    "$TMP/_zh.png" -gravity west -geometry +130-56 -composite \
     -font "$FONT_BODY"  -fill "$DIM"     -pointsize 30 \
-      -gravity west -annotate +154+40 "$3" \
-    -font "$FONT_BODY"  -fill "$ACCENT"  -pointsize 30 \
+      -gravity west -annotate +150+52 "$3" \
+    -font "$FONT_BODY"  -fill "$ACCENT"  -pointsize 32 \
       -gravity southeast -annotate +70+56 "— $4" \
     "$1"
 }
@@ -52,9 +65,9 @@ slide() { # $1 out  $2 截圖  $3 字幕
   convert "$2" -filter point -resize 1024x640 \
     -background "$BG_DEEP" -gravity center -extent 1024x640 \
     -bordercolor "$ACCENT" -border 3 "$TMP/_sc.png"
-  convert "$TMP/_bg.png" "$TMP/_sc.png" -gravity center -geometry +0-30 -composite \
-    -fill "#000000bb" -draw "rectangle 0,$((H-64)) ${W},${H}" \
-    -font "$FONT_BODY" -fill "$TEXT" -gravity south -pointsize 32 -annotate +0+16 "$3" \
+  convert "$TMP/_bg.png" "$TMP/_sc.png" -gravity center -geometry +0-38 -composite \
+    -fill "#000000cc" -draw "rectangle 0,$((H-78)) ${W},${H}" \
+    -font "$FONT_TITLE" -fill "$TEXT" -gravity south -pointsize 38 -annotate +0+18 "$3" \
     "$1"
 }
 
@@ -63,9 +76,9 @@ panel3() { # $1 out  $2 亮起哪一格(0/1/2)  —— 三組語音橫排
   local names=('原版英文' '台式中文' '原音克隆')
   local subs=('1993 年的錄音' 'edge-tts 台灣聲音\n音高照原音的基頻挑' 'F5-TTS 聲音克隆\n角色用自己的聲音講中文')
   local cmd=(convert "$TMP/_bg.png")
-  cmd+=( -font "$FONT_BODY"  -fill "$DIM"  -pointsize 28 -gravity north -annotate +0+44  "遊戲中按 Ctrl+T 循環切換" )
-  cmd+=( -font "$FONT_TITLE" -fill "$TEXT" -pointsize 46 -gravity north -annotate +0+112 "這全都是你的錯，伯納。" )
-  cmd+=( -font "$FONT_BODY"  -fill "$DIM"  -pointsize 24 -gravity north -annotate +0+176 "This is all your fault, Bernard." )
+  cmd+=( -font "$FONT_BODY"  -fill "$DIM"  -pointsize 30 -gravity north -annotate +0+36  "遊戲中按 Ctrl+T 循環切換" )
+  cmd+=( -font "$FONT_TITLE" -fill "$TEXT" -pointsize 58 -gravity north -annotate +0+96  "這全都是你的錯，伯納。" )
+  cmd+=( -font "$FONT_BODY"  -fill "$DIM"  -pointsize 24 -gravity north -annotate +0+172 "This is all your fault, Bernard." )
   local i x
   for i in 0 1 2; do
     x=$(( 112 + i * 368 ))
@@ -76,14 +89,14 @@ panel3() { # $1 out  $2 亮起哪一格(0/1/2)  —— 三組語音橫排
     fi
     cmd+=( -draw "roundrectangle $x,240 $((x+320)),470 14,14" -stroke none )
     if [ "$i" = "$2" ]; then cmd+=( -fill "$ACCENT" ); else cmd+=( -fill "$DIM" ); fi
-    cmd+=( -font "$FONT_TITLE" -pointsize 44 -gravity northwest
-           -annotate +$((x+24))+286 "${names[$i]}" )
+    cmd+=( -font "$FONT_TITLE" -pointsize 50 -gravity northwest
+           -annotate +$((x+22))+290 "${names[$i]}" )
     if [ "$i" = "$2" ]; then cmd+=( -fill "$TEXT" ); else cmd+=( -fill "#6b74a5" ); fi
     cmd+=( -font "$FONT_BODY" -pointsize 22 -gravity northwest
            -annotate +$((x+24))+362 "$(printf '%b' "${subs[$i]}")" )
   done
-  cmd+=( -font "$FONT_BODY" -fill "$ACCENT2" -pointsize 26 -gravity south
-         -annotate +0+40 "語音包本機自建，不隨安裝包散布" )
+  cmd+=( -font "$FONT_BODY" -fill "$ACCENT2" -pointsize 28 -gravity south
+         -annotate +0+38 "語音包本機自建，不隨安裝包散布" )
   "${cmd[@]}" "$1"
 }
 
@@ -145,7 +158,7 @@ still "$TMP/13.png" "$TMP/v13.mp4" 4.5;  add "$TMP/v13.mp4" 4.5
 slide "$TMP/14.png" /p/shots/v1-verbs-zh.png '連 1987 年那套 SCUMM v1 的指令列都是中文'
 still "$TMP/14.png" "$TMP/v14.mp4" 4.5;  add "$TMP/v14.mp4" 4.5
 
-card  "$TMP/15.png" 'day_of_the_tentacle_cht' 'github.com/wicanr2' '免費 · 開源 · patch-only　·　需自備 1993 CD 版資料' 62
+card  "$TMP/15.png" 'day_of_the_tentacle_cht' 'github.com/wicanr2' '免費 · 開源 · patch-only　·　需自備 1993 CD 版資料' 62 58
 still "$TMP/15.png" "$TMP/v15.mp4" 6.0;  add "$TMP/v15.mp4" 6.0
 
 # ---------- 合成 ----------
@@ -165,7 +178,7 @@ FO=$(awk "BEGIN{print $DUR-3}")
 # [雷] 配樂比影片短時不能靠 -shortest：先 aloop 無限循環再 atrim 到影片長度。
 # [雷] alimiter 預設 `level=true` 會自動把輸出補回滿刻度——把 limit 調低反而更大聲。
 #      要留 headroom 必須同時關掉 level。
-ffmpeg -y -loglevel error -i "$TMP/silent.mp4" -i /p/bgm.wav \
+ffmpeg -y -loglevel error -i "$TMP/silent.mp4" -i /p/bgm-mt32.wav \
   -i /p/voice/en.wav -i /p/voice/tw.wav -i /p/voice/cl.wav \
   -filter_complex "\
 [1:a]aloop=loop=-1:size=2000000000,atrim=0:$DUR,asetpts=N/SR/TB,\

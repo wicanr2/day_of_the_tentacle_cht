@@ -2,7 +2,7 @@
 
 75.6 秒、1280×720。全程 docker，不開剪輯軟體，`tools/promo/` 的腳本可以重跑。
 
-素材真實性是硬條件：**配樂是從遊戲本身錄下來的原版 AdLib 音樂，畫面是實機錄影**，
+素材真實性是硬條件：**配樂是從遊戲本身錄下來的原版 MT-32 音樂，畫面是實機錄影**，
 沒有一個像素或一個音符是合成頂替的。
 
 ## theme：螢光綠與夜空紫
@@ -23,6 +23,11 @@ convert 畫格.png -resize 120x120 -colors 10 -depth 8 -format %c histogram:info
 
 字體用 Noto Sans CJK Bold。上位規則說「黑體＝手遊味」是針對西方奇幻；
 1993 年的卡通式黑色喜劇用襯線反而過於正經。
+
+中文字另外做了三件事湊出俏皮感（`zh()`）：**字級放大**（標題 100、對白 84、
+字幕 38）、**螢光綠描邊**、**±2 度微幅旋轉**。描邊要分兩層畫——先畫粗描邊那張，
+再把無描邊的疊上去，筆畫內部才不會被描邊侵蝕。旋轉要獨立成透明層再合成，
+`-annotate` 的角度參數是切變不是旋轉。
 
 ## 敘事骨架：對白精選輯
 
@@ -49,7 +54,7 @@ convert 畫格.png -resize 120x120 -colors 10 -depth 8 -format %c histogram:info
 | 素材 | 來源 |
 |---|---|
 | 實機影像 | `tools/promo/cap_intro.sh`：Xvfb 640×400 全螢幕跑開場，x11grab 25 fps 錄 280 秒 |
-| 配樂 | `tools/promo/cap_music.sh`：`SDL_AUDIODRIVER=disk` 錄 260 秒，取 168–248 秒（片尾主題曲）做 80 秒循環 |
+| 配樂 | `tools/promo/cap_music_mt32.sh`：MT-32 音源，`SDL_AUDIODRIVER=disk` 錄 260 秒，取 165–245 秒（片尾主題曲）做 80 秒循環。AdLib 版是 `cap_music.sh` |
 | 語音 A/B | `tools/promo/extract_voice.py`：直接從三份 `.sof` 取同一句 |
 | OSD 截圖 | `tools/promo/cap_osd.sh`：進遊戲後按 Ctrl+T 再截 |
 | 一代畫面 | `tools/promo/cap_v1.sh`：直接跑 `maniac-zh` target |
@@ -84,6 +89,28 @@ SCUMM 的角色台詞畫在**畫面上緣**。把 640×400 的實機畫面放大
 截圖類的版面要留字幕條，作法是先把畫面等比縮進固定框（1024×640）再補底，
 畫框自然落在字幕條之上。
 
+### MT-32 要確認「真的有出聲」，不能看沒報錯就算數
+
+`--enable-mt32emu` 只是把模擬器編進 binary（三支 binary 都有 `USE_MT32EMU = 1`）；
+要真出聲還要 ROM，檔名須為 `MT32_CONTROL.ROM` / `MT32_PCM.ROM`，並用
+`--extrapath` 指到 ROM 目錄。ROM 缺了或名字不對，ScummVM 會**安靜地退回 AdLib**。
+
+判斷有沒有真的走 MT-32，最省事的技術訊號是**左右聲道差值**：
+
+| | 左右差 RMS | 頻譜重心 |
+|---|---|---|
+| AdLib（OPL2，本來就是單聲道） | 0 | 4,321 Hz |
+| MT-32（有聲相） | 3,416 | 1,800 Hz |
+
+差值 0 就是沒走到 MT-32。頻譜重心也對得上聽感——AdLib 的 FM 方波把能量推到高頻，
+MT-32 的取樣音色明顯溫厚。
+
+MT-32 的輸出音量比 AdLib 小得多（同一段 RMS 748 vs 2,363），`loudnorm` 目標要調高
+（本片用 `I=-16`）。
+
+**ROM 一律不入 repo，也不進散布包**（`.gitignore` 已擋 `*.ROM`）。本機放在
+`~/cht/mt32`，用的是 `MT32_CONTROL.1987-10-07.v1.07.ROM` 與 `MT32_PCM.ROM`。
+
 ### 不用 zoompan
 
 `-loop 1 -t S` 加前置 `fps` 會讓 zoompan 算成 `(FPS*S)²` 幀。靜態圖 + fade
@@ -97,6 +124,8 @@ SCUMM 的角色台詞畫在**畫面上緣**。把 640×400 的實機畫面放大
 | `screenshots/dott-cht-demo.gif` | repo | 靜音、8 秒，與既有截圖同一條線 |
 | `tools/promo/*` | repo | 自行撰寫的合成腳本 |
 | 擷取的原始素材（`intro-*.mp4`、`music.raw`、`bgm.wav`） | 本機暫存 | 原版音訊與影像 |
+
+MT-32 ROM 是 Roland 的著作，`.gitignore` 已擋 `*.ROM`，也不進任何散布包。
 
 **成片要公開上傳前先確認授權**：配樂是原版遊戲音樂（作曲家 Peter McConnell、
 Michael Land、Clint Bajakian 的著作），影像是 LucasArts 的美術。用原版素材是為了
