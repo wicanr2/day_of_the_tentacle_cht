@@ -1,0 +1,38 @@
+name: build-mac
+# 瘋狂時代中文版的 macOS universal binary（arm64 + x86_64）。
+# clone 官方 ScummVM @ pinned commit → 套本專案 patch → per-arch build + lipo → artifact。
+# binary 是 GPLv2+（可公開）；遊戲資料、倚天字型衍生物、譯文都不上 CI。
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    timeout-minutes: 120
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch ScummVM @ pinned commit
+        run: |
+          git init scummvm && cd scummvm
+          git remote add origin https://github.com/scummvm/scummvm.git
+          git fetch --depth 1 origin e37bbe208b7e3007edd69c923350e1456695acc3
+          git checkout FETCH_HEAD
+
+      - name: Apply DOTT/Maniac CHT patch
+        run: |
+          cd scummvm
+          git apply --verbose "$GITHUB_WORKSPACE/patches/scummvm-zhtw.patch"
+
+      - name: Build universal binary
+        env:
+          OUTNAME: dott-cht-macos-app.tar.gz
+        run: bash tools/build-mac.sh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dott-cht-macos
+          path: dist-ci/dott-cht-macos-app.tar.gz
+          retention-days: 14
