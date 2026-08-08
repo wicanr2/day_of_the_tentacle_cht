@@ -49,6 +49,12 @@ if [ "$KIND" = full ]; then
     cp "$W/game-cht/dott/maniac/"*.LFL "$D/game/dott/maniac/"
     cp "$W/game-cht/dott/maniac/chinese_gb16x12.fnt" "$D/game/dott/maniac/"
     ln -sf "$(cd "$W/game-orig/dott" && pwd)/monster.sof" "$D/game/dott/monster.sof"
+    # 中文語音包（遊戲中 Ctrl+T 循環切換），與 package.sh 同一條界線：只進 full 包
+    for v in tw cl; do
+        if [ -f "$W/game-cht/dott/monster-$v.sof" ]; then
+            ln -sf "$(cd "$W/game-cht/dott" && pwd)/monster-$v.sof" "$D/game/dott/monster-$v.sof"
+        fi
+    done
 else
     # scummtr 的 macOS 版由同一個 CI 產出（tools/build-mac.sh 一併編）
     if [ -f "$D/scummtr" ]; then chmod +x "$D/scummtr"; else

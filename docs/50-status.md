@@ -73,7 +73,7 @@ corrupt it`），v1 會安靜地把 00.LFL 改壞。
 | | |
 |---|---|
 | 台式中文（edge-tts） | 4,431 句，0 失敗，`monster-tw.sof` 122 MB |
-| 原音克隆（F5-TTS，東京 GPU） | 4,431 句，`monster-cl.sof` |
+| 原音克隆（F5-TTS，東京 GPU） | 4,431 句，0 失敗，`monster-cl.sof` 121 MB |
 | 音高 | 依原音基頻分 10 帶挑聲音與 pitch，不必先知道哪句是誰說的 |
 | 響度 | 逐段對齊原版 RMS，中位增益 1.60x |
 | 切換 | 遊戲中 Ctrl+T 循環，選擇記進 `cht_voice_pack` |
@@ -139,7 +139,7 @@ debugger `room 42` 跳過去就行。房間號是從 `scummtr -h` 的 dump 反�
 | 引擎 | ✅ slim 版（53 相依，自帶 49 支 .so） | ✅ mingw 交叉編譯 + SDL2.dll | ✅ CI 出 universal（arm64+x86_64） |
 | ScummTR | ✅ | ✅ 交叉編譯 | ✅ CI 一併編 universal |
 | patch 包 | ✅ 12 MB | ✅ 14 MB | ✅ 19 MB |
-| full 包 | ✅ 99 MB | ✅ 105 MB | ✅ 110 MB |
+| full 包（含三組語音） | ✅ 254 MB | ✅ 265 MB | ✅ 270 MB |
 | 實測 | ✅ 乾淨的 `ubuntu:24.04` 跑得起來 | ✅ wine 下 `--version` 與 `--detect` 都對 | ⚠ 兩支都驗過是 fat binary，但**沒有實體 Mac 可測** |
 
 macOS 的 `.app` 精簡過：CI 會把 ScummVM 樹裡的 engine-data 整批塞進去（`ultima.dat`
