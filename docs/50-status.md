@@ -139,7 +139,7 @@ debugger `room 42` 跳過去就行。房間號是從 `scummtr -h` 的 dump 反�
 | 引擎 | ✅ slim 版（53 相依，自帶 49 支 .so） | ✅ mingw 交叉編譯 + SDL2.dll | ✅ CI 出 universal（arm64+x86_64） |
 | ScummTR | ✅ | ✅ 交叉編譯 | ✅ CI 一併編 universal |
 | patch 包 | ✅ 12 MB | ✅ 14 MB | ✅ 19 MB |
-| full 包（含三組語音 + MT-32） | ✅ 255 MB | ✅ 265 MB | ✅ 270 MB |
+| full 包（三組語音 + MT-32 + 三套字型） | ✅ 255 MB | ✅ 265 MB | ✅ 270 MB |
 | AppImage（full） | ✅ 276 MB 單檔 | — | — |
 | 實測 | ✅ 乾淨的 `ubuntu:24.04` 跑得起來 | ✅ wine 下 `--version` 與 `--detect` 都對 | ⚠ 兩支都驗過是 fat binary，但**沒有實體 Mac 可測** |
 
@@ -158,9 +158,14 @@ shell script，對它做 `strings` 永遠是 0。
 
 ### 字型分三份
 
-公開的 patch 包用 WQY，本機 full 包用倚天；**指令列另外用華康少女體**
-（`chinese_verb.fnt`），同樣是商業字型的衍生物，只進 full 包。公開包沒有這個檔，
-指令列就沿用正文字型——引擎找不到會靜靜關掉，不是錯誤。
+| 用途 | 檔名 | 字模 | 字面 | 進哪個包 |
+|---|---|---|---|---|
+| 正文（句子列、內建 UI） | `chinese_gb16x12.fnt` | 16×14 | 倚天 15 點 / WQY | 全部 |
+| 指令列 | `chinese_verb.fnt` | 24×24 | 華康少女體 | full |
+| 角色對白 | `chinese_dialog.fnt` | 24×24 | 倚天 24 點 | full |
+
+公開的 patch 包只有正文字型（WQY 版，可散布）；另外兩份是商業字型的衍生物，
+只進本機 full 包。缺哪個檔就關掉哪一項，三個都沒有時行為與上游完全相同。
 
 ### 字型分兩份
 
