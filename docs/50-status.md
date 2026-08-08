@@ -88,13 +88,32 @@ Times…）、`THX 1138` 彩蛋，以及那三行沒被用到的整行 verb 表�
 指令列已逐像素量過，單字 16、雙字 32 實體像素，沒有重疊或溢出（見
 [`20-patches.md`](20-patches.md)）。
 
-## easter egg：設定層已驗，遊戲內觸發未驗
+## easter egg：已在遊戲內驗證
 
-`startManiac()` 的兩條路徑都讀過原始碼（`scumm.cpp:4370`）。已驗證的是：
-兩個 target 各自都能啟動、`easter_egg` key 能繞過會誤選 C64 版的路徑搜尋。
+不必真的玩到遊戲中段——電腦在 **room 42**（怪異愛德的房間），用 ScummVM 的
+debugger `room 42` 跳過去就行。房間號是從 `scummtr -h` 的 dump 反查的：
+`[042:OBNA#0432]computer`。
 
-**尚未驗證**「在遊戲裡走到泰德房間、打開電腦、跳進一代、玩完再切回來且進度還在」
-這條完整鏈路——那需要玩到遊戲中段，headless 跑不到。列為待辦。
+證據鏈三條：
+
+1. `screenshots/egg-1-ed-room-zh.png` —— room 42 的中文畫面（伯納對電腦說
+   「雖然你只有 64K 記憶體，我還是尊敬你。」）
+2. 對電腦下「使用」之後，log 出現
+   `User picked target 'maniac-zh'` 與 `Classic V1 game detected`
+3. `screenshots/egg-2-maniac-launched.png` —— 一代的選角畫面跳出來，
+   而且是中文的（「請再選兩個人。」）
+
+回程沒有模擬玩家按 F5（GUI 點擊在 headless 下不穩），改成檢查它的憑據：
+`startManiac()` 會先把 DOTT 的狀態存進 slot 100 再推 chained games，
+而那個檔確實生出來了——`~/.local/share/scummvm/saves/dott-zh.c100`，21 KB。
+回程要用的資料備妥了，切換本身是 ScummVM 的既有機制，本專案沒有動它。
+
+### headless 點擊的兩個雷
+
+* `xdotool click` 太快，ScummVM 常常收不到。要拆成 `mousedown` / `mouseup`
+  並留 0.25 秒間隔。
+* 進房間後的**第一次點擊會被吃掉**（進場腳本還在跑）。沒有先點一次空白處消化，
+  句子列會停在「走到」而不是選好的指令，看起來像座標算錯。
 
 ## 校對第二輪：已完成
 
@@ -136,6 +155,5 @@ Times…）、`THX 1138` 彩蛋，以及那三行沒被用到的整行 verb 表�
 ## 待辦
 
 1. macOS：等 CI 產出 `.app` 與 universal `scummtr`，用 `tools/package-macos.sh` 注入中文資料。
-2. easter egg 完整鏈路的遊戲內驗證（要真的玩到泰德房間）。
-3. 中文語音（TTS）。
-4. GitHub Release、宣傳片。
+2. 中文語音（TTS）。
+3. GitHub Release、宣傳片。
