@@ -22,8 +22,20 @@ ROOT="$PWD"
 SVM="$ROOT/scummvm"
 WORK="$ROOT/_macbuild"; mkdir -p "$WORK"
 
+# 下載：downloads.xiph.org 從 GitHub 的 macOS runner 連過去偶爾會斷在 TLS 握手
+# （curl exit 35，LibreSSL SSL_ERROR_SYSCALL）。單純的 --retry 不管這種錯——
+# curl 只重試它認定的「暫時性」狀況，35 不在其中——要 --retry-all-errors。
+# 再備一個鏡像，兩邊都不通才算真的失敗。
+fetch() {   # fetch <輸出檔> <主 URL> [備援 URL]
+  local out=$1 url=$2 alt=${3:-}
+  curl -fsSL --retry 5 --retry-all-errors --connect-timeout 20 -o "$out" "$url" && return 0
+  [ -n "$alt" ] || return 1
+  echo "主站失敗，改用鏡像：$alt"
+  curl -fsSL --retry 5 --retry-all-errors --connect-timeout 20 -o "$out" "$alt"
+}
+
 # ---- 1. SDL2 per-arch，自源碼靜態編 ----
-curl -fsSL -o "$WORK/SDL2.tar.gz" \
+fetch "$WORK/SDL2.tar.gz" \
   "https://github.com/libsdl-org/SDL/releases/download/release-${SDLVER}/SDL2-${SDLVER}.tar.gz"
 for arch in arm64 x86_64; do
   rm -rf "$WORK/sdl-src-$arch"; mkdir -p "$WORK/sdl-src-$arch"
@@ -40,10 +52,12 @@ for arch in arm64 x86_64; do
 done
 
 # ---- 2. libogg → libFLAC per-arch（順序不能反，FLAC 的 configure 會找 ogg）----
-curl -fsSL --retry 3 -o "$WORK/libogg.tar.gz" \
-  "https://downloads.xiph.org/releases/ogg/libogg-${OGGVER}.tar.gz"
-curl -fsSL --retry 3 -o "$WORK/flac.tar.xz" \
-  "https://downloads.xiph.org/releases/flac/flac-${FLACVER}.tar.xz"
+fetch "$WORK/libogg.tar.gz" \
+  "https://downloads.xiph.org/releases/ogg/libogg-${OGGVER}.tar.gz" \
+  "https://ftp.osuosl.org/pub/xiph/releases/ogg/libogg-${OGGVER}.tar.gz"
+fetch "$WORK/flac.tar.xz" \
+  "https://downloads.xiph.org/releases/flac/flac-${FLACVER}.tar.xz" \
+  "https://ftp.osuosl.org/pub/xiph/releases/flac/flac-${FLACVER}.tar.xz"
 for arch in arm64 x86_64; do
   P="$WORK/deps-$arch"
   runner=""; [ "$arch" = x86_64 ] && runner="arch -x86_64"
