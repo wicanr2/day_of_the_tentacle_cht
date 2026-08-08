@@ -96,9 +96,46 @@ Times…）、`THX 1138` 彩蛋，以及那三行沒被用到的整行 verb 表�
 **尚未驗證**「在遊戲裡走到泰德房間、打開電腦、跳進一代、玩完再切回來且進度還在」
 這條完整鏈路——那需要玩到遊戲中段，headless 跑不到。列為待辦。
 
+## 校對第二輪：已完成
+
+`tools/lint_translation.py` 查四件 `check_batches.py` 管不到的事：譯名一致、
+半形標點、物件名長度、疑似未翻。兩條產線都四項全過。
+
+物件名的長度判定不靠猜——用 `scummtr -h` 抽一份帶區塊類型的 dump，只對
+`OBNA`（v6）與 `ONv1`（v1）做檢查。第一版憑「看起來像不像物件名」猜，30 條裡
+26 條是誤判；換成區塊類型之後收斂到 2 條真問題（都已改短）。
+
+檢查器本身以故意違規的檔做過正對照，四項都抓得到。
+
+## 打包：Linux／Windows 完成，macOS 建置中
+
+| | Linux | Windows | macOS |
+|---|---|---|---|
+| 引擎 | ✅ slim 版（53 相依，自帶 49 支 .so） | ✅ mingw 交叉編譯 + SDL2.dll | ⏳ CI 建置中 |
+| ScummTR | ✅ | ✅ 交叉編譯 | ⏳ CI 一併編 universal |
+| patch 包 | ✅ 12 MB | ✅ 14 MB | ⏳ |
+| full 包 | ✅ 104 MB | ✅ 110 MB | ⏳ |
+| 可攜性實測 | ✅ 乾淨的 `ubuntu:24.04` 跑得起來 | ✅ wine 下 `--version` 與 `--detect` 都對 | ⏳ |
+
+`Features compiled in: FLAC` 兩個平台都確認過——沒有它 `monster.sof` 讀不出來，
+而且**不會報錯**，只是整片語音消失。
+
+### 字型分兩份
+
+公開的 patch 包用 **WenQuanYi Zen Hei Sharp 的 15px embedded bitmap**
+（GPL + 字體例外，可散布）；倚天那份筆畫更銳利，但是商業字型的衍生物，
+只進留本機的 full 包。兩份字模尺寸與碼位完全相同，換檔就換字形。
+這條界線沿用一代專案的做法。
+
+### 端到端驗收
+
+拿 patch 包走一次玩家的路徑：`套用中文化.sh` 吃原版目錄 → 回填 → 啟動。
+回填後 `TENTACLE.001` 數得出 549,985 個中文字組、`maniac/01.LFL` 數得出 87 個，
+遊戲正常進到開場動畫。`Unrecognized game`（ini 註解用了 `;`）那個雷就是在這一步抓到的。
+
 ## 待辦
 
-1. 瘋狂時代譯文校對第二輪。
+1. macOS：等 CI 產出 `.app` 與 universal `scummtr`，用 `tools/package-macos.sh` 注入中文資料。
 2. easter egg 完整鏈路的遊戲內驗證（要真的玩到泰德房間）。
 3. 中文語音（TTS）。
-4. 三平台打包、宣傳片。
+4. GitHub Release、宣傳片。
