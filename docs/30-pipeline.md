@@ -112,16 +112,21 @@ Windows 版的引擎另外編：
 docker run --rm -v "$PWD":/w -w /w dott-cht:mingw bash tools/build-win.sh
 ```
 
-### 交叉編譯踩過的兩個雷
+### 交叉編譯踩過的三個雷
 
-1. **複製源碼樹的排除規則要錨定根目錄。** 原本用
-   `tar --exclude=config.h`，tar 會比對路徑的任何一段，於是
-   `audio/softsynth/mt32/config.h` 也被排掉——那支帶著 `MT32EMU_VERSION_MAJOR`
-   等巨集，缺了它 `Synth.cpp` 編不過。改用 rsync 的 `--exclude='/config.h'`
-   （前導斜線＝錨定傳輸根目錄）。
+1. **複製源碼樹的排除規則要錨定根目錄。** 原本用 `tar --exclude=config.h`，
+   tar 會比對路徑的任何一段，於是 `audio/softsynth/mt32/config.h` 也被排掉——
+   那支帶著 `MT32EMU_VERSION_MAJOR` 等巨集，缺了它 `Synth.cpp` 編不過。
+   正解是 `--anchored --exclude='./config.h'`（`--anchored` 讓 pattern 從路徑
+   開頭比對），之後要恢復預設語意再加 `--no-anchored`。腳本裡跟著加了一行正對照：
+   複製完檢查 `mt32/config.h` 在不在，不在就直接停。
 2. **`make` 後面不要接 `| tail -N`。** 上面那個錯誤第一次出現時，畫面上只剩
    `make: *** [Makefile.common:177] Error 1`，完整的 `error:` 全被過濾器吃掉，
    看起來像無從查起。把管線拿掉重跑，三行就看到根因。
+3. **Windows 版要一起帶 `SDL2.dll`。** 引擎是動態連結 SDL2，少了那支 DLL
+   `scummvm.exe` 會**安靜地跳出**（exit 53，畫面上什麼都不印）。其餘相依
+   （GDI32／KERNEL32／SHELL32／USER32／WINMM／WINSPOOL／msvcrt／ole32）都是系統 DLL。
+   查法：`x86_64-w64-mingw32-objdump -p scummvm.exe | grep "DLL Name"`。
 
 ## 8. 實機驗證（headless）
 
