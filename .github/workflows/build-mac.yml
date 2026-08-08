@@ -25,6 +25,12 @@ jobs:
           cd scummvm
           git apply --verbose "$GITHUB_WORKSPACE/patches/scummvm-zhtw.patch"
 
+      - name: Fetch ScummTR and apply patch
+        run: |
+          git clone --depth 1 https://github.com/dwatteau/scummtr.git scummtr
+          cd scummtr
+          git apply --verbose "$GITHUB_WORKSPACE/patches/scummtr-maniacv1-lossless.patch"
+
       - name: Build universal binary
         env:
           OUTNAME: dott-cht-macos-app.tar.gz

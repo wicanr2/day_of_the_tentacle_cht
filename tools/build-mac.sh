@@ -105,7 +105,7 @@ lipo -info "$WORK/scummvm-universal" | grep -q x86_64 || { echo "### 非雙弧";
 
 # ---- 5. 組 .app 並 ad-hoc 簽章 ----
 APP="$ROOT/dist-ci/ScummVM.app"; rm -rf "$APP"
-mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" "$ROOT/dist-ci"
 cp "$WORK/scummvm-universal" "$APP/Contents/MacOS/scummvm"
 cp "$SVM"/gui/themes/*.zip "$APP/Contents/Resources/" 2>/dev/null || true
 cp "$SVM"/dists/engine-data/*.dat "$APP/Contents/Resources/" 2>/dev/null || true
@@ -129,8 +129,29 @@ PLIST
 codesign --force --deep --sign - "$APP"
 lipo -info "$APP/Contents/MacOS/scummvm"
 
+# ---- 5b. ScummTR 也一起編（universal）----
+# patch 包要在玩家的 Mac 上回填，所以需要一支 macOS 版 scummtr。
+# 六個開關必須跟 Linux 端完全一致，少一個回填出來的檔就不是 byte-perfect。
+TRFLAGS="-DSCUMMTR_PRESERVE_AMBIGUOUS_OI -DSCUMMTR_KEEP_DANGLING_INDEX_ENTRIES \
+-DSCUMMTR_CJK_CUSTOM_CODESPACE -DSCUMMTR_PRESERVE_V1_ROOM_OFFSETS \
+-DSCUMMTR_PRESERVE_DUP_INDEX_ENTRIES -DSCUMMRP_OK_TO_CORRUPT_MANIACV2"
+if [ -d "$ROOT/scummtr" ]; then
+  for arch in arm64 x86_64; do
+    rm -rf "$WORK/tr-$arch"; mkdir -p "$WORK/tr-$arch"
+    ( cd "$WORK/tr-$arch"
+      cmake "$ROOT/scummtr" -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_OSX_ARCHITECTURES="$arch" \
+        -DCMAKE_OSX_DEPLOYMENT_TARGET="$MIN" \
+        -DCMAKE_CXX_FLAGS="$TRFLAGS"
+      make -j"$(sysctl -n hw.ncpu)" )
+    cp "$WORK/tr-$arch/bin/scummtr" "$WORK/scummtr-$arch"
+  done
+  lipo -create "$WORK/scummtr-arm64" "$WORK/scummtr-x86_64" -output "$ROOT/dist-ci/scummtr"
+  lipo -info "$ROOT/dist-ci/scummtr"
+fi
+
 # ---- 6. 打包（tar.gz 保 perm；APFS dmg 在 Windows/WSL 讀不到）----
 OUTNAME="${OUTNAME:-dott-cht-macos-app.tar.gz}"
-tar czf "$ROOT/dist-ci/$OUTNAME" -C "$ROOT/dist-ci" ScummVM.app
+tar czf "$ROOT/dist-ci/$OUTNAME" -C "$ROOT/dist-ci" ScummVM.app $( [ -f "$ROOT/dist-ci/scummtr" ] && echo scummtr )
 echo "=== BUILD_OK:dist-ci/$OUTNAME ==="
 ls -la "$ROOT/dist-ci"
