@@ -47,6 +47,21 @@ Steam、GOG 的《Day of the Tentacle Remastered》**不適用**——那是重�
 不要手動改 `easter_egg=maniac-zh` 那一行。
 
 
+音樂：MT-32
+-----------
+
+包裡附了 Roland MT-32 的 ROM 與設定，遊戲直接用 MT-32 音源，不是 AdLib。
+1993 年的 iMUSE 配樂是照 MT-32 寫的，音色比 FM 合成的 AdLib 厚很多。
+
+想換回 AdLib，把 `scummvm.ini` 裡 `[dott-zh]` 底下的 `music_driver=mt32`
+改成 `adlib` 即可。
+
+啟動時 log 會有一行「Unable to open CM32L_CONTROL.ROM ... Falling back to MT32」，
+那是 ScummVM 先找 CM-32L（MT-32 的後續機種）找不到才用 MT-32，不是錯誤。
+
+泰德電腦裡的一代沒有 MIDI（SCUMM v1 只有 PC speaker / PCjr），不受這一段影響。
+
+
 中文語音（有語音包時才有）
 --------------------------
 
@@ -101,6 +116,8 @@ macOS 第一次開啟
 
 中文語音包不在散布範圍內：它是原版 `monster.sof` 的改造版（沒被翻譯到的
 113 段仍是原音），而且合成用的是微軟 Edge 的線上服務，兩邊都不允許再散布。
+
+MT-32 ROM 的著作權屬 Roland，同樣不在散布範圍內。
 
 ScummVM 依 GPLv2 授權，原始碼與本專案的修補檔見：
 https://github.com/wicanr2/day_of_the_tentacle_cht

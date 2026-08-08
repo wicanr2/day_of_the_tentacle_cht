@@ -90,12 +90,35 @@ if [ "$KIND" = full ]; then
             ln -sf "$(cd "$W/game-cht/dott" && pwd)/monster-$v.sof" "$D/game/dott/monster-$v.sof"
         fi
     done
+    # MT-32 音源。binary 已經編進 mt32emu，但那只是模擬器；要真出聲還得有 ROM。
+    # ROM 是 Roland 的著作，只進留本機的 full 包，公開的 patch 包一個位元組都沒有。
+    if [ -f "$W/mt32rom/MT32_CONTROL.ROM" ] && [ -f "$W/mt32rom/MT32_PCM.ROM" ]; then
+        mkdir -p "$D/mt32rom"
+        cp "$W/mt32rom/MT32_CONTROL.ROM" "$W/mt32rom/MT32_PCM.ROM" "$D/mt32rom/"
+        MT32=1
+    else
+        echo "警告：找不到 MT-32 ROM，full 包會用 AdLib"
+        MT32=0
+    fi
 else
     [ -f "$TR" ] && cp "$TR" "$D/$TRNAME" || echo "警告：找不到 $TR，patch 包沒有回填工具"
+    MT32=0
 fi
 
 # ---- ScummVM 設定 ----
 sed -e 's|\./game/dott|./game/dott|' dist/scummvm-zhtw.ini.sample > "$D/scummvm.ini"
+
+# 有 ROM 才設 mt32 —— 沒 ROM 卻指定 mt32，ScummVM 會先彈一個阻擋對話框才回退 AdLib。
+# 只設在 dott-zh：一代（SCUMM v1 DOS）在偵測表裡是 MDT_PCSPK|MDT_PCJR 且帶 GUIO_NOMIDI，
+# 根本沒有 MIDI 這條路。
+if [ "$MT32" = 1 ]; then
+    awk '
+      /^\[scummvm\]$/ { print; print "extrapath=./mt32rom"; next }
+      /^\[dott-zh\]$/ { print; print "music_driver=mt32"; next }
+      { print }
+    ' "$D/scummvm.ini" > "$D/scummvm.ini.tmp" && mv "$D/scummvm.ini.tmp" "$D/scummvm.ini"
+    grep -q '^music_driver=mt32$' "$D/scummvm.ini" || { echo "ini 沒寫進 mt32"; exit 1; }
+fi
 
 # ---- 啟動與套用腳本 ----
 if [ "$PLATFORM" = linux ]; then

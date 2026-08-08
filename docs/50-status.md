@@ -139,7 +139,7 @@ debugger `room 42` 跳過去就行。房間號是從 `scummtr -h` 的 dump 反�
 | 引擎 | ✅ slim 版（53 相依，自帶 49 支 .so） | ✅ mingw 交叉編譯 + SDL2.dll | ✅ CI 出 universal（arm64+x86_64） |
 | ScummTR | ✅ | ✅ 交叉編譯 | ✅ CI 一併編 universal |
 | patch 包 | ✅ 12 MB | ✅ 14 MB | ✅ 19 MB |
-| full 包（含三組語音） | ✅ 254 MB | ✅ 265 MB | ✅ 270 MB |
+| full 包（含三組語音 + MT-32） | ✅ 255 MB | ✅ 265 MB | ✅ 270 MB |
 | 實測 | ✅ 乾淨的 `ubuntu:24.04` 跑得起來 | ✅ wine 下 `--version` 與 `--detect` 都對 | ⚠ 兩支都驗過是 fat binary，但**沒有實體 Mac 可測** |
 
 macOS 的 `.app` 精簡過：CI 會把 ScummVM 樹裡的 engine-data 整批塞進去（`ultima.dat`
@@ -168,6 +168,21 @@ shell script，對它做 `strings` 永遠是 0。
 回填後 `TENTACLE.001` 數得出 549,985 個中文字組、`maniac/01.LFL` 數得出 87 個，
 遊戲正常進到開場動畫。`Unrecognized game`（ini 註解用了 `;`）那個雷就是在這一步抓到的。
 
+### MT-32：只進 full 包
+
+`--enable-mt32emu` 只是把模擬器編進 binary（三支都有 `USE_MT32EMU = 1`），
+要真出聲還得有 ROM。full 包附 `mt32rom/MT32_CONTROL.ROM` 與 `MT32_PCM.ROM`，
+ini 裡設 `extrapath=./mt32rom` 加 `[dott-zh]` 的 `music_driver=mt32`。
+
+**patch 包（公開）一個 ROM 都沒有，也不設 `music_driver`**——沒 ROM 卻指定 mt32，
+ScummVM 會先彈一個阻擋對話框才回退 AdLib。
+
+`music_driver` 只設在 `dott-zh`：一代在偵測表裡是 `MDT_PCSPK | MDT_PCJR` 且帶
+`GUIO_NOMIDI`，根本沒有 MIDI 這條路。
+
+驗收用**左右聲道差值**，不看「沒報錯」：同一個包、同一段開場，強制 `adlib` 量到
+左右差 0（OPL2 是單聲道），`mt32` 量到 429。差值 0 就代表沒走到 MT-32。
+
 ### mac CI 的下載會偶爾斷
 
 `downloads.xiph.org` 從 GitHub 的 macOS runner 連過去偶爾斷在 TLS 握手
@@ -184,7 +199,7 @@ macOS `.tar.gz`）。**full 包與語音包不進 Release**——full 包含中�
 
 ## 推廣片
 
-75.6 秒、1280×720，配樂與畫面全部取自遊戲本身（原版 AdLib 音樂 + 實機錄影）。
+75.6 秒、1280×720，配樂與畫面全部取自遊戲本身（原版 MT-32 音樂 + 實機錄影）。
 合成腳本在 `tools/promo/`，機制與踩過的雷見 [`70-promo.md`](70-promo.md)。
 成片留本機 `dist-all/`（含原版配樂）；repo 只放 8 秒的靜音 GIF。
 

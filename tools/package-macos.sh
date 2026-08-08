@@ -55,7 +55,17 @@ if [ "$KIND" = full ]; then
             ln -sf "$(cd "$W/game-cht/dott" && pwd)/monster-$v.sof" "$D/game/dott/monster-$v.sof"
         fi
     done
+    # MT-32 ROM，與 package.sh 同一條界線：只進 full 包
+    if [ -f "$W/mt32rom/MT32_CONTROL.ROM" ] && [ -f "$W/mt32rom/MT32_PCM.ROM" ]; then
+        mkdir -p "$D/mt32rom"
+        cp "$W/mt32rom/MT32_CONTROL.ROM" "$W/mt32rom/MT32_PCM.ROM" "$D/mt32rom/"
+        MT32=1
+    else
+        echo "警告：找不到 MT-32 ROM，full 包會用 AdLib"
+        MT32=0
+    fi
 else
+    MT32=0
     # scummtr 的 macOS 版由同一個 CI 產出（tools/build-mac.sh 一併編）
     if [ -f "$D/scummtr" ]; then chmod +x "$D/scummtr"; else
         echo "警告：CI 產物裡沒有 macOS 版 scummtr，patch 包無法在玩家端回填"
@@ -63,6 +73,14 @@ else
 fi
 
 cp dist/scummvm-zhtw.ini.sample "$D/scummvm.ini"
+if [ "$MT32" = 1 ]; then
+    awk '
+      /^\[scummvm\]$/ { print; print "extrapath=./mt32rom"; next }
+      /^\[dott-zh\]$/ { print; print "music_driver=mt32"; next }
+      { print }
+    ' "$D/scummvm.ini" > "$D/scummvm.ini.tmp" && mv "$D/scummvm.ini.tmp" "$D/scummvm.ini"
+    grep -q '^music_driver=mt32$' "$D/scummvm.ini" || { echo "ini 沒寫進 mt32"; exit 1; }
+fi
 cp README-dist.md "$D/README.txt"
 
 cat > "$D/套用中文化.command" <<'SH'
