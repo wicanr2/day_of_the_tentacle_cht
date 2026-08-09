@@ -2,8 +2,10 @@
 # 在 GitHub Actions 的 macos runner 上編瘋狂時代中文版的 ScummVM universal binary
 # （arm64 + x86_64），只開 SCUMM 引擎。
 #
-# 為什麼是 CI 而不是本機：macOS 的 .app 需要 codesign / lipo，只有 macOS host 有；
-# Linux 端做不出來也測不出來。
+# 與 tools/build-mac-osxcross.sh 的關係：那支用 osxcross 在 Linux 上交叉編，
+# 產出的 .app 一樣。走這支（CI 原生編）的好處是能 codesign 與 notarize，
+# 而且能在 macOS 上實際執行驗證。**兩支的 configure 開關必須逐項對齊，
+# 改一邊就要改另一邊**，否則兩條路的產物會悄悄長得不一樣。
 #
 # 幾條沿用一代實戰的規則：
 #   * 不要 brew install sdl2 —— 2026 年起那是 sdl2-compat shim，runtime 才 dlopen

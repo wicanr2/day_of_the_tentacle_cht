@@ -5,7 +5,7 @@
 ```
 workplace/
   day_of_the_tentacle_cht/   ← 這個 repo
-  docker/                    Dockerfile、Dockerfile.mingw
+  docker/                    Dockerfile、Dockerfile.mingw、Dockerfile.osxcross
   game-orig/dott/            原版資料（TENTACLE.00*、monster.sof）
   game-orig/maniac-v1/       原版一代（54 個 .LFL）
   game-cht/                  產出的中文版資料
@@ -20,8 +20,9 @@ workplace/
 ## 1. 兩個 docker image
 
 ```bash
-docker build -f docker/Dockerfile      -t dott-cht:latest .   # Linux 開發／驗證
-docker build -f docker/Dockerfile.mingw -t dott-cht:mingw  .   # Windows 交叉編譯
+docker build -f docker/Dockerfile        -t dott-cht:latest   .   # Linux 開發／驗證
+docker build -f docker/Dockerfile.mingw   -t dott-cht:mingw    .   # Windows 交叉編譯
+docker build -f docker/Dockerfile.osxcross -t dott-cht:osxcross docker/   # macOS 交叉編譯
 ```
 
 mingw 那個會自己編 libogg / libFLAC / zlib 的 mingw 版。**libFLAC 不能省**：
@@ -204,8 +205,30 @@ bitmap strike，是設計師手繪的點陣，不是把 outline 描下來的—�
 
 ## 10. macOS
 
-Linux 端做不出 `.app`（需要 `codesign` / `lipo`），所以走 GitHub Actions 的
-macos runner：
+兩條路，產出的 `.app` 一樣，都只含引擎——倚天字型衍生物與夾帶英文原文的譯文檔
+都不進去，中文資料在本機注入之後才成為完整的包。
+
+**本機交叉編（不需要 Mac，也不需要 CI 額度）**
+
+```bash
+mkdir -p macbuild && cd macbuild
+git clone --no-hardlinks ../tools/scummvm-src scummvm    # 乾淨樹
+( cd scummvm && git apply ../../day_of_the_tentacle_cht/patches/scummvm-zhtw.patch )
+git clone --no-hardlinks ../tools/scummtr-src scummtr
+( cd scummtr && git apply ../../day_of_the_tentacle_cht/patches/scummtr-maniacv1-lossless.patch )
+cd .. && docker run --rm -v "$PWD/macbuild":/b -w /b -e JOBS=6 dott-cht:osxcross \
+  bash /b/build-mac-osxcross.sh
+```
+
+`tools/build-mac-osxcross.sh` 會把 SDL2 / libogg / libFLAC / ScummVM / ScummTR
+各編兩弧（arm64 + x86_64）再 `lipo` 合成，然後組 `.app`。arm64 的 ad-hoc 簽章由
+ld64 在連結時加上——**沒有它，Apple Silicon 會直接把執行檔殺掉（`Killed: 9`）**，
+而在 Linux 這端完全看不出異狀，所以腳本裡有一道守門檢查 `LC_CODE_SIGNATURE`。
+
+bundle 層的 `codesign` 在 Linux 上做不出來，但 `package-macos.sh` 本來就會把
+`_CodeSignature` 拔掉（「未簽」勝過「壞簽」），所以兩條路的最終產物一致。
+
+**GitHub Actions（有額度時比較省事，而且能簽 bundle）**
 
 ```bash
 gh workflow run build-mac.yml
@@ -213,5 +236,15 @@ gh run watch
 gh run download <id> -n dott-cht-macos
 ```
 
-CI 只出 **engine-only 的 `.app`**——倚天字型衍生物與夾帶英文原文的譯文檔都不上 CI，
-中文資料在本機注入之後才成為完整的包。
+`tools/build-mac.sh`（CI 原生版）與 `tools/build-mac-osxcross.sh`（交叉編版）的
+configure 開關必須逐項對齊，**改一邊就要改另一邊**，否則兩條路的產物會悄悄不同。
+
+**收工前驗**（Linux 上執行不了 macOS binary，只能靜態檢查）：
+
+```bash
+docker run --rm -v "$PWD":/w -w /w dott-cht:osxcross \
+  bash /w/day_of_the_tentacle_cht/tools/verify-mac-binary.sh /w/macbuild/dist-ci/ScummVM.app
+```
+
+查的是雙弧、arm64 有簽章、最低系統版本、動態相依有沒有指到編譯機才有的路徑。
+全過只代表不會因結構問題開不起來，**實際遊玩仍需要一台 Mac**。
