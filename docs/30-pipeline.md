@@ -4,8 +4,7 @@
 
 ```
 workplace/
-  day_of_the_tentacle_cht/   ← 這個 repo
-  docker/                    Dockerfile、Dockerfile.mingw、Dockerfile.osxcross
+  day_of_the_tentacle_cht/   ← 這個 repo（Dockerfile 都在它的 docker/ 底下）
   game-orig/dott/            原版資料（TENTACLE.00*、monster.sof）
   game-orig/maniac-v1/       原版一代（54 個 .LFL）
   game-cht/                  產出的中文版資料
@@ -17,12 +16,13 @@ workplace/
   dist-all/                  打包產物
 ```
 
-## 1. 兩個 docker image
+## 1. docker image
 
 ```bash
-docker build -f docker/Dockerfile        -t dott-cht:latest   .   # Linux 開發／驗證
-docker build -f docker/Dockerfile.mingw   -t dott-cht:mingw    .   # Windows 交叉編譯
-docker build -f docker/Dockerfile.osxcross -t dott-cht:osxcross docker/   # macOS 交叉編譯
+docker build -f docker/Dockerfile          -t dott-cht:latest   docker/  # Linux 開發／驗證
+docker build -f docker/Dockerfile.mingw     -t dott-cht:mingw    docker/  # Windows 交叉編譯
+docker build -f docker/Dockerfile.osxcross  -t dott-cht:osxcross docker/  # macOS 交叉編譯
+docker build -f docker/Dockerfile.tts       -t dott-cht:tts      docker/  # 中文語音合成（可選）
 ```
 
 mingw 那個會自己編 libogg / libFLAC / zlib 的 mingw 版。**libFLAC 不能省**：

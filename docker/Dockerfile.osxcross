@@ -1,0 +1,39 @@
+# 在 Linux 上交叉編 macOS binary 的工具鏈。
+#
+#   docker build -f docker/Dockerfile.osxcross -t dott-cht:osxcross docker/
+#
+# osxcross ＝ Apple 的 SDK（標頭檔與 framework stub）＋ cctools-port（ld64、lipo、
+# ar、strip 這些 Mach-O 工具的 Linux 版）＋ 一層把 clang 包成 o64-clang / oa64-clang
+# 的 wrapper。系統的 clang 本來就能產生任何目標的碼，缺的是連結器與 SDK。
+#
+# 為什麼要它：macOS 版本原本走 GitHub Actions 的 macos runner，額度用完就完全
+# 沒有出路——這台機器上沒有 Mac。交叉編是唯一能在本機把 macOS binary 生出來的路。
+#
+# 這裡拿 crazymax/osxcross 預先編好的工具鏈，不自己編。自己編要先編一份
+# LLVM（libtapi 需要），在這台共用機器上跟別人搶 CPU 要一個多小時；
+# 從源碼編的版本留在 Dockerfile.osxcross-fromsource，兩者產出的工具鏈相同。
+#
+# [授權] SDK 是 Apple 的，授權只允許在 Apple 硬體上使用。這裡是自用的交叉編譯，
+#        SDK 不隨任何產物散布，image 也不外流。
+FROM crazymax/osxcross:15.5-debian AS osxcross
+
+FROM ubuntu:24.04
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      clang lld llvm \
+      cmake make patch git curl ca-certificates xz-utils bzip2 \
+      libssl-dev liblzma-dev libxml2-dev zlib1g-dev \
+      python3 pkg-config file bash \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=osxcross /osxcross /osxcross
+
+# ld64 連的是 /osxcross/lib 底下的 libxar 與 libtapi，那個目錄不在動態載入器的
+# 搜尋路徑裡。少這一行的症狀是連結時報
+# 「x86_64-apple-darwin24.5-ld: error while loading shared libraries: libxar.so.1」，
+# 而 clang 只會轉述成「unable to execute command」，看起來像編譯器壞了。
+RUN echo /osxcross/lib > /etc/ld.so.conf.d/osxcross.conf && ldconfig
+
+ENV PATH="/osxcross/bin:${PATH}"
+# 工具前綴帶次版號（SDK 15.5 → darwin24.5），不是 darwin24
+ENV OSXCROSS_TARGET=darwin24.5
